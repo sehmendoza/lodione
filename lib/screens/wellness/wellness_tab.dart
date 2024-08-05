@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'list_tab.dart';
+import 'recipe_tab.dart';
 
 class WellnessTab extends StatefulWidget {
   const WellnessTab({super.key});
@@ -19,7 +20,7 @@ class _WellnessTabState extends State<WellnessTab> {
     MenuItems(
       title: 'Recipes',
       icon: Icons.menu_book,
-      goTo: const ListTab(),
+      goTo: const RecipeTab(),
     ),
     MenuItems(
       title: 'Meal Plan',

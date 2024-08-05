@@ -189,10 +189,6 @@ class _ListTabState extends State<ListTab> {
             children: [
               Expanded(
                 child: TextField(
-                  focusNode: FocusNode(),
-                  onTapOutside: (event) {
-                    FocusScope.of(context).unfocus();
-                  },
                   controller: itemController,
                   cursorColor: Colors.white54,
                   style: const TextStyle(color: Colors.white),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class RecipeSection extends StatefulWidget {
-  const RecipeSection({super.key});
+class RecipeTab extends StatefulWidget {
+  const RecipeTab({super.key});
 
   @override
-  State<RecipeSection> createState() => _RecipeSectionState();
+  State<RecipeTab> createState() => _RecipeTabState();
 }
 
-class _RecipeSectionState extends State<RecipeSection> {
+class _RecipeTabState extends State<RecipeTab> {
   List<Map<String, Object>> recipes = [];
 
   void addNewRecipe() {
@@ -69,6 +69,36 @@ class _RecipeSectionState extends State<RecipeSection> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              prefixIcon: const Icon(
+                Icons.search,
+                color: Colors.white70,
+              ),
+              hintText: 'Search recipe',
+              hintStyle: const TextStyle(
+                color: Colors.white38,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                  width: 1,
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(15),
+                borderSide: const BorderSide(
+                  color: Colors.white,
+                  width: 2,
+                ),
+              ),
+            ),
+          ),
+        ),
         Padding(
           padding: const EdgeInsets.only(left: 8),
           child: Row(
