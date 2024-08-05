@@ -29,6 +29,9 @@ class _MainScreenState extends State<MainScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(
+                    height: 14,
+                  ),
                   Image.asset(
                     'lib/images/lodione_logo.png',
                     height: 250,
