@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'list_tab.dart';
-import 'recipe_tab.dart';
+import 'recipes/recipe_tab.dart';
 
 class WellnessTab extends StatefulWidget {
   const WellnessTab({super.key});

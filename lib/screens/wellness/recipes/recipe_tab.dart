@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/models/list_model.dart';
 
-import '../../models/recipe_model.dart';
+import '../../../models/recipe_model.dart';
+import 'new_recipe.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab({super.key});
@@ -191,7 +192,14 @@ class _RecipeTabState extends State<RecipeTab> {
                 width: 3,
               ),
             ),
-            onPressed: addNewRecipe,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NewRecipe(),
+                ),
+              );
+            },
             label: const Text(
               'Add Recipe',
               style: TextStyle(
