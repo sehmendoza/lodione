@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/profile_tab.dart';
-import 'package:lodione/screens/social_tab.dart';
+import 'package:lodione/screens/profile/profile_tab.dart';
+import 'package:lodione/screens/connections/social_tab.dart';
 
-import 'wellness/wellness_tab.dart';
+import 'home_tab.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class MainScreen extends StatefulWidget {
+  const MainScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenState extends State<MainScreen> {
   final List<Widget> _children = [
-    const WellnessTab(),
+    const HomeTab(),
     const SocialTab(),
     const ProfileTab(),
   ];
@@ -46,8 +46,8 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onTappedBar,
         items: const [
           BottomNavigationBarItem(
-            label: 'Wellness',
-            icon: Icon(Icons.health_and_safety),
+            label: 'Home',
+            icon: Icon(Icons.home_rounded),
           ),
           BottomNavigationBarItem(
             label: 'Connections',

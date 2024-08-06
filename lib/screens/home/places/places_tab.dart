@@ -1,0 +1,366 @@
+import 'package:flutter/material.dart';
+
+import '../../../models/places_model.dart';
+
+class GotoPlaces extends StatefulWidget {
+  const GotoPlaces({super.key});
+
+  @override
+  State<GotoPlaces> createState() => _GotoPlacesState();
+}
+
+class _GotoPlacesState extends State<GotoPlaces> {
+  List<PlaceModel> places = [
+    PlaceModel(
+        name: 'Jollibee', location: 'Scarborough', details: 'Very nice food'),
+    PlaceModel(
+        name: 'McDonalds', location: 'North York', details: 'Garbage food'),
+    PlaceModel(name: 'McDonalds', location: 'North York', details: ''),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8, top: 10),
+            child: Row(
+              children: [
+                const Text(
+                  'Go to Places:',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      side: const BorderSide(color: Colors.white, width: 2)),
+                  onPressed: addRestaurant,
+                  label:
+                      const Text('Add', style: TextStyle(color: Colors.white)),
+                  icon: const Icon(Icons.add, color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: places.length,
+              itemBuilder: (context, index) {
+                PlaceModel place = places[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ListTile(
+                    onLongPress: () {
+                      openOption(place);
+                    },
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(10)),
+                    title: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            place.name,
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          place.details == ''
+                              ? const SizedBox()
+                              : Text(
+                                  place.details,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18),
+                                ),
+                        ],
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on_outlined,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(place.location,
+                              style: const TextStyle(
+                                  color: Colors.white, fontSize: 18)),
+                        ],
+                      ),
+                    ),
+                    // trailing: IconButton(
+                    //   onPressed: () {
+                    //     //  launchMapsUrl(place.location);
+                    //   },
+                    //   icon: const Icon(Icons.location_on_outlined,
+                    //       color: Colors.white, size: 30.0),
+                    // ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void addRestaurant() {
+    TextEditingController nameController = TextEditingController();
+    TextEditingController locationController = TextEditingController();
+    TextEditingController detailController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white, width: 2)),
+            title: const Center(
+              child: Text(
+                'Add Restaurant',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                        hintText: 'Restaurant Name',
+                        hintStyle: TextStyle(color: Colors.white70)),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: locationController,
+                      decoration: const InputDecoration(
+                        hintText: 'Location',
+                        hintStyle: TextStyle(color: Colors.white70),
+                      )),
+                  const SizedBox(height: 10),
+                  TextField(
+                      controller: detailController,
+                      decoration: const InputDecoration(
+                        hintText: 'Location',
+                        hintStyle: TextStyle(color: Colors.white70),
+                      )),
+                ],
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.white, width: 2)),
+                onPressed: () {
+                  if (nameController.text.isEmpty &&
+                      locationController.text.isEmpty) {
+                    return;
+                  } else {
+                    setState(() {
+                      places.add(PlaceModel(
+                          name: nameController.text,
+                          location: locationController.text,
+                          details: detailController.text));
+                      Navigator.pop(context);
+                    });
+                  }
+                },
+                child: const Text(
+                  'Save',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  void openOption(PlaceModel place) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.black,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: const BorderSide(color: Colors.white, width: 2)),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.white, width: 1),
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Center(
+                      child: Text(
+                        'Edit Restaurant Name',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      editRestaurantName(place);
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.white, width: 1),
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Center(
+                      child: Text(
+                        'Edit Restaurant Address',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      editRestaurantLocation(place);
+                    },
+                  ),
+                  const SizedBox(height: 10),
+                  ListTile(
+                    shape: RoundedRectangleBorder(
+                        side: const BorderSide(color: Colors.white, width: 1),
+                        borderRadius: BorderRadius.circular(20)),
+                    title: const Center(
+                      child: Text(
+                        'Delete Restaurant',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    onTap: () {
+                      places.removeAt(places.indexOf((place)));
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+            ));
+  }
+
+  void editRestaurantName(PlaceModel place) {
+    TextEditingController nameController =
+        TextEditingController(text: place.name);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white, width: 2)),
+            title: const Text('Edit Place Name',
+                style: TextStyle(color: Colors.white)),
+            content: TextField(
+              controller: nameController,
+              decoration: const InputDecoration(
+                  hintText: 'Place Name',
+                  hintStyle: TextStyle(color: Colors.white70)),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.white, width: 2)),
+                onPressed: () {
+                  place.name = nameController.text;
+
+                  Navigator.pop(context);
+                },
+                child:
+                    const Text('Save', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        });
+  }
+
+  void editRestaurantLocation(PlaceModel place) {
+    TextEditingController locationController =
+        TextEditingController(text: place.location); // Set the initial value
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white, width: 2)),
+            title: const Text('Edit Restaurant Location',
+                style: TextStyle(color: Colors.white)),
+            content: TextField(
+              controller: locationController,
+              decoration: const InputDecoration(
+                  hintText: 'Restaurant Location',
+                  hintStyle: TextStyle(color: Colors.white70)),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.white, width: 2)),
+                onPressed: () {
+                  place.location = locationController.text;
+
+                  Navigator.pop(context);
+                },
+                child:
+                    const Text('Save', style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        });
+  }
+}

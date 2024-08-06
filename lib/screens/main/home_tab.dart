@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'list_tab.dart';
-import 'recipes/recipe_tab.dart';
+import '../home/lists/list_tab.dart';
+import '../home/meal_plan/mp_tab.dart';
+import '../home/places/places_tab.dart';
+import '../home/recipes/recipe_tab.dart';
 
-class WellnessTab extends StatefulWidget {
-  const WellnessTab({super.key});
+class HomeTab extends StatefulWidget {
+  const HomeTab({super.key});
 
   @override
-  State<WellnessTab> createState() => _WellnessTabState();
+  State<HomeTab> createState() => _HomeTabState();
 }
 
-class _WellnessTabState extends State<WellnessTab> {
+class _HomeTabState extends State<HomeTab> {
   List<MenuItems> menus = [
     MenuItems(
       title: 'Lists',
@@ -25,12 +27,12 @@ class _WellnessTabState extends State<WellnessTab> {
     MenuItems(
       title: 'Meal Plan',
       icon: Icons.restaurant,
-      goTo: const ListTab(),
+      goTo: const MealPlanTab(),
     ),
     MenuItems(
       title: 'Go-to Places',
       icon: Icons.place,
-      goTo: const ListTab(),
+      goTo: const GotoPlaces(),
     ),
     MenuItems(
       title: 'Fitness',

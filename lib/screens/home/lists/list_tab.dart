@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/list_model.dart';
+import '../../../models/list_model.dart';
 
 class ListTab extends StatefulWidget {
   const ListTab({super.key});

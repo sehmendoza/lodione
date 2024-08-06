@@ -3,6 +3,7 @@ import 'package:lodione/models/list_model.dart';
 
 import '../../../models/recipe_model.dart';
 import 'new_recipe.dart';
+import 'recipe_overview.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab({super.key});
@@ -13,23 +14,48 @@ class RecipeTab extends StatefulWidget {
 
 class _RecipeTabState extends State<RecipeTab> {
   List<RecipeModel> recipes = [
-    RecipeModel(name: 'Goto', ingredients: [
-      ListItem(
-        id: '34',
-        name: 'name',
-        isDone: false,
-      ),
-      ListItem(
-        id: '3',
-        name: 'fff',
-        isDone: false,
-      ),
-      ListItem(
-        id: '22',
-        name: 'gfg',
-        isDone: false,
-      ),
-    ], steps: [])
+    RecipeModel(
+      name: 'Goto',
+      ingredients: [
+        ListItem(
+          id: '34',
+          name: 'name',
+          isDone: false,
+        ),
+        ListItem(
+          id: '3',
+          name: 'fff',
+          isDone: false,
+        ),
+        ListItem(
+          id: '22',
+          name: 'gfg',
+          isDone: false,
+        ),
+      ],
+      steps: ['rfasefas', 'asefasef', 'aseflkjasefl'],
+    ),
+    RecipeModel(
+      name: 'Dinuguan',
+      ingredients: [
+        ListItem(
+          id: '45',
+          name: 'ghashh',
+          isDone: false,
+        ),
+        ListItem(
+          id: '55',
+          name: 'vcvav',
+          isDone: false,
+        ),
+        ListItem(
+          id: '111',
+          name: 'asdfsadf',
+          isDone: false,
+        ),
+      ],
+      steps: ['324ef3', 'vase32f32', 'vasef32fawf'],
+    )
   ];
 
   void addNewRecipe() {
@@ -130,7 +156,7 @@ class _RecipeTabState extends State<RecipeTab> {
           ),
         ),
         const Padding(
-          padding: EdgeInsets.only(left: 8, bottom: 8),
+          padding: EdgeInsets.only(left: 8, bottom: 15),
           child: Row(
             children: [
               Text(
@@ -140,42 +166,53 @@ class _RecipeTabState extends State<RecipeTab> {
             ],
           ),
         ),
-        Expanded(
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              var recipe = recipes[index];
-              String ingredients = recipe.ingredients
-                  .map((item) => item.name)
-                  .toList()
-                  .join(', ');
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: ListTile(
-                  trailing: const Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Colors.white70,
-                  ),
-                  shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(
-                      color: Colors.white,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15),
+          child: Expanded(
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: recipes.length,
+              itemBuilder: (context, index) {
+                var recipe = recipes[index];
+                String ingredients = recipe.ingredients
+                    .map((item) => item.name)
+                    .toList()
+                    .join(', ');
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: ListTile(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => RecipeOverview(
+                          recipe: recipe,
+                        ),
+                      ),
                     ),
-                  ),
-                  title: Text(
-                    recipe.name,
-                    style: const TextStyle(color: Colors.white, fontSize: 21),
-                  ),
-                  subtitle: Text(
-                    ingredients,
-                    style: const TextStyle(
+                    trailing: const Icon(
+                      Icons.keyboard_arrow_right,
                       color: Colors.white70,
                     ),
+                    shape: ContinuousRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      side: const BorderSide(
+                        color: Colors.white,
+                      ),
+                    ),
+                    title: Text(
+                      recipe.name,
+                      style: const TextStyle(color: Colors.white, fontSize: 21),
+                    ),
+                    subtitle: Text(
+                      ingredients,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
         Padding(

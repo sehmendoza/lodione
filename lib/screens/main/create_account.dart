@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'home_screen.dart';
+import 'main_screen.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -52,7 +52,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const HomeScreen()));
+                        builder: (context) => const MainScreen()));
               },
               style: ElevatedButton.styleFrom(fixedSize: const Size(250, 40)),
               child: const Text('Submit'),

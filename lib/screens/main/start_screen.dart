@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/home_screen.dart';
 
 import 'create_account.dart';
+import 'main_screen.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class StartScreen extends StatefulWidget {
+  const StartScreen({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<StartScreen> createState() => _StartScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _StartScreenState extends State<StartScreen> {
   TextEditingController usernameController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
@@ -103,7 +103,7 @@ class _MainScreenState extends State<MainScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const HomeScreen()));
+                              builder: (context) => const MainScreen()));
                     },
                     child: const Text(
                       'Sign In',
