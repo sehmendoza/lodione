@@ -38,7 +38,7 @@ class _HomeTabState extends State<HomeTab> {
     MenuItems(
       title: 'Fitness',
       icon: Icons.fitness_center,
-      goTo: const WorkoutTab(),
+      goTo: WorkoutTab(),
     ),
   ];
 

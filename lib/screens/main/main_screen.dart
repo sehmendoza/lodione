@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
-import 'package:lodione/screens/connections/social_tab.dart';
+import 'package:lodione/screens/connections/connection_tab.dart';
 
 import 'home_tab.dart';
 
@@ -14,7 +14,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final List<Widget> _children = [
     const HomeTab(),
-    const SocialTab(),
+    ConnectionTab(),
     const ProfileTab(),
   ];
   int currentIndex = 0;
