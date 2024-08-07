@@ -168,20 +168,13 @@ class WorkoutTab extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Workout Plan:',
-              style: TextStyle(color: Colors.white),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: plans.length,
-              itemBuilder: (context, index) {
+    return CustomScrollView(
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(8.0),
+          sliver: SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
                 var plan = plans[index];
                 return Padding(
                   padding: const EdgeInsets.only(
@@ -202,11 +195,28 @@ class WorkoutTab extends StatelessWidget {
                           color: Colors.white,
                           width: 2,
                         )),
+                    leading: const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          '15',
+                          style: TextStyle(
+                            fontSize: 21,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          'Jan',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white,
+                          ),
+                        )
+                      ],
+                    ),
                     title: Text(
                       plan.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: const TextStyle(color: Colors.white, fontSize: 24),
                     ),
                     children: [
                       ...plan.exercises.map(
@@ -228,10 +238,11 @@ class WorkoutTab extends StatelessWidget {
                   ),
                 );
               },
+              childCount: plans.length,
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
