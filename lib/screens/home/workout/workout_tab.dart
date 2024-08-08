@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
 
-class WorkoutTab extends StatelessWidget {
-  WorkoutTab({super.key});
+import 'add_exercise.dart';
 
+class WorkoutTab extends StatefulWidget {
+  const WorkoutTab({super.key});
+
+  @override
+  State<WorkoutTab> createState() => _WorkoutTabState();
+}
+
+class _WorkoutTabState extends State<WorkoutTab> {
   final List<WorkoutModel> plans = [
     WorkoutModel(
       name: 'Sunday',
@@ -12,18 +19,21 @@ class WorkoutTab extends StatelessWidget {
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
       ],
     ),
@@ -35,18 +45,21 @@ class WorkoutTab extends StatelessWidget {
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
       ],
     ),
@@ -58,18 +71,21 @@ class WorkoutTab extends StatelessWidget {
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
       ],
     ),
@@ -79,18 +95,21 @@ class WorkoutTab extends StatelessWidget {
         ExerciseModel(
           name: 'Bench Press',
           weight: 420,
+          isDone: false,
           sets: 3,
           reps: 10,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
+          isDone: false,
           sets: 3,
           reps: 10,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
+          isDone: false,
           sets: 3,
           reps: 10,
         ),
@@ -102,6 +121,7 @@ class WorkoutTab extends StatelessWidget {
         ExerciseModel(
           name: 'Bench Press',
           weight: 420,
+          isDone: false,
           sets: 3,
           reps: 10,
         ),
@@ -110,10 +130,12 @@ class WorkoutTab extends StatelessWidget {
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
+          isDone: false,
           sets: 3,
           reps: 10,
         ),
@@ -127,18 +149,21 @@ class WorkoutTab extends StatelessWidget {
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
       ],
     ),
@@ -150,22 +175,26 @@ class WorkoutTab extends StatelessWidget {
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Push up',
           weight: 0,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
         ExerciseModel(
           name: 'Squats',
           weight: 420,
           sets: 3,
           reps: 10,
+          isDone: false,
         ),
       ],
     ),
   ];
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -220,20 +249,28 @@ class WorkoutTab extends StatelessWidget {
                     ),
                     children: [
                       ...plan.exercises.map(
-                        (exercise) => ListTile(
-                          leading: Checkbox(
-                            onChanged: (value) {},
-                            value: false,
-                          ),
-                          title: Text(
-                            exercise.name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          subtitle: Text("${exercise.sets} x ${exercise.reps}"),
+                        (exercise) {
+                          return ExerciseTile(exercise: exercise);
+                        },
+                      ),
+                      TextButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const AddExercise()));
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white60,
                         ),
-                      )
+                        label: const Text(
+                          'Add exercise',
+                          style: TextStyle(
+                            color: Colors.white60,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -243,6 +280,36 @@ class WorkoutTab extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ExerciseTile extends StatefulWidget {
+  const ExerciseTile({super.key, required this.exercise});
+  final ExerciseModel exercise;
+  @override
+  State<ExerciseTile> createState() => _ExerciseTileState();
+}
+
+class _ExerciseTileState extends State<ExerciseTile> {
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Checkbox(
+        onChanged: (value) {
+          setState(() {
+            widget.exercise.isDone = !widget.exercise.isDone;
+          });
+        },
+        value: widget.exercise.isDone,
+      ),
+      title: Text(
+        widget.exercise.name,
+        style: const TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      subtitle: Text("${widget.exercise.sets} x ${widget.exercise.reps}"),
     );
   }
 }
@@ -259,10 +326,12 @@ class ExerciseModel {
   double weight;
   int sets;
   int reps;
+  bool isDone;
 
   ExerciseModel(
       {required this.name,
       required this.weight,
       required this.sets,
-      required this.reps});
+      required this.reps,
+      required this.isDone});
 }
