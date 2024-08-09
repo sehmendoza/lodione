@@ -237,7 +237,10 @@ class _AddEventState extends State<AddEvent> {
               ),
               Row(
                 children: [
-                  const Text('Invite friends: '),
+                  const Text('Invite friends: ',
+                      style: TextStyle(
+                        color: Colors.white70,
+                      )),
                   SizedBox(
                     width: 200,
                     child: TextField(
