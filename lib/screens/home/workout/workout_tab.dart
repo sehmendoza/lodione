@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'add_exercise.dart';
+import '../../../const.dart';
 
 class WorkoutTab extends StatefulWidget {
   const WorkoutTab({super.key});
@@ -195,6 +195,152 @@ class _WorkoutTabState extends State<WorkoutTab> {
     ),
   ];
 
+  void addExercise() {
+    TextEditingController exerciseController = TextEditingController();
+    TextEditingController setsController = TextEditingController();
+    TextEditingController repsController = TextEditingController();
+    TextEditingController noteController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          titlePadding: const EdgeInsets.all(0),
+          contentPadding: const EdgeInsets.all(8),
+          actionsPadding: const EdgeInsets.all(0),
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: const BorderSide(
+                color: Colors.white,
+                width: 2,
+              )),
+          backgroundColor: Colors.black,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 8,
+                ),
+                TextField(
+                  controller: exerciseController,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: const InputDecoration(
+                    floatingLabelAlignment: FloatingLabelAlignment.center,
+                    hintText: 'Exercise name',
+                    hintStyle: TextStyle(color: Colors.white60),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 1),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        keyboardType: TextInputType.number,
+                        controller: setsController,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                            color: Colors.white, letterSpacing: 2),
+                        decoration: InputDecoration(
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          label: Text(
+                            'Sets',
+                            style:
+                                TextStyle(color: Colors.white.withAlpha(200)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Colors.white, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 100,
+                      child: TextField(
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        controller: repsController,
+                        style: const TextStyle(
+                            color: Colors.white, letterSpacing: 2),
+                        decoration: InputDecoration(
+                          floatingLabelAlignment: FloatingLabelAlignment.center,
+                          label: Text(
+                            'Reps',
+                            textAlign: TextAlign.center,
+                            style:
+                                TextStyle(color: Colors.white.withAlpha(200)),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Colors.white, width: 1),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide:
+                                const BorderSide(color: Colors.white, width: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
+                TextField(
+                  controller: noteController,
+                  style:
+                      const TextStyle(color: Colors.white, letterSpacing: 1.5),
+                  decoration: const InputDecoration(
+                    labelText: 'Note',
+                    labelStyle: TextStyle(color: Colors.white60),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 1),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 14,
+                ),
+                TextButton.icon(
+                  onPressed: () {},
+                  label: const Text(
+                    'Add exercise',
+                  ),
+                  icon: const Icon(
+                    Icons.add,
+                  ),
+                  style: myButtonStyle,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -254,12 +400,7 @@ class _WorkoutTabState extends State<WorkoutTab> {
                         },
                       ),
                       TextButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AddExercise()));
-                        },
+                        onPressed: addExercise,
                         icon: const Icon(
                           Icons.add,
                           color: Colors.white60,

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../home/lists/list_tab.dart';
-import '../home/meal_plan/mp_tab.dart';
-import '../home/places/places_tab.dart';
-import '../home/recipes/recipe_tab.dart';
-import '../home/workout/workout_tab.dart';
+import 'lists/list_tab.dart';
+import 'meal_plan/mp_tab.dart';
+import 'places/places_tab.dart';
+import 'recipes/recipe_tab.dart';
+import 'workout/workout_tab.dart';
 
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
@@ -38,7 +38,7 @@ class _HomeTabState extends State<HomeTab> {
     MenuItems(
       title: 'Fitness',
       icon: Icons.fitness_center,
-      goTo: WorkoutTab(),
+      goTo: const WorkoutTab(),
     ),
   ];
 

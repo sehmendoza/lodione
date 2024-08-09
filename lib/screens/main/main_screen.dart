@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
 import 'package:lodione/screens/connections/connection_tab.dart';
 
-import 'home_tab.dart';
+import '../home/home_tab.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
