@@ -10,6 +10,8 @@ class ProfileTab extends StatefulWidget {
 class _ProfileTabState extends State<ProfileTab> {
   TextEditingController usernameController =
       TextEditingController(text: 'sehmendoza');
+  TextEditingController fullNameController =
+      TextEditingController(text: 'Jose Gabriel Mendoza');
   bool editUsername = false;
   @override
   Widget build(BuildContext context) {
@@ -31,30 +33,10 @@ class _ProfileTabState extends State<ProfileTab> {
           children: [
             Row(
               children: [
-                Expanded(
-                  child: TextField(
-                    style: const TextStyle(color: Colors.white),
+                profileTextfield(
                     controller: usernameController,
-                    enabled: editUsername,
-                    decoration: const InputDecoration(
-                      label: Text(
-                        'Username',
-                        style: TextStyle(color: Colors.white60),
-                      ),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white70,
-                        ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.white70,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                    edit: editUsername,
+                    label: 'Username'),
                 IconButton(
                     onPressed: () {
                       setState(() {
@@ -71,10 +53,49 @@ class _ProfileTabState extends State<ProfileTab> {
                             color: Colors.white60,
                           ))
               ],
-            )
+            ),
+            Row(
+              children: [
+                profileTextfield(
+                    controller: fullNameController,
+                    edit: false,
+                    label: 'Full name'),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+}
+
+Widget profileTextfield({
+  required controller,
+  required edit,
+  required label,
+}) {
+  return Expanded(
+    child: TextField(
+      style: const TextStyle(color: Colors.white),
+      controller: controller,
+      enabled: edit,
+      decoration: InputDecoration(
+        label: Text(
+          label,
+          style: const TextStyle(color: Colors.white60),
+        ),
+        enabledBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white70,
+          ),
+        ),
+        focusedBorder: const UnderlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.white70,
+            width: 2,
+          ),
+        ),
+      ),
+    ),
+  );
 }
