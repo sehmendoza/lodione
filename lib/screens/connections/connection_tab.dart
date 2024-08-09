@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'contacts_tab.dart';
-import 'events_tab.dart';
+import 'events/events_tab.dart';
 
 class ConnectionTab extends StatelessWidget {
   ConnectionTab({super.key});
