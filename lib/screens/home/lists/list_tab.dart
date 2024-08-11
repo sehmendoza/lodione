@@ -73,12 +73,12 @@ class _ListTabState extends State<ListTab> {
               actions: [
                 TextButton(
                     onPressed: () {
+                      controller.addToList(name: nameController.text);
                       setState(() {
                         lists.add(ListModel(
-                            id: '2',
+                            id: '${lists.length +1}',
                             name: nameController.text,
                             items: [
-                              ListItem(id: '4', name: 'Beer', isDone: false),
                             ]));
                       });
 
@@ -140,15 +140,14 @@ class _ListTabState extends State<ListTab> {
                 const SizedBox(
                   width: 5,
                 ),
-                DropdownButton<String>(
+                
+                   DropdownButton<String>(
                   value: dropdownValue,
                   icon: const Icon(
                     Icons.arrow_drop_down,
                     color: Colors.white,
                   ),
                   iconSize: 18,
-                  //elevation: 16,
-                  //    style: const TextStyle(color: Colors.white24),
                   underline: Container(
                     color: Colors.white,
                   ),
@@ -171,13 +170,15 @@ class _ListTabState extends State<ListTab> {
                     );
                   }).toList(),
                 ),
+             
+               
                 const SizedBox(
                   width: 3,
                 ),
                 MyButton(
                   text: 'Add list',
                   icon: Icons.add,
-                  onPressed: () {},
+                  onPressed: addNewList,
                 )
               ],
             ),
