@@ -112,6 +112,7 @@ class _ListTabState extends State<ListTab> {
     });
   }
 
+  FocusNode itemNode = FocusNode();
   TextEditingController itemController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -189,6 +190,19 @@ class _ListTabState extends State<ListTab> {
             children: [
               Expanded(
                 child: TextField(
+                  focusNode: itemNode,
+                  onSubmitted: (value) {
+                    addItem(
+                      listID: dropdownValue,
+                      item: ListItem(
+                        id: '4',
+                        name: itemController.text,
+                        isDone: false,
+                      ),
+                    );
+                    itemNode.requestFocus();
+                    itemController.clear();
+                  },
                   controller: itemController,
                   cursorColor: Colors.white54,
                   style: const TextStyle(color: Colors.white),

@@ -16,7 +16,7 @@ class _EventsTabState extends State<EventsTab> {
   List<EventModel> events = [
     EventModel(
         title: 'Party',
-        date: '05/23/25',
+        date: '05/27/24',
         time: '09:23 AM',
         location: 'Marikina City',
         info: 'Reunion',
