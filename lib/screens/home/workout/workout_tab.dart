@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../const.dart';
 
@@ -399,18 +400,12 @@ class _WorkoutTabState extends State<WorkoutTab> {
                           return ExerciseTile(exercise: exercise);
                         },
                       ),
-                      TextButton.icon(
-                        onPressed: addExercise,
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.white60,
-                        ),
-                        label: const Text(
-                          'Add exercise',
-                          style: TextStyle(
-                            color: Colors.white60,
-                          ),
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MyButton(
+                            text: 'Add exercise',
+                            icon: Icons.add,
+                            onPressed: addExercise),
                       ),
                     ],
                   ),

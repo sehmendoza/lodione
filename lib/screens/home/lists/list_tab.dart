@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
 
@@ -114,6 +115,7 @@ class _ListTabState extends State<ListTab> {
 
   FocusNode itemNode = FocusNode();
   TextEditingController itemController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -169,15 +171,14 @@ class _ListTabState extends State<ListTab> {
                     );
                   }).toList(),
                 ),
-                TextButton(
-                    onPressed: () {
-//addNewList
-                    },
-                    child: const Text(
-                      'Add list',
-                      style: TextStyle(
-                          color: Colors.white70, fontStyle: FontStyle.italic),
-                    ))
+                const SizedBox(
+                  width: 3,
+                ),
+                MyButton(
+                  text: 'Add list',
+                  icon: Icons.add,
+                  onPressed: () {},
+                )
               ],
             ),
           ),
@@ -218,23 +219,23 @@ class _ListTabState extends State<ListTab> {
                       )),
                 ),
               ),
-              IconButton(
-                  onPressed: () {
-                    addItem(
-                      listID: dropdownValue,
-                      item: ListItem(
-                        id: '4',
-                        name: itemController.text,
-                        isDone: false,
-                      ),
-                    );
-                    itemController.clear();
-                  },
-                  icon: const Icon(
-                    Icons.arrow_circle_down,
-                    color: Colors.white70,
-                    size: 28,
-                  ))
+              TextButton(
+                onPressed: () {
+                  addItem(
+                    listID: dropdownValue,
+                    item: ListItem(
+                      id: '4',
+                      name: itemController.text,
+                      isDone: false,
+                    ),
+                  );
+                  itemController.clear();
+                },
+                child: const Text(
+                  'add',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              )
             ],
           ),
           Expanded(

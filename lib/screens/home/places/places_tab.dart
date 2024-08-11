@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/places_model.dart';
 
@@ -36,14 +37,10 @@ class _GotoPlacesState extends State<GotoPlaces> {
                 const SizedBox(
                   width: 10,
                 ),
-                ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      side: const BorderSide(color: Colors.white, width: 2)),
+                MyButton(
+                  text: 'Add',
+                  icon: Icons.add,
                   onPressed: addRestaurant,
-                  label:
-                      const Text('Add', style: TextStyle(color: Colors.white)),
-                  icon: const Icon(Icons.add, color: Colors.white),
                 ),
               ],
             ),

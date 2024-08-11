@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/models/list_model.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/recipe_model.dart';
 import 'new_recipe.dart';
@@ -118,6 +119,7 @@ class _RecipeTabState extends State<RecipeTab> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -213,20 +215,9 @@ class _RecipeTabState extends State<RecipeTab> {
             },
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: OutlinedButton.icon(
-            icon: const Icon(
-              Icons.add,
-              color: Colors.white,
-            ),
-            style: OutlinedButton.styleFrom(
-              fixedSize: const Size(150, 30),
-              side: const BorderSide(
-                color: Colors.white,
-                width: 3,
-              ),
-            ),
+        MyButton(
+            text: 'Add recipe',
+            icon: Icons.add,
             onPressed: () {
               Navigator.push(
                 context,
@@ -234,15 +225,7 @@ class _RecipeTabState extends State<RecipeTab> {
                   builder: (context) => const NewRecipe(),
                 ),
               );
-            },
-            label: const Text(
-              'Add Recipe',
-              style: TextStyle(
-                color: Colors.white,
-              ),
-            ),
-          ),
-        ),
+            }),
       ],
     );
   }
