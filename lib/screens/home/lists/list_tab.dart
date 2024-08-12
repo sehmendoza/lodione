@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../models/list_model.dart';
 
@@ -73,13 +74,11 @@ class _ListTabState extends State<ListTab> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      controller.addToList(name: nameController.text);
                       setState(() {
                         lists.add(ListModel(
-                            id: '${lists.length +1}',
+                            id: '${lists.length + 1}',
                             name: nameController.text,
-                            items: [
-                            ]));
+                            items: []));
                       });
 
                       Navigator.pop(context);
@@ -110,6 +109,8 @@ class _ListTabState extends State<ListTab> {
   void addItem({required String listID, required ListItem item}) {
     setState(() {
       lists.firstWhere((list) => list.id == listID).items.insert(0, item);
+      itemNode.requestFocus();
+      itemController.clear();
     });
   }
 
@@ -134,14 +135,13 @@ class _ListTabState extends State<ListTab> {
             child: Row(
               children: [
                 const Text(
-                  'List: ',
+                  'Lists: ',
                   style: TextStyle(color: Colors.white),
                 ),
                 const SizedBox(
                   width: 5,
                 ),
-                
-                   DropdownButton<String>(
+                DropdownButton<String>(
                   value: dropdownValue,
                   icon: const Icon(
                     Icons.arrow_drop_down,
@@ -170,8 +170,6 @@ class _ListTabState extends State<ListTab> {
                     );
                   }).toList(),
                 ),
-             
-               
                 const SizedBox(
                   width: 3,
                 ),
@@ -179,7 +177,62 @@ class _ListTabState extends State<ListTab> {
                   text: 'Add list',
                   icon: Icons.add,
                   onPressed: addNewList,
-                )
+                ),
+                MyButton(
+                  text: ' Connect',
+                  icon: Icons.connect_without_contact,
+                  onPressed: () {},
+                ),
+                const Spacer(),
+                PopupMenuButton(
+                  iconColor: Colors.white70,
+                  itemBuilder: (_) => [
+                    PopupMenuItem(
+                      onTap: () {
+                        setState(() {
+                          for (var item in selectedList.items) {
+                            item.isDone = true;
+                          }
+                        });
+                      },
+                      value: 'option1',
+                      child: const Text('Select all'),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        setState(() {
+                          for (var item in selectedList.items) {
+                            item.isDone = false;
+                          }
+                        });
+                      },
+                      value: 'optio5',
+                      child: const Text('Unselect all'),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        // setState(() {
+                        //   selectedList.items[index].subtitle == 'Sub';
+                        // });
+                      },
+                      value: 'option2',
+                      child: const Text('Move checked to other list'),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        setState(() {
+                          selectedList.items
+                              .removeWhere((item) => item.isDone == true);
+                        });
+                      },
+                      value: 'delete',
+                      child: const Text('Delete all selected'),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    // Handle the selected option
+                  },
+                ),
               ],
             ),
           ),
@@ -194,16 +247,16 @@ class _ListTabState extends State<ListTab> {
                 child: TextField(
                   focusNode: itemNode,
                   onSubmitted: (value) {
-                    addItem(
-                      listID: dropdownValue,
-                      item: ListItem(
-                        id: '4',
-                        name: itemController.text,
-                        isDone: false,
-                      ),
-                    );
-                    itemNode.requestFocus();
-                    itemController.clear();
+                    itemController.text.isEmpty
+                        ? null
+                        : addItem(
+                            listID: dropdownValue,
+                            item: ListItem(
+                              id: const Uuid().v4(),
+                              name: itemController.text,
+                              isDone: false,
+                            ),
+                          );
                   },
                   controller: itemController,
                   cursorColor: Colors.white54,
@@ -222,15 +275,16 @@ class _ListTabState extends State<ListTab> {
               ),
               TextButton(
                 onPressed: () {
-                  addItem(
-                    listID: dropdownValue,
-                    item: ListItem(
-                      id: '4',
-                      name: itemController.text,
-                      isDone: false,
-                    ),
-                  );
-                  itemController.clear();
+                  itemController.text.isEmpty
+                      ? null
+                      : addItem(
+                          listID: dropdownValue,
+                          item: ListItem(
+                            id: const Uuid().v4(),
+                            name: itemController.text,
+                            isDone: false,
+                          ),
+                        );
                 },
                 child: const Text(
                   'add',
