@@ -1,9 +1,13 @@
+import 'package:uuid/uuid.dart';
+
+const uuid = Uuid();
+
 class ListModel {
   final String id;
   final String name;
   final List<ListItem> items;
 
-  const ListModel({required this.id, required this.name, required this.items});
+  ListModel({required this.name, required this.items}) : id = uuid.v4();
 }
 
 class ListItem {
@@ -12,9 +16,6 @@ class ListItem {
   String? subtitle;
   bool isDone = false;
 
-  ListItem(
-      {required this.id,
-      required this.name,
-      this.subtitle,
-      required this.isDone});
+  ListItem({required this.name, this.subtitle, required this.isDone})
+      : id = uuid.v4();
 }

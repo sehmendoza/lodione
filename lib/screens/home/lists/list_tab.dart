@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../../models/list_model.dart';
 
@@ -14,23 +13,21 @@ class ListTab extends StatefulWidget {
 class _ListTabState extends State<ListTab> {
   List<ListModel> lists = [
     ListModel(
-      id: '1',
       name: 'Mendoza',
       items: [
-        ListItem(id: '2', name: 'Banana', isDone: false),
-        ListItem(id: '3', name: 'Saging', isDone: false),
-        ListItem(id: '4', name: 'Apple', isDone: false),
-        ListItem(id: '5', name: 'Root Beer', isDone: false),
+        ListItem(name: 'Banana', isDone: false),
+        ListItem(name: 'Saging', isDone: false),
+        ListItem(name: 'Apple', isDone: false),
+        ListItem(name: 'Root Beer', isDone: false),
       ],
     ),
     ListModel(
-      id: '2',
       name: 'Policarpio',
       items: [
-        ListItem(id: '2', name: 'Chens', isDone: false),
-        ListItem(id: '3', name: 'Saging', isDone: false),
-        ListItem(id: '4', name: 'Beer', isDone: false),
-        ListItem(id: '5', name: 'Root Beer', isDone: false),
+        ListItem(name: 'Chens', isDone: false),
+        ListItem(name: 'Saging', isDone: false),
+        ListItem(name: 'Beer', isDone: false),
+        ListItem(name: 'Root Beer', isDone: false),
       ],
     ),
   ];
@@ -75,12 +72,9 @@ class _ListTabState extends State<ListTab> {
                 TextButton(
                     onPressed: () {
                       setState(() {
-                        lists.add(ListModel(
-                            id: '${lists.length + 1}',
-                            name: nameController.text,
-                            items: []));
+                        lists.add(
+                            ListModel(name: nameController.text, items: []));
                       });
-
                       Navigator.pop(context);
                     },
                     child: const Text(
@@ -118,6 +112,12 @@ class _ListTabState extends State<ListTab> {
   TextEditingController itemController = TextEditingController();
 
   @override
+  void dispose() {
+    itemController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10),
@@ -133,6 +133,7 @@ class _ListTabState extends State<ListTab> {
           Padding(
             padding: const EdgeInsets.only(left: 8.0),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 const Text(
                   'Lists: ',
@@ -141,48 +142,49 @@ class _ListTabState extends State<ListTab> {
                 const SizedBox(
                   width: 5,
                 ),
-                DropdownButton<String>(
-                  value: dropdownValue,
-                  icon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
+                SizedBox(
+                  child: DropdownButton(
+                    value: dropdownValue,
+                    icon: const Icon(
+                      Icons.arrow_drop_down,
+                      color: Colors.white,
+                    ),
+                    iconSize: 18,
+                    underline: Container(
+                      color: Colors.white,
+                    ),
+                    borderRadius: BorderRadius.circular(2),
+                    dropdownColor: const Color.fromARGB(255, 52, 52, 52),
+                    onChanged: (newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    items: lists.map((ListModel listModel) {
+                      return DropdownMenuItem(
+                        onTap: () => selectList(listModel.id),
+                        value: listModel.id,
+                        child: Text(
+                          listModel.name,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      );
+                    }).toList(),
                   ),
-                  iconSize: 18,
-                  underline: Container(
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(2),
-                  dropdownColor: const Color.fromARGB(255, 52, 52, 52),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: lists
-                      .map<DropdownMenuItem<String>>((ListModel listModel) {
-                    return DropdownMenuItem<String>(
-                      onTap: () => selectList(listModel.id),
-                      value: listModel.id,
-                      child: Text(
-                        listModel.name,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    );
-                  }).toList(),
                 ),
                 const SizedBox(
                   width: 3,
                 ),
                 MyButton(
-                  text: 'Add list',
+                  text: 'Add',
                   icon: Icons.add,
                   onPressed: addNewList,
                 ),
-                MyButton(
-                  text: ' Connect',
-                  icon: Icons.connect_without_contact,
-                  onPressed: () {},
-                ),
+                // MyButton(
+                //   text: ' Connect',
+                //   icon: Icons.connect_without_contact,
+                //   onPressed: () {},
+                // ),
                 const Spacer(),
                 PopupMenuButton(
                   iconColor: Colors.white70,
@@ -247,16 +249,16 @@ class _ListTabState extends State<ListTab> {
                 child: TextField(
                   focusNode: itemNode,
                   onSubmitted: (value) {
-                    itemController.text.isEmpty
-                        ? null
-                        : addItem(
-                            listID: dropdownValue,
-                            item: ListItem(
-                              id: const Uuid().v4(),
-                              name: itemController.text,
-                              isDone: false,
-                            ),
-                          );
+                    if (itemController.text.trim().isEmpty) {
+                      return;
+                    }
+                    addItem(
+                      listID: dropdownValue,
+                      item: ListItem(
+                        name: itemController.text,
+                        isDone: false,
+                      ),
+                    );
                   },
                   controller: itemController,
                   cursorColor: Colors.white54,
@@ -275,16 +277,16 @@ class _ListTabState extends State<ListTab> {
               ),
               TextButton(
                 onPressed: () {
-                  itemController.text.isEmpty
-                      ? null
-                      : addItem(
-                          listID: dropdownValue,
-                          item: ListItem(
-                            id: const Uuid().v4(),
-                            name: itemController.text,
-                            isDone: false,
-                          ),
-                        );
+                  if (itemController.text.trim().isEmpty) {
+                    return;
+                  }
+                  addItem(
+                    listID: dropdownValue,
+                    item: ListItem(
+                      name: itemController.text,
+                      isDone: false,
+                    ),
+                  );
                 },
                 child: const Text(
                   'add',

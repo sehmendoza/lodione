@@ -4,7 +4,7 @@ import 'package:lodione/widgets/buttons.dart';
 import '../../../models/recipe_model.dart';
 import '../../../storage/recipe_list.dart';
 import 'new_recipe.dart';
-import 'recipe_overview.dart';
+import 'recipe_list.dart';
 
 class RecipeTab extends StatefulWidget {
   const RecipeTab({super.key});
@@ -15,62 +15,6 @@ class RecipeTab extends StatefulWidget {
 
 class _RecipeTabState extends State<RecipeTab> {
   List<RecipeModel> recipeList = recipes;
-
-  void addNewRecipe() {
-    TextEditingController nameController = TextEditingController();
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Colors.black,
-              shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-                side: const BorderSide(width: 2, color: Colors.white),
-              ),
-              title: const Text(
-                'Add New List',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    maxLines: 1,
-                    maxLength: 24,
-                    style: const TextStyle(color: Colors.white),
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      hintText: 'List Name',
-                      hintStyle: TextStyle(color: Colors.white54),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white60),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white60, width: 2),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        recipes.add(RecipeModel(
-                            name: nameController.text,
-                            ingredients: [],
-                            steps: []));
-                      });
-
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white),
-                    ))
-              ],
-            ));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,53 +69,7 @@ class _RecipeTabState extends State<RecipeTab> {
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15),
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: recipes.length,
-            itemBuilder: (context, index) {
-              var recipe = recipes[index];
-              String ingredients = recipe.ingredients
-                  .map((item) => item.name)
-                  .toList()
-                  .join(', ');
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 15.0),
-                child: ListTile(
-                  onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RecipeOverview(
-                        recipe: recipe,
-                      ),
-                    ),
-                  ),
-                  trailing: const Icon(
-                    Icons.keyboard_arrow_right,
-                    color: Colors.white70,
-                  ),
-                  shape: ContinuousRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    side: const BorderSide(
-                      color: Colors.white,
-                    ),
-                  ),
-                  title: Text(
-                    recipe.name,
-                    style: const TextStyle(color: Colors.white, fontSize: 21),
-                  ),
-                  subtitle: Text(
-                    ingredients,
-                    style: const TextStyle(
-                      color: Colors.white70,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
+        Expanded(child: RecipeList(recipes: recipeList)),
         MyButton(
             text: 'Add recipe',
             icon: Icons.add,

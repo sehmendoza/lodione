@@ -21,9 +21,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false)
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),
@@ -36,9 +36,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false)
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),
@@ -51,9 +51,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false),
-          ListItem(id: '45', name: 'Sago', isDone: false)
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false),
+          ListItem(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),

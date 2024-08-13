@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/models/recipe_model.dart';
 
 import '../../../models/list_model.dart';
 
@@ -36,8 +37,7 @@ class _NewRecipeState extends State<NewRecipe> {
 
   void addIngredient() {
     setState(() {
-      ingredients
-          .add(ListItem(id: '23', name: itemController.text, isDone: false));
+      ingredients.add(ListItem(name: itemController.text, isDone: false));
       itemController.clear();
       _ingFocus.requestFocus();
     });
@@ -290,8 +290,22 @@ class _NewRecipeState extends State<NewRecipe> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    DropdownButton(
+                      items: FoodCategory.values
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category,
+                              child: Text(
+                                category.name[0].toUpperCase() +
+                                    category.name.substring(1),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {},
+                    ),
                     OutlinedButton(
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.white,
