@@ -14,28 +14,28 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  List<MenuItems> menus = [
-    MenuItems(
+  List<TabItems> menus = [
+    TabItems(
       title: 'Lists',
       icon: Icons.list,
       goTo: const ListTab(),
     ),
-    MenuItems(
+    TabItems(
       title: 'Recipes',
       icon: Icons.menu_book,
       goTo: const RecipeTab(),
     ),
-    MenuItems(
+    TabItems(
       title: 'Meal Plan',
       icon: Icons.restaurant,
       goTo: const MealPlanTab(),
     ),
-    MenuItems(
+    TabItems(
       title: 'Go-to Places',
       icon: Icons.place,
       goTo: const GotoPlaces(),
     ),
-    MenuItems(
+    TabItems(
       title: 'Fitness',
       icon: Icons.fitness_center,
       goTo: const WorkoutTab(),
@@ -58,7 +58,7 @@ class _HomeTabState extends State<HomeTab> {
           indicatorSize: TabBarIndicatorSize.tab,
           indicatorWeight: 3,
           indicatorColor: Colors.white,
-          tabs: menus.map((MenuItems menu) {
+          tabs: menus.map((TabItems menu) {
             return Tab(
               icon: Icon(
                 menu.icon,
@@ -69,7 +69,7 @@ class _HomeTabState extends State<HomeTab> {
         ),
         backgroundColor: Colors.black,
         body: TabBarView(
-          children: menus.map((MenuItems menu) {
+          children: menus.map((TabItems menu) {
             return menu.goTo;
           }).toList(),
         ),
@@ -78,10 +78,10 @@ class _HomeTabState extends State<HomeTab> {
   }
 }
 
-class MenuItems {
+class TabItems {
   String title;
   IconData icon;
   Widget goTo;
 
-  MenuItems({required this.title, required this.icon, required this.goTo});
+  TabItems({required this.title, required this.icon, required this.goTo});
 }
