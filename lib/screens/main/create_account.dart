@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/screens/connections/contacts_tab.dart';
+import 'package:lodione/storage/user_list.dart';
 
 import 'main_screen.dart';
 
@@ -14,6 +16,34 @@ class _CreateAccountState extends State<CreateAccount> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    cpasswordController.dispose();
+    super.dispose();
+  }
+
+  void _createAccount() {
+    if (usernameController.text.trim().isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        cpasswordController.text.isEmpty) {
+      return;
+    }
+    userList.add(
+      UserModel(username: usernameController.text),
+    );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,12 +78,7 @@ class _CreateAccountState extends State<CreateAccount> {
               height: 20,
             ),
             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MainScreen()));
-              },
+              onPressed: _createAccount,
               style: ElevatedButton.styleFrom(fixedSize: const Size(250, 40)),
               child: const Text('Submit'),
             )

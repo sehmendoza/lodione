@@ -13,6 +13,14 @@ class _StartScreenState extends State<StartScreen> {
   TextEditingController usernameController = TextEditingController();
 
   TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   bool visiblePW = true;
   @override
   Widget build(BuildContext context) {
