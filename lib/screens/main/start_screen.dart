@@ -22,6 +22,23 @@ class _StartScreenState extends State<StartScreen> {
   }
 
   bool visiblePW = true;
+
+  void signIn() {
+    // ScaffoldMessenger.of(context).clearSnackBars();
+    // ScaffoldMessenger.of(context).showSnackBar(
+    //   const SnackBar(
+    //     duration: Duration(seconds: 3),
+    //     content: Text('Sign In Error. Please try again'),
+    //   ),
+    // );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,12 +123,7 @@ class _StartScreenState extends State<StartScreen> {
                     style: ElevatedButton.styleFrom(
                       fixedSize: const Size(160, 30),
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const MainScreen()));
-                    },
+                    onPressed: signIn,
                     child: const Text(
                       'Sign In',
                       style: TextStyle(color: Colors.black),

@@ -198,7 +198,33 @@ class _ListTabState extends State<ListTab> {
                         });
                       },
                       value: 'option1',
-                      child: const Text('Select all'),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.check_box),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Select all items'),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      onTap: () {
+                        setState(() {
+                          selectedList.items
+                              .removeWhere((item) => item.isDone == true);
+                        });
+                      },
+                      value: 'optio2323',
+                      child: const Row(
+                        children: [
+                          Icon(Icons.delete_sweep),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Delete all selected items'),
+                        ],
+                      ),
                     ),
                     PopupMenuItem(
                       onTap: () {
@@ -209,7 +235,15 @@ class _ListTabState extends State<ListTab> {
                         });
                       },
                       value: 'optio5',
-                      child: const Text('Unselect all'),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.check_box_outline_blank),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Unselect all items'),
+                        ],
+                      ),
                     ),
                     PopupMenuItem(
                       onTap: () {
@@ -218,17 +252,32 @@ class _ListTabState extends State<ListTab> {
                         // });
                       },
                       value: 'option2',
-                      child: const Text('Move checked to other list'),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.drive_file_move),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Move marked items to other list'),
+                        ],
+                      ),
                     ),
                     PopupMenuItem(
                       onTap: () {
                         setState(() {
-                          selectedList.items
-                              .removeWhere((item) => item.isDone == true);
+                          selectedList.items.clear();
                         });
                       },
                       value: 'delete',
-                      child: const Text('Delete all selected'),
+                      child: const Row(
+                        children: [
+                          Icon(Icons.delete_forever),
+                          SizedBox(
+                            width: 6,
+                          ),
+                          Text('Clear all items'),
+                        ],
+                      ),
                     ),
                   ],
                   onSelected: (value) {
