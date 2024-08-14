@@ -10,9 +10,22 @@ class StartUp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      theme: ThemeData().copyWith(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.black,
+          elevation: 0,
+        ),
+        checkboxTheme: CheckboxThemeData(
+          fillColor: WidgetStateProperty.all(Colors.black),
+          checkColor: WidgetStateProperty.all(Colors.white),
+        ),
+      ),
       debugShowCheckedModeBanner: false,
-      home: StartScreen(),
+      home: const StartScreen(),
     );
   }
 }
