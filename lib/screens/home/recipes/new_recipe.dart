@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/models/recipe_model.dart';
+import 'package:lodione/storage/recipe_list.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
 
@@ -55,12 +57,16 @@ class _NewRecipeState extends State<NewRecipe> {
     });
   }
 
+  FoodCategory dropdownValue = FoodCategory.breakfast;
+  TextEditingController titleController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
         backgroundColor: Colors.black,
+        centerTitle: true,
         title: const Text(
           'New Recipe',
           style: TextStyle(
@@ -70,7 +76,7 @@ class _NewRecipeState extends State<NewRecipe> {
       ),
       backgroundColor: Colors.black,
       body: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
             border: Border.all(
@@ -87,6 +93,7 @@ class _NewRecipeState extends State<NewRecipe> {
                 child: SizedBox(
                   width: 250,
                   child: TextField(
+                    controller: titleController,
                     focusNode: _focusNode,
                     textCapitalization: TextCapitalization.words,
                     textAlign: TextAlign.center,
@@ -251,7 +258,7 @@ class _NewRecipeState extends State<NewRecipe> {
               Row(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(left: 16, right: 10),
+                    padding: const EdgeInsets.only(left: 16, right: 15),
                     child: Text(
                       '${steps.length + 1}.',
                       style: const TextStyle(
@@ -288,37 +295,80 @@ class _NewRecipeState extends State<NewRecipe> {
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.only(top: 5, bottom: 10),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    const Text('Select Category:',
+                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                    const SizedBox(
+                      width: 10,
+                    ),
                     DropdownButton(
+                      value: dropdownValue,
+                      icon: const Icon(
+                        Icons.arrow_drop_down,
+                        color: Colors.white,
+                      ),
+                      iconSize: 18,
+                      underline: Container(
+                        color: Colors.white,
+                      ),
+                      borderRadius: BorderRadius.circular(2),
+                      dropdownColor: const Color.fromARGB(255, 30, 30, 30),
+                      onChanged: (newValue) {
+                        setState(() {
+                          dropdownValue = newValue!;
+                        });
+                      },
                       items: FoodCategory.values
                           .map(
                             (category) => DropdownMenuItem(
                               value: category,
-                              child: Text(
-                                category.name[0].toUpperCase() +
-                                    category.name.substring(1),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    categoryIcon[category],
+                                    color: Colors.white,
+                                  ),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text(
+                                    category.name[0].toUpperCase() +
+                                        category.name.substring(1),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           )
                           .toList(),
-                      onChanged: (value) {},
-                    ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(
-                          color: Colors.white,
-                          width: 2,
-                        ),
-                      ),
-                      onPressed: () {},
-                      child: const Text("Save Recipe"),
                     ),
                   ],
                 ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  MyButton(
+                      text: 'Save Recipe',
+                      icon: Icons.add,
+                      onPressed: () {
+                        setState(() {
+                          recipes.add(RecipeModel(
+                            name: titleController.text,
+                            ingredients: ingredients,
+                            steps: steps,
+                            foodCategory: dropdownValue,
+                          ));
+                        });
+
+                        Navigator.pop(context);
+                      }),
+                ],
               ),
             ],
           ),

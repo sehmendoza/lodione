@@ -3,6 +3,7 @@ import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
 import '../../../storage/lists_list.dart';
+import 'list_view.dart';
 
 class ListTab extends StatefulWidget {
   const ListTab({super.key});
@@ -82,7 +83,7 @@ class _ListTabState extends State<ListTab> {
                     color: Colors.white,
                   ),
                   borderRadius: BorderRadius.circular(2),
-                  dropdownColor: const Color.fromARGB(255, 52, 52, 52),
+                  dropdownColor: const Color.fromARGB(255, 30, 30, 30),
                   onChanged: (newValue) {
                     setState(() {
                       dropdownValue = newValue!;
@@ -127,7 +128,7 @@ class _ListTabState extends State<ListTab> {
                       value: 'option1',
                       child: const Row(
                         children: [
-                          Icon(Icons.check_box),
+                          Icon(Icons.select_all),
                           SizedBox(
                             width: 6,
                           ),
@@ -271,61 +272,11 @@ class _ListTabState extends State<ListTab> {
               )
             ],
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: selectedList.items.length,
-                itemBuilder: (context, index) {
-                  var items = selectedList.items[index];
-                  return ListTile(
-                    leading: Checkbox(
-                        value: items.isDone,
-                        onChanged: (value) {
-                          setState(() {
-                            items.isDone = !items.isDone;
-                          });
-                        }),
-                    title: Text(
-                      items.name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    subtitle: items.subtitle == null
-                        ? null
-                        : Text(
-                            items.subtitle!,
-                            style: const TextStyle(color: Colors.white),
-                          ),
-                    trailing: PopupMenuButton(
-                      itemBuilder: (_) => [
-                        const PopupMenuItem(
-                          value: 'option1',
-                          child: Text('Edit item'),
-                        ),
-                        PopupMenuItem(
-                          onTap: () {
-                            setState(() {
-                              selectedList.items[index].subtitle == 'Sub';
-                            });
-                          },
-                          value: 'option2',
-                          child: const Text('Add detail'),
-                        ),
-                        PopupMenuItem(
-                          onTap: () {
-                            setState(() {
-                              selectedList.items
-                                  .removeWhere((item) => item.id == items.id);
-                            });
-                          },
-                          value: 'delete',
-                          child: const Text('Delete'),
-                        ),
-                      ],
-                      onSelected: (value) {
-                        // Handle the selected option
-                      },
-                    ),
-                  );
-                }),
+          const SizedBox(
+            height: 3,
+          ),
+          MyListView(
+            selectedList: selectedList,
           )
         ],
       ),

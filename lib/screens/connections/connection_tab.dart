@@ -37,6 +37,7 @@ class ConnectionTab extends StatelessWidget {
           indicatorColor: Colors.white,
           tabs: tabs.map((ConnectTab tab) {
             return Tab(
+              text: tab.name,
               icon: Icon(tab.iconData),
               // child: Text(tab.name),
             );

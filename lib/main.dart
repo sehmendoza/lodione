@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
 import 'screens/main/start_screen.dart';
+//import 'package:flutter/services.dart';
 
 void main() {
+  // WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setPreferredOrientations(
+  //   [
+  //     DeviceOrientation.portraitUp,
+  //     DeviceOrientation.portraitDown,
+  //   ],
+  // ).then((fn) => const StartUp());
+
   runApp(const StartUp());
 }
 

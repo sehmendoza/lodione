@@ -28,9 +28,12 @@ class RecipeOverview extends StatelessWidget {
                 value: 'Option 2',
                 child: Text('Share'),
               ),
-              const PopupMenuItem<String>(
+              PopupMenuItem<String>(
                 value: 'Option 3',
-                child: Text('Delete'),
+                child: const Text('Delete'),
+                onTap: () {
+                  Navigator.pop(context);
+                },
               ),
             ],
           )
@@ -42,6 +45,22 @@ class RecipeOverview extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              children: [
+                const Text('Category:', style: TextStyle(color: Colors.white)),
+                const SizedBox(width: 10),
+                Icon(
+                  categoryIcon[recipe.foodCategory],
+                  color: Colors.white,
+                ),
+                const SizedBox(width: 6),
+                Text(
+                    recipe.foodCategory.name[0].toUpperCase() +
+                        recipe.foodCategory.name.substring(1),
+                    style: const TextStyle(color: Colors.white)),
+              ],
+            ),
+            const SizedBox(height: 10),
             const Text(
               'Ingredients:',
               style: TextStyle(color: Colors.white),
@@ -54,12 +73,23 @@ class RecipeOverview extends StatelessWidget {
                     itemCount: recipe.ingredients.length,
                     itemBuilder: (context, index) {
                       var ingredient = recipe.ingredients[index].name;
-                      return Text(
-                        '\u2022  $ingredient',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 21,
-                        ),
+                      return Row(
+                        children: [
+                          Text(
+                            '\u2022  $ingredient',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 21,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.add,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
                       );
                     }),
               ),

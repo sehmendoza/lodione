@@ -61,6 +61,20 @@ class _EventsTabState extends State<EventsTab> {
         ]),
   ];
 
+  List<String> monthName = [
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'June',
+    'July',
+    'Aug',
+    'Sept',
+    'Oct',
+    'Nov',
+    'Dec'
+  ];
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -77,6 +91,7 @@ class _EventsTabState extends State<EventsTab> {
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   var event = events[index];
+
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ExpansionTile(
@@ -92,18 +107,44 @@ class _EventsTabState extends State<EventsTab> {
                           color: Colors.white,
                         ),
                       ),
-                      title: Column(
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          eventDetail(Icons.event, event.title),
-                          const SizedBox(
-                            height: 10,
+                          Column(
+                            // mainAxisSize: MainAxisSize.min,
+                            // mainAxisAlignment: MainAxisAlignment.start,
+                            // crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                event.date.split('/')[1],
+                                style:
+                                    const TextStyle(color: white, fontSize: 32),
+                              ),
+                              Text(
+                                monthName[
+                                    int.parse(event.date.split('/')[0]) - 1],
+                                style:
+                                    const TextStyle(color: white, fontSize: 18),
+                              ),
+                            ],
                           ),
-                          eventDetail(Icons.location_on, event.location),
                           const SizedBox(
-                            height: 10,
+                            width: 10,
                           ),
-                          eventDetail(Icons.watch_later,
-                              '${event.date} - ${event.time}'),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              eventDetail(Icons.event, event.title),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              eventDetail(Icons.location_on, event.location),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              eventDetail(Icons.watch_later, event.time),
+                            ],
+                          ),
                         ],
                       ),
                       children: [

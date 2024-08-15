@@ -44,6 +44,7 @@ class _HomeTabState extends State<HomeTab> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: menus.length,
       child: Scaffold(
@@ -60,6 +61,7 @@ class _HomeTabState extends State<HomeTab> {
           indicatorColor: Colors.white,
           tabs: menus.map((TabItems menu) {
             return Tab(
+              text: size > 690 ? menu.title : null,
               icon: Icon(
                 menu.icon,
                 color: Colors.white,

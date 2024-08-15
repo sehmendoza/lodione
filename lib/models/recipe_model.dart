@@ -9,7 +9,7 @@ const categoryIcon = {
   FoodCategory.dinner: Icons.dinner_dining,
   FoodCategory.snacks: Icons.cookie,
   FoodCategory.desserts: Icons.icecream,
-  FoodCategory.others: Icons.fastfood
+  FoodCategory.others: Icons.fastfood,
 };
 
 class RecipeModel {
