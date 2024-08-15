@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
+import '../../../storage/lists_list.dart';
 
 class ListTab extends StatefulWidget {
   const ListTab({super.key});
@@ -11,98 +12,26 @@ class ListTab extends StatefulWidget {
 }
 
 class _ListTabState extends State<ListTab> {
-  List<ListModel> lists = [
-    ListModel(
-      name: 'Mendoza',
-      items: [
-        ListItem(name: 'Banana', isDone: false),
-        ListItem(name: 'Saging', isDone: false),
-        ListItem(name: 'Apple', isDone: false),
-        ListItem(name: 'Root Beer', isDone: false),
-      ],
-    ),
-    ListModel(
-      name: 'Policarpio',
-      items: [
-        ListItem(name: 'Chens', isDone: false),
-        ListItem(name: 'Saging', isDone: false),
-        ListItem(name: 'Beer', isDone: false),
-        ListItem(name: 'Root Beer', isDone: false),
-      ],
-    ),
-  ];
-
-  void addNewList() {
-    TextEditingController nameController = TextEditingController();
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              backgroundColor: Colors.black,
-              shape: ContinuousRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-                side: const BorderSide(width: 2, color: Colors.white),
-              ),
-              title: const Text(
-                'Add New List',
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    maxLines: 1,
-                    maxLength: 24,
-                    style: const TextStyle(color: Colors.white),
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      hintText: 'List Name',
-                      hintStyle: TextStyle(color: Colors.white54),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white60),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.white60, width: 2),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                    onPressed: () {
-                      setState(() {
-                        lists.add(
-                            ListModel(name: nameController.text, items: []));
-                      });
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Add',
-                      style: TextStyle(color: Colors.white),
-                    ))
-              ],
-            ));
-  }
+  List<ListModel> mgaLists = lists;
 
   late String dropdownValue;
   late ListModel selectedList;
   @override
   void initState() {
     super.initState();
-    dropdownValue = lists[0].id;
-    selectedList = lists[0];
+    dropdownValue = mgaLists[0].id;
+    selectedList = mgaLists[0];
   }
 
   void selectList(id) {
     setState(() {
-      selectedList = lists.firstWhere((list) => list.id == id);
+      selectedList = mgaLists.firstWhere((list) => list.id == id);
     });
   }
 
   void addItem({required String listID, required ListItem item}) {
     setState(() {
-      lists.firstWhere((list) => list.id == listID).items.insert(0, item);
+      mgaLists.firstWhere((list) => list.id == listID).items.insert(0, item);
       itemNode.requestFocus();
       itemController.clear();
     });
@@ -142,35 +71,33 @@ class _ListTabState extends State<ListTab> {
                 const SizedBox(
                   width: 5,
                 ),
-                SizedBox(
-                  child: DropdownButton(
-                    value: dropdownValue,
-                    icon: const Icon(
-                      Icons.arrow_drop_down,
-                      color: Colors.white,
-                    ),
-                    iconSize: 18,
-                    underline: Container(
-                      color: Colors.white,
-                    ),
-                    borderRadius: BorderRadius.circular(2),
-                    dropdownColor: const Color.fromARGB(255, 52, 52, 52),
-                    onChanged: (newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
-                    },
-                    items: lists.map((ListModel listModel) {
-                      return DropdownMenuItem(
-                        onTap: () => selectList(listModel.id),
-                        value: listModel.id,
-                        child: Text(
-                          listModel.name,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      );
-                    }).toList(),
+                DropdownButton(
+                  value: dropdownValue,
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Colors.white,
                   ),
+                  iconSize: 18,
+                  underline: Container(
+                    color: Colors.white,
+                  ),
+                  borderRadius: BorderRadius.circular(2),
+                  dropdownColor: const Color.fromARGB(255, 52, 52, 52),
+                  onChanged: (newValue) {
+                    setState(() {
+                      dropdownValue = newValue!;
+                    });
+                  },
+                  items: mgaLists.map((ListModel listModel) {
+                    return DropdownMenuItem(
+                      onTap: () => selectList(listModel.id),
+                      value: listModel.id,
+                      child: Text(
+                        listModel.name,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }).toList(),
                 ),
                 const SizedBox(
                   width: 3,
@@ -180,11 +107,11 @@ class _ListTabState extends State<ListTab> {
                   icon: Icons.add,
                   onPressed: addNewList,
                 ),
-                // MyButton(
-                //   text: ' Connect',
-                //   icon: Icons.connect_without_contact,
-                //   onPressed: () {},
-                // ),
+                MyButton(
+                  text: 'Share',
+                  icon: Icons.folder_shared,
+                  onPressed: () {},
+                ),
                 const Spacer(),
                 PopupMenuButton(
                   iconColor: Colors.white70,
@@ -403,5 +330,58 @@ class _ListTabState extends State<ListTab> {
         ],
       ),
     );
+  }
+
+  void addNewList() {
+    TextEditingController nameController = TextEditingController();
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              backgroundColor: Colors.black,
+              shape: ContinuousRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+                side: const BorderSide(width: 2, color: Colors.white),
+              ),
+              title: const Text(
+                'Add New List',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    maxLines: 1,
+                    maxLength: 24,
+                    style: const TextStyle(color: Colors.white),
+                    controller: nameController,
+                    decoration: const InputDecoration(
+                      hintText: 'List Name',
+                      hintStyle: TextStyle(color: Colors.white54),
+                      enabledBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white60),
+                      ),
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white60, width: 2),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () {
+                      setState(() {
+                        mgaLists.add(
+                            ListModel(name: nameController.text, items: []));
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Add',
+                      style: TextStyle(color: Colors.white),
+                    ))
+              ],
+            ));
   }
 }

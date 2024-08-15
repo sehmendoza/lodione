@@ -8,6 +8,8 @@ class ListModel {
   final List<ListItem> items;
 
   ListModel({required this.name, required this.items}) : id = uuid.v4();
+
+  int get totalItems => items.length;
 }
 
 class ListItem {
