@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 class ContactsTab extends StatefulWidget {
   const ContactsTab({super.key});
@@ -272,6 +273,11 @@ class ConnectionList extends StatelessWidget {
               },
             ),
           ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: MyButton(
+                text: 'Add contact', icon: Icons.add, onPressed: () {}),
+          )
         ],
       ),
     );

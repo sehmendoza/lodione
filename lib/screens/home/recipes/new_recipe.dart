@@ -57,24 +57,24 @@ class _NewRecipeState extends State<NewRecipe> {
     });
   }
 
-  FoodCategory dropdownValue = FoodCategory.breakfast;
+  FoodCategory dropdownValue = FoodCategory.meals;
   TextEditingController titleController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.black,
-        centerTitle: true,
+        // foregroundColor: Colors.white,
+        // backgroundColor: Colors.black,
+        // centerTitle: true,
         title: const Text(
           'New Recipe',
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          // style: TextStyle(
+          //   color: Colors.white,
+          // ),
         ),
       ),
-      backgroundColor: Colors.black,
+      //  backgroundColor: Colors.black,
       body: Container(
         padding: const EdgeInsets.all(15),
         margin: const EdgeInsets.symmetric(horizontal: 4),

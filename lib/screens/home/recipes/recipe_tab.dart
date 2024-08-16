@@ -16,6 +16,23 @@ class RecipeTab extends StatefulWidget {
 class _RecipeTabState extends State<RecipeTab> {
   List<RecipeModel> recipeList = recipes;
   TextEditingController searchController = TextEditingController();
+  FoodCategory? _selectedCategory;
+
+  void toggleChip(FoodCategory category) {
+    setState(() {
+      // If the same category is clicked again, deselect it
+      if (_selectedCategory == category) {
+        _selectedCategory = null;
+        recipeList = recipes; // Show all recipes
+      } else {
+        _selectedCategory = category;
+        recipeList = recipes
+            .where((element) => element.foodCategory == category)
+            .toList();
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -30,7 +47,7 @@ class _RecipeTabState extends State<RecipeTab> {
                 child: TextField(
                   onChanged: (value) {
                     setState(() {
-                      recipeList = recipes
+                      recipeList = recipeList
                           .where((element) => element.name
                               .toLowerCase()
                               .contains(value.toLowerCase()))
@@ -85,85 +102,42 @@ class _RecipeTabState extends State<RecipeTab> {
           child: Row(
             children: [
               MyChipFilter(
-                  icon: Icons.food_bank_rounded,
-                  label: 'All',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes;
-                    });
-                  }),
-              MyChipFilter(
-                  icon: categoryIcon[FoodCategory.breakfast]!,
-                  label: 'Breakfast',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes
-                          .where((element) =>
-                              element.foodCategory == FoodCategory.breakfast)
-                          .toList();
-                    });
-                  }),
-              MyChipFilter(
-                  icon: categoryIcon[FoodCategory.lunch]!,
-                  label: 'Lunch',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes
-                          .where((element) =>
-                              element.foodCategory == FoodCategory.lunch)
-                          .toList();
-                    });
-                  }),
-              MyChipFilter(
-                  icon: categoryIcon[FoodCategory.dinner]!,
-                  label: 'Dinner',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes
-                          .where((element) =>
-                              element.foodCategory == FoodCategory.dinner)
-                          .toList();
-                    });
-                  }),
-              MyChipFilter(
-                  icon: categoryIcon[FoodCategory.snacks]!,
-                  label: 'Snacks',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes
-                          .where((element) =>
-                              element.foodCategory == FoodCategory.snacks)
-                          .toList();
-                    });
-                  },),
-              MyChipFilter(
-                icon: categoryIcon[FoodCategory.desserts]!,
-                label: 'Desserts',
+                selected: _selectedCategory ==
+                    null, // 'All' is selected when no category is
+                icon: Icons.food_bank_rounded,
+                label: 'All',
                 onSelected: (bool value) {
                   setState(() {
-                    recipeList = recipes
-                        .where((element) =>
-                            element.foodCategory == FoodCategory.desserts)
-                        .toList();
+                    _selectedCategory = null;
+                    recipeList = recipes; // Show all recipes
                   });
                 },
               ),
               MyChipFilter(
-                  icon: categoryIcon[FoodCategory.others]!,
-                  label: 'Others',
-                  onSelected: (bool value) {
-                    setState(() {
-                      recipeList = recipes
-                          .where((element) =>
-                              element.foodCategory == FoodCategory.others)
-                          .toList();
-                    });
-                  })
+                selected: _selectedCategory == FoodCategory.meals,
+                icon: categoryIcon[FoodCategory.meals]!,
+                label: 'Meals',
+                onSelected: (bool value) => toggleChip(FoodCategory.meals),
+              ),
+              MyChipFilter(
+                selected: _selectedCategory == FoodCategory.treats,
+                icon: categoryIcon[FoodCategory.treats]!,
+                label: 'Treats',
+                onSelected: (bool value) => toggleChip(FoodCategory.treats),
+              ),
+              MyChipFilter(
+                selected: _selectedCategory == FoodCategory.others,
+                icon: categoryIcon[FoodCategory.treats]!,
+                label: 'Others',
+                onSelected: (bool value) => toggleChip(FoodCategory.others),
+              ),
             ],
           ),
         ),
         const SizedBox(height: 10),
-        Expanded(child: RecipeList(recipes: recipeList)),
+        Expanded(
+          child: RecipeList(recipes: recipeList),
+        ),
       ],
     );
   }
@@ -175,11 +149,13 @@ class MyChipFilter extends StatefulWidget {
     required this.onSelected,
     required this.icon,
     required this.label,
+    required this.selected,
   });
 
   final Function(bool)? onSelected;
   final IconData icon;
   final String label;
+  final bool selected;
   @override
   State<MyChipFilter> createState() => _MyChipFilterState();
 }
@@ -190,18 +166,26 @@ class _MyChipFilterState extends State<MyChipFilter> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: FilterChip(
-        selectedColor: Colors.white,
+        selectedColor: const Color.fromARGB(190, 0, 0, 0),
+        shadowColor: Colors.white,
+        elevation: widget.selected ? 1 : 3,
+        side: BorderSide(
+            color: widget.selected ? Colors.white : Colors.white70, width: 1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        showCheckmark: false,
         backgroundColor: Colors.black,
-        deleteIcon: const Icon(Icons.close, color: Colors.white70),
         label: Text(
           widget.label,
-          style: const TextStyle(color: Colors.white70),
+          style: TextStyle(
+            color: widget.selected ? Colors.white : Colors.white70,
+          ),
         ),
+        selected: widget.selected,
         onSelected: widget.onSelected,
-        avatar: Icon(widget.icon, color: Colors.white70),
-        avatarBorder: const CircleBorder(
-          side: BorderSide(color: Colors.white70),
-        ),
+        avatar: Icon(widget.icon,
+            color: widget.selected ? Colors.white : Colors.white70),
       ),
     );
   }

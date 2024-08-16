@@ -12,3 +12,20 @@ ButtonStyle myButtonStyle = ButtonStyle(
   )),
   elevation: WidgetStateProperty.all(0),
 );
+
+var kColorScheme = ColorScheme.fromSeed(seedColor: Colors.black);
+
+final myTheme = ThemeData().copyWith(
+  colorScheme: kColorScheme,
+  scaffoldBackgroundColor: Colors.black,
+  appBarTheme: const AppBarTheme().copyWith(
+    foregroundColor: kColorScheme.primaryContainer,
+    backgroundColor: Colors.black,
+    elevation: 0,
+    centerTitle: true,
+  ),
+  checkboxTheme: CheckboxThemeData(
+    fillColor: WidgetStateProperty.all(Colors.black),
+    checkColor: WidgetStateProperty.all(Colors.white),
+  ),
+);

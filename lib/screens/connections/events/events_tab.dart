@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
 import '../contacts_tab.dart';
@@ -211,17 +212,19 @@ class _EventsTabState extends State<EventsTab> {
                 },
               ),
             ),
-            TextButton.icon(
-              style: myButtonStyle,
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const AddEvent(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: MyButton(
+                text: 'Create event',
+                icon: Icons.add,
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AddEvent(),
+                  ),
                 ),
               ),
-              label: const Text("Create event"),
-              icon: const Icon(Icons.add),
-            )
+            ),
           ],
         ),
       ),

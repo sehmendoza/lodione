@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lodione/const.dart';
 import 'screens/main/start_screen.dart';
 //import 'package:flutter/services.dart';
 
@@ -20,19 +21,7 @@ class StartUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData().copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
-        scaffoldBackgroundColor: Colors.black,
-        appBarTheme: const AppBarTheme(
-          foregroundColor: Colors.white,
-          backgroundColor: Colors.black,
-          elevation: 0,
-        ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: WidgetStateProperty.all(Colors.black),
-          checkColor: WidgetStateProperty.all(Colors.white),
-        ),
-      ),
+      theme: myTheme,
       debugShowCheckedModeBanner: false,
       home: const StartScreen(),
     );

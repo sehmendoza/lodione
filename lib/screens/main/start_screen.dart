@@ -121,12 +121,16 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(160, 30),
+                      backgroundColor: Colors.white,
+                      fixedSize: const Size(180, 40),
                     ),
                     onPressed: signIn,
                     child: const Text(
                       'Sign In',
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                          color: Colors.black,
+                          letterSpacing: 2,
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
                   const SizedBox(
@@ -134,7 +138,9 @@ class _StartScreenState extends State<StartScreen> {
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      fixedSize: const Size(160, 30),
+                      shadowColor: Colors.white,
+                      elevation: 5,
+                      fixedSize: const Size(180, 40),
                       backgroundColor: Colors.black,
                       side: const BorderSide(color: Colors.white, width: 2),
                     ),
@@ -148,7 +154,7 @@ class _StartScreenState extends State<StartScreen> {
                     },
                     child: const Text(
                       'Create account',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, letterSpacing: 2),
                     ),
                   ),
                 ],

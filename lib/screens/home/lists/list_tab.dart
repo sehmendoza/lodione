@@ -108,9 +108,12 @@ class _ListTabState extends State<ListTab> {
                   icon: Icons.add,
                   onPressed: addNewList,
                 ),
+                const SizedBox(
+                  width: 3,
+                ),
                 MyButton(
-                  text: 'Share',
-                  icon: Icons.folder_shared,
+                  text: ' Share',
+                  icon: Icons.share,
                   onPressed: () {},
                 ),
                 const Spacer(),

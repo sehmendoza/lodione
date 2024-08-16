@@ -30,10 +30,6 @@ class RecipeList extends StatelessWidget {
                   ),
                 ),
               ),
-              // leading: Icon(
-              //   categoryIcon[recipe.foodCategory]!,
-              //   color: Colors.white70,
-              // ),
               trailing: const Icon(
                 Icons.keyboard_arrow_right,
                 color: Colors.white70,
@@ -48,12 +44,14 @@ class RecipeList extends StatelessWidget {
                 recipe.name,
                 style: const TextStyle(color: Colors.white, fontSize: 21),
               ),
-              subtitle: Text(
-                ingredients,
-                style: const TextStyle(
-                  color: Colors.white70,
-                ),
-              ),
+              subtitle: ingredients.isEmpty
+                  ? null
+                  : Text(
+                      ingredients,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
             ),
           );
         },
