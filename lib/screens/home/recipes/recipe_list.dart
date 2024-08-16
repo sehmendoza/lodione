@@ -30,6 +30,10 @@ class RecipeList extends StatelessWidget {
                   ),
                 ),
               ),
+              // leading: Icon(
+              //   categoryIcon[recipe.foodCategory]!,
+              //   color: Colors.white70,
+              // ),
               trailing: const Icon(
                 Icons.keyboard_arrow_right,
                 color: Colors.white70,

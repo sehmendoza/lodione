@@ -135,7 +135,7 @@ class _RecipeTabState extends State<RecipeTab> {
                               element.foodCategory == FoodCategory.snacks)
                           .toList();
                     });
-                  }),
+                  },),
               MyChipFilter(
                 icon: categoryIcon[FoodCategory.desserts]!,
                 label: 'Desserts',
