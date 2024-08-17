@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/list_model.dart';
 import '../../../models/recipe_model.dart';
 
 class RecipeOverview extends StatelessWidget {
@@ -40,89 +41,72 @@ class RecipeOverview extends StatelessWidget {
         ],
       ),
       backgroundColor: Colors.black,
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text('Category:', style: TextStyle(color: Colors.white)),
-                const SizedBox(width: 10),
-                Icon(
-                  categoryIcon[recipe.foodCategory],
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 6),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Category:',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 10),
+                  Icon(
+                    categoryIcon[recipe.foodCategory],
+                    color: Colors.white,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                      recipe.foodCategory.name[0].toUpperCase() +
+                          recipe.foodCategory.name.substring(1),
+                      style: const TextStyle(color: Colors.white)),
+                ],
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Ingredients',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+              for (ListItem ing in recipe.ingredients)
                 Text(
-                    recipe.foodCategory.name[0].toUpperCase() +
-                        recipe.foodCategory.name.substring(1),
-                    style: const TextStyle(color: Colors.white)),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Text(
-              'Ingredients:',
-              style: TextStyle(color: Colors.white),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Expanded(
-                child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: recipe.ingredients.length,
-                    itemBuilder: (context, index) {
-                      var ingredient = recipe.ingredients[index].name;
-                      return Row(
-                        children: [
-                          Text(
-                            '\u2022  $ingredient',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 21,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      );
-                    }),
-              ),
-            ),
-            const Text(
-              'Direction:',
-              style: TextStyle(color: Colors.white),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Expanded(
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    for (final step in recipe.steps)
-                      ListTile(
-                        key: ValueKey(step),
-                        leading: Text(
-                          '${recipe.steps.indexOf(step) + 1}.',
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 21),
-                        ),
-                        title: Text(
-                          step,
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 21),
-                        ),
-                      ),
-                  ],
+                  ing.name,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 21,
+                  ),
                 ),
+              const SizedBox(
+                height: 27,
               ),
-            ),
-          ],
+              const Text(
+                'Direction',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold),
+              ),
+              for (final step in recipe.steps)
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    top: 3,
+                  ),
+                  child: Text(
+                    '${recipe.steps.indexOf(step) + 1}. $step',
+                    style: const TextStyle(color: Colors.white, fontSize: 21),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

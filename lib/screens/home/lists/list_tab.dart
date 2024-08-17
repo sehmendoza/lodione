@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
 import '../../../storage/lists_list.dart';
@@ -50,6 +49,7 @@ class _ListTabState extends State<ListTab> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -59,165 +59,103 @@ class _ListTabState extends State<ListTab> {
         ),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Text(
-                  'Lists: ',
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                DropdownButton(
-                  value: dropdownValue,
-                  icon: const Icon(
-                    Icons.arrow_drop_down,
-                    color: Colors.white,
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Text for 'Lists:'
+                  const Text('Lists: ', style: TextStyle(color: Colors.white)),
+                  const SizedBox(width: 5),
+
+                  // Dropdown for list selection
+                  DropdownButton<String>(
+                    value: dropdownValue,
+                    icon:
+                        const Icon(Icons.arrow_drop_down, color: Colors.white),
+                    iconSize: 18,
+                    underline: Container(
+                        height: 1,
+                        color: Colors.white), // Fixed underline styling
+                    borderRadius: BorderRadius.circular(2),
+                    dropdownColor: const Color.fromARGB(255, 30, 30, 30),
+                    onChanged: (newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                        selectList(newValue); // Directly call selectList here
+                      });
+                    },
+                    items: mgaLists
+                        .map<DropdownMenuItem<String>>((ListModel listModel) {
+                      return DropdownMenuItem<String>(
+                        value: listModel.id,
+                        child: Text(listModel.name,
+                            style: const TextStyle(color: Colors.white)),
+                      );
+                    }).toList(),
                   ),
-                  iconSize: 18,
-                  underline: Container(
-                    color: Colors.white,
-                  ),
-                  borderRadius: BorderRadius.circular(2),
-                  dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-                  onChanged: (newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                    });
-                  },
-                  items: mgaLists.map((ListModel listModel) {
-                    return DropdownMenuItem(
-                      onTap: () => selectList(listModel.id),
-                      value: listModel.id,
-                      child: Text(
-                        listModel.name,
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                MyButton(
-                  text: 'Add',
-                  icon: Icons.add,
-                  onPressed: addNewList,
-                ),
-                const SizedBox(
-                  width: 3,
-                ),
-                MyButton(
-                  text: ' Share',
-                  icon: Icons.share,
-                  onPressed: () {},
-                ),
-                const Spacer(),
-                PopupMenuButton(
-                  iconColor: Colors.white70,
-                  itemBuilder: (_) => [
-                    PopupMenuItem(
-                      onTap: () {
+
+                  // // Button Group
+                  // Row(
+                  //   mainAxisSize: MainAxisSize.min,
+                  //   children: [
+                  //     MyButton(
+                  //       text: 'Add',
+                  //       icon: Icons.add,
+                  //       onPressed: addNewList,
+                  //     ),
+                  //     const SizedBox(width: 3),
+                  //     MyButton(
+                  //       text: 'Share',
+                  //       icon: Icons.share,
+                  //       onPressed:
+                  //           () {}, // Placeholder for future implementation
+                  //     ),
+                  //   ],
+                  // ),
+                  const Spacer(),
+                  // Popup Menu
+                  PopupMenuButton<String>(
+                    icon: const Icon(Icons.more_vert, color: Colors.white70),
+                    itemBuilder: (BuildContext context) => [
+                      _buildMenuItem('Add new list', Icons.add_box, addNewList),
+                      _buildMenuItem('Select all items', Icons.select_all, () {
                         setState(() {
                           for (var item in selectedList.items) {
                             item.isDone = true;
                           }
                         });
-                      },
-                      value: 'option1',
-                      child: const Row(
-                        children: [
-                          Icon(Icons.select_all),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('Select all items'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      onTap: () {
+                      }),
+                      _buildMenuItem(
+                          'Delete all selected items', Icons.delete_sweep, () {
                         setState(() {
-                          selectedList.items
-                              .removeWhere((item) => item.isDone == true);
+                          selectedList.items.removeWhere((item) => item.isDone);
                         });
-                      },
-                      value: 'optio2323',
-                      child: const Row(
-                        children: [
-                          Icon(Icons.delete_sweep),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('Delete all selected items'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      onTap: () {
+                      }),
+                      _buildMenuItem(
+                          'Unselect all items', Icons.check_box_outline_blank,
+                          () {
                         setState(() {
                           for (var item in selectedList.items) {
                             item.isDone = false;
                           }
                         });
-                      },
-                      value: 'optio5',
-                      child: const Row(
-                        children: [
-                          Icon(Icons.check_box_outline_blank),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('Unselect all items'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      onTap: () {
-                        // setState(() {
-                        //   selectedList.items[index].subtitle == 'Sub';
-                        // });
-                      },
-                      value: 'option2',
-                      child: const Row(
-                        children: [
-                          Icon(Icons.drive_file_move),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('Move marked items to other list'),
-                        ],
-                      ),
-                    ),
-                    PopupMenuItem(
-                      onTap: () {
+                      }),
+                      _buildMenuItem('Move marked items to other list',
+                          Icons.drive_file_move, () {}),
+                      _buildMenuItem('Share list', Icons.share, () {}),
+                      _buildMenuItem('Clear all items', Icons.delete_forever,
+                          () {
                         setState(() {
                           selectedList.items.clear();
                         });
-                      },
-                      value: 'delete',
-                      child: const Row(
-                        children: [
-                          Icon(Icons.delete_forever),
-                          SizedBox(
-                            width: 6,
-                          ),
-                          Text('Clear all items'),
-                        ],
-                      ),
-                    ),
-                  ],
-                  onSelected: (value) {
-                    // Handle the selected option
-                  },
-                ),
-              ],
-            ),
-          ),
+                      }),
+                    ],
+                  ),
+                ],
+              )),
           const Divider(
             height: 0,
             color: Colors.white,
@@ -286,6 +224,20 @@ class _ListTabState extends State<ListTab> {
     );
   }
 
+  PopupMenuItem<String> _buildMenuItem(
+      String text, IconData icon, VoidCallback onTap) {
+    return PopupMenuItem<String>(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 6),
+          Text(text),
+        ],
+      ),
+    );
+  }
+
   void addNewList() {
     TextEditingController nameController = TextEditingController();
     showDialog(
@@ -306,7 +258,7 @@ class _ListTabState extends State<ListTab> {
                 children: [
                   TextField(
                     maxLines: 1,
-                    maxLength: 24,
+                    maxLength: 32,
                     style: const TextStyle(color: Colors.white),
                     controller: nameController,
                     decoration: const InputDecoration(

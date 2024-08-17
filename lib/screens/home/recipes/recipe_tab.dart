@@ -33,6 +33,21 @@ class _RecipeTabState extends State<RecipeTab> {
     });
   }
 
+  void _searching(text) {
+    setState(() {
+      searchController.text.isEmpty
+          ? _selectedCategory == null
+              ? recipeList = recipes
+              : recipeList = recipes
+                  .where((recipe) => recipe.foodCategory == _selectedCategory)
+                  .toList()
+          : recipeList = recipeList
+              .where((element) =>
+                  element.name.toLowerCase().contains(text.toLowerCase()))
+              .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -46,13 +61,7 @@ class _RecipeTabState extends State<RecipeTab> {
               Expanded(
                 child: TextField(
                   onChanged: (value) {
-                    setState(() {
-                      recipeList = recipeList
-                          .where((element) => element.name
-                              .toLowerCase()
-                              .contains(value.toLowerCase()))
-                          .toList();
-                    });
+                    _searching(value);
                   },
                   controller: searchController,
                   style: const TextStyle(color: Colors.white),
