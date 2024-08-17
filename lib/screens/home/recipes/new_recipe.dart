@@ -57,7 +57,7 @@ class _NewRecipeState extends State<NewRecipe> {
     });
   }
 
-  FoodCategory dropdownValue = FoodCategory.meals;
+  FoodCategory dropdownValue = FoodCategory.breakfast;
   TextEditingController titleController = TextEditingController();
 
   @override

@@ -3,7 +3,7 @@ import '../models/recipe_model.dart';
 
 List<RecipeModel> recipes = [
   RecipeModel(
-    foodCategory: FoodCategory.meals,
+    foodCategory: FoodCategory.breakfast,
     name: 'Goto',
     ingredients: [
       ListItem(
@@ -22,7 +22,7 @@ List<RecipeModel> recipes = [
     steps: ['rfasefas', 'asefasef', 'aseflkjasefl'],
   ),
   RecipeModel(
-    foodCategory: FoodCategory.meals,
+    foodCategory: FoodCategory.lunch,
     name: 'Dinuguan',
     ingredients: [
       ListItem(

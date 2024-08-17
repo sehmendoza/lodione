@@ -64,7 +64,6 @@ class _HomeTabState extends State<HomeTab> {
               text: size > 690 ? menu.title : null,
               icon: Icon(
                 menu.icon,
-                color: Colors.white,
               ),
             );
           }).toList(),

@@ -114,10 +114,22 @@ class _RecipeTabState extends State<RecipeTab> {
                 },
               ),
               MyChipFilter(
-                selected: _selectedCategory == FoodCategory.meals,
-                icon: categoryIcon[FoodCategory.meals]!,
-                label: 'Meals',
-                onSelected: (bool value) => toggleChip(FoodCategory.meals),
+                selected: _selectedCategory == FoodCategory.breakfast,
+                icon: categoryIcon[FoodCategory.breakfast]!,
+                label: 'Breakfast',
+                onSelected: (bool value) => toggleChip(FoodCategory.breakfast),
+              ),
+              MyChipFilter(
+                selected: _selectedCategory == FoodCategory.lunch,
+                icon: categoryIcon[FoodCategory.lunch]!,
+                label: 'Lunch',
+                onSelected: (bool value) => toggleChip(FoodCategory.lunch),
+              ),
+              MyChipFilter(
+                selected: _selectedCategory == FoodCategory.dinner,
+                icon: categoryIcon[FoodCategory.dinner]!,
+                label: 'Dinner',
+                onSelected: (bool value) => toggleChip(FoodCategory.dinner),
               ),
               MyChipFilter(
                 selected: _selectedCategory == FoodCategory.treats,
@@ -127,7 +139,7 @@ class _RecipeTabState extends State<RecipeTab> {
               ),
               MyChipFilter(
                 selected: _selectedCategory == FoodCategory.others,
-                icon: categoryIcon[FoodCategory.treats]!,
+                icon: categoryIcon[FoodCategory.others]!,
                 label: 'Others',
                 onSelected: (bool value) => toggleChip(FoodCategory.others),
               ),

@@ -1,11 +1,14 @@
 import 'list_model.dart';
 import 'package:flutter/material.dart';
 
-enum FoodCategory { meals, treats, others }
+enum FoodCategory { breakfast, lunch, dinner, treats, drinks, others }
 
 const categoryIcon = {
-  FoodCategory.meals: Icons.dinner_dining,
+  FoodCategory.breakfast: Icons.egg_alt,
+  FoodCategory.lunch: Icons.lunch_dining,
+  FoodCategory.dinner: Icons.dinner_dining,
   FoodCategory.treats: Icons.cookie,
+  FoodCategory.drinks: Icons.local_drink,
   FoodCategory.others: Icons.fastfood,
 };
 
