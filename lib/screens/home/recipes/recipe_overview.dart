@@ -4,14 +4,24 @@ import 'package:lodione/widgets/buttons.dart';
 import '../../../models/list_model.dart';
 import '../../../models/recipe_model.dart';
 
-class RecipeOverview extends StatelessWidget {
-  const RecipeOverview({required this.recipe, super.key});
+class RecipeOverview extends StatefulWidget {
+  const RecipeOverview({
+    required this.recipe,
+    required this.onFavorite,
+    super.key,
+  });
   final RecipeModel recipe;
+  final void Function(RecipeModel recipe) onFavorite;
+  @override
+  State<RecipeOverview> createState() => _RecipeOverviewState();
+}
+
+class _RecipeOverviewState extends State<RecipeOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(recipe.name),
+        title: Text(widget.recipe.name),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
         actions: [
@@ -61,19 +71,34 @@ class RecipeOverview extends StatelessWidget {
                     ),
                     const SizedBox(width: 10),
                     Icon(
-                      categoryIcon[recipe.foodCategory],
+                      categoryIcon[widget.recipe.foodCategory],
                       color: Colors.white,
                       size: 26,
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      recipe.foodCategory.name[0].toUpperCase() +
-                          recipe.foodCategory.name.substring(1),
+                      widget.recipe.foodCategory.name[0].toUpperCase() +
+                          widget.recipe.foodCategory.name.substring(1),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                       ),
                     ),
+                    const Spacer(),
+                    MyButton(
+                        text: widget.recipe.isFavorite
+                            ? ' Added to favorite'
+                            : ' Add to favorite',
+                        icon: widget.recipe.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_outline,
+                        onPressed: () {
+                          widget.onFavorite(widget.recipe);
+                          setState(() {
+                            widget.recipe.isFavorite =
+                                !widget.recipe.isFavorite;
+                          });
+                        }),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -87,7 +112,7 @@ class RecipeOverview extends StatelessWidget {
                           fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(
-                      width: 3,
+                      width: 6,
                     ),
                     MyButton(text: 'Add', icon: Icons.add, onPressed: () {})
                   ],
@@ -97,7 +122,7 @@ class RecipeOverview extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (ListItem ing in recipe.ingredients)
+                      for (ListItem ing in widget.recipe.ingredients)
                         Text(
                           '• ${ing.name}',
                           style: const TextStyle(
@@ -124,9 +149,9 @@ class RecipeOverview extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (final step in recipe.steps)
+                      for (final step in widget.recipe.steps)
                         Text(
-                          '${recipe.steps.indexOf(step) + 1}. $step',
+                          '${widget.recipe.steps.indexOf(step) + 1}. $step',
                           style: const TextStyle(
                               color: Colors.white, fontSize: 21),
                         ),

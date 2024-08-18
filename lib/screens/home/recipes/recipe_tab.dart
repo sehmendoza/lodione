@@ -15,20 +15,56 @@ class RecipeTab extends StatefulWidget {
 
 class _RecipeTabState extends State<RecipeTab> {
   List<RecipeModel> recipeList = recipes;
+  List<RecipeModel> favoriteList =
+      recipes.where((fav) => fav.isFavorite).toList();
   TextEditingController searchController = TextEditingController();
   FoodCategory? _selectedCategory;
+
+  void toggleFavorite(RecipeModel recipe) {
+    bool isExist = favoriteList.contains(recipe);
+
+    if (isExist) {
+      favoriteList.remove(recipe);
+    } else {
+      favoriteList.add(recipe);
+    }
+  }
+
+  void toggleFavChip() {
+    setState(() {
+      favoriteToggle = !favoriteToggle;
+      recipeList = favoriteToggle
+          ? _selectedCategory == null
+              ? recipes.where((fav) => fav.isFavorite).toList()
+              : favoriteList
+                  .where((cat) => cat.foodCategory == _selectedCategory)
+                  .toList()
+          : _selectedCategory == null
+              ? recipes
+              : recipes
+                  .where((cat) => cat.foodCategory == _selectedCategory)
+                  .toList();
+    });
+  }
+
+  bool favoriteToggle = false;
 
   void toggleChip(FoodCategory category) {
     setState(() {
       // If the same category is clicked again, deselect it
       if (_selectedCategory == category) {
         _selectedCategory = null;
-        recipeList = recipes; // Show all recipes
+        recipeList = favoriteToggle
+            ? recipes.where((fav) => fav.isFavorite).toList()
+            : recipes; // Show all recipes
       } else {
         _selectedCategory = category;
         recipeList = recipes
             .where((element) => element.foodCategory == category)
             .toList();
+        recipeList = favoriteToggle
+            ? recipeList.where((fav) => fav.isFavorite).toList()
+            : recipeList;
       }
     });
   }
@@ -109,6 +145,8 @@ class _RecipeTabState extends State<RecipeTab> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               MyChipFilter(
                 selected: _selectedCategory ==
@@ -118,10 +156,19 @@ class _RecipeTabState extends State<RecipeTab> {
                 onSelected: (bool value) {
                   setState(() {
                     _selectedCategory = null;
-                    recipeList = recipes; // Show all recipes
+                    recipeList = favoriteToggle
+                        ? recipes.where((fav) => fav.isFavorite).toList()
+                        : recipes; // Show all recipes
                   });
                 },
               ),
+              MyChipFilter(
+                  onSelected: (value) {
+                    toggleFavChip();
+                  },
+                  icon: favoriteToggle ? Icons.favorite : Icons.favorite_border,
+                  label: 'Favorite',
+                  selected: favoriteToggle),
               MyChipFilter(
                 selected: _selectedCategory == FoodCategory.breakfast,
                 icon: categoryIcon[FoodCategory.breakfast]!,
@@ -157,7 +204,7 @@ class _RecipeTabState extends State<RecipeTab> {
         ),
         const SizedBox(height: 10),
         Expanded(
-          child: RecipeList(recipes: recipeList),
+          child: RecipeList(recipes: recipeList, onFavorite: toggleFavorite),
         ),
       ],
     );

@@ -66,11 +66,13 @@ class _ListTabState extends State<ListTab> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // Text for 'Lists:'
-                  const Text('Lists: ', style: TextStyle(color: Colors.white)),
+                  const Text('Lists: ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      )),
                   const SizedBox(width: 5),
 
-                  // Dropdown for list selection
                   DropdownButton<String>(
                     value: dropdownValue,
                     icon:

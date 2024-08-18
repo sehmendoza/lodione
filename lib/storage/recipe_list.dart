@@ -4,6 +4,7 @@ import '../models/recipe_model.dart';
 List<RecipeModel> recipes = [
   RecipeModel(
     foodCategory: FoodCategory.breakfast,
+    isFavorite: false,
     name: 'Goto',
     ingredients: [
       ListItem(
@@ -24,6 +25,7 @@ List<RecipeModel> recipes = [
   RecipeModel(
     foodCategory: FoodCategory.lunch,
     name: 'Dinuguan',
+    isFavorite: false,
     ingredients: [
       ListItem(
         name: 'ghashh',

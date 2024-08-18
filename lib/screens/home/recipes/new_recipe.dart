@@ -363,6 +363,7 @@ class _NewRecipeState extends State<NewRecipe> {
                             ingredients: ingredients,
                             steps: steps,
                             foodCategory: dropdownValue,
+                            isFavorite: false,
                           ));
                         });
 

@@ -17,11 +17,13 @@ class RecipeModel {
   List<ListItem> ingredients;
   List<String> steps;
   FoodCategory foodCategory;
+  bool isFavorite = false;
 
   RecipeModel({
     required this.foodCategory,
     required this.name,
     required this.ingredients,
     required this.steps,
+    required this.isFavorite,
   });
 }

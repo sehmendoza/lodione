@@ -4,9 +4,11 @@ import '../../../models/recipe_model.dart';
 import 'recipe_overview.dart';
 
 class RecipeList extends StatelessWidget {
-  const RecipeList({super.key, required this.recipes});
+  const RecipeList(
+      {super.key, required this.recipes, required this.onFavorite});
 
   final List<RecipeModel> recipes;
+  final void Function(RecipeModel recipe) onFavorite;
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +28,7 @@ class RecipeList extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => RecipeOverview(
+                    onFavorite: onFavorite,
                     recipe: recipe,
                   ),
                 ),
