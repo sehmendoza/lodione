@@ -85,20 +85,12 @@ class _RecipeOverviewState extends State<RecipeOverview> {
                       ),
                     ),
                     const Spacer(),
-                    MyButton(
-                        text: widget.recipe.isFavorite
-                            ? ' Added to favorite'
-                            : ' Add to favorite',
-                        icon: widget.recipe.isFavorite
-                            ? Icons.favorite
-                            : Icons.favorite_outline,
-                        onPressed: () {
-                          widget.onFavorite(widget.recipe);
-                          setState(() {
-                            widget.recipe.isFavorite =
-                                !widget.recipe.isFavorite;
-                          });
-                        }),
+                    IconButton(icon: widget.recipe.isFavorite ? Icons.favorite :Icons.favorite_outline, color: Colors.red, onPressed: () {
+                      widget.onFavorite(widget.recipe);
+                      setState(() {
+                        widget.recipe.isFavorite = !widget.recipe.isFavorite;
+                      });
+                    }),
                   ],
                 ),
                 const SizedBox(height: 10),
