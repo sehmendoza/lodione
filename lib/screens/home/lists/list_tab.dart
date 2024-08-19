@@ -260,7 +260,7 @@ class _ListTabState extends State<ListTab> {
                 children: [
                   TextField(
                     maxLines: 1,
-                    maxLength: 32,
+                    maxLength: 24,
                     style: const TextStyle(color: Colors.white),
                     controller: nameController,
                     decoration: const InputDecoration(
