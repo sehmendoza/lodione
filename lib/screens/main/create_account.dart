@@ -36,7 +36,7 @@ class _CreateAccountState extends State<CreateAccount> {
     userList.add(
       UserModel(username: usernameController.text),
     );
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (context) => const MainScreen(),

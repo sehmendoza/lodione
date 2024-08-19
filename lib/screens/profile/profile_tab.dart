@@ -13,6 +13,8 @@ class _ProfileTabState extends State<ProfileTab> {
   TextEditingController fullNameController =
       TextEditingController(text: 'Jose Gabriel Mendoza');
   bool editUsername = false;
+
+  bool isPrivate = true;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,6 +63,41 @@ class _ProfileTabState extends State<ProfileTab> {
                     edit: false,
                     label: 'Full name'),
               ],
+            ),
+            const SizedBox(height: 10),
+            const Center(
+              child: Text(
+                'Account settings',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white70,
+                ),
+              ),
+            ),
+            SwitchListTile(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              thumbIcon: WidgetStateProperty.all(
+                Icon(
+                  isPrivate ? Icons.lock : Icons.lock_open,
+                ),
+              ),
+              title: const Text(
+                'Private account',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'Your profile will be private',
+                style: TextStyle(color: Colors.white60),
+              ),
+              value: isPrivate,
+              onChanged: (value) {
+                setState(() {
+                  isPrivate = value;
+                });
+              },
+              activeColor: Colors.white,
             ),
           ],
         ),
