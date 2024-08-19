@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/connections/contacts_tab.dart';
+import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
 import 'package:lodione/storage/user_list.dart';
 
 import 'main_screen.dart';

@@ -4,7 +4,7 @@ import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
-import '../contacts_tab.dart';
+import '../contacts/contacts_tab.dart';
 
 class EventsTab extends StatefulWidget {
   const EventsTab({super.key});

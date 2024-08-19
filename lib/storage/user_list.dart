@@ -1,3 +1,3 @@
-import '../screens/connections/contacts_tab.dart';
+import '../screens/connections/contacts/contacts_tab.dart';
 
 List<UserModel> userList = [];
