@@ -9,35 +9,83 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
     state.length > 10 ? null : state = [...state, list];
   }
 
-  void updateListName(String listID, String name) {
-    state.firstWhere((list) => list.id == listID).name = name;
+  void removeList(String id) {
+    state = state.where((list) => list.id != id).toList();
   }
 
-  void removeList(String listID) {
-    state = state.where((list) => list.id != listID).toList();
-  }
-
-  void addItemToList(String listID, ItemModel item) {
-    state.firstWhere((list) => list.id == listID).items.insert(0, item);
-  }
-
-  void updateItemInList(String listID, String itemID, ItemModel item) {
-    state.firstWhere((list) => list.id == listID).items = state
-        .firstWhere((list) => list.id == listID)
-        .items
-        .map((oldItem) => oldItem.id == itemID ? item : oldItem)
-        .toList();
+  void addItemToList(ListModel list, ItemModel item) {
+    state = state.map((oldList) {
+      if (oldList.id == list.id) {
+        if (oldList.items.length < 100) {
+          return ListModel(
+            id: list.id,
+            name: list.name,
+            items: [item, ...list.items],
+          );
+        }
+      }
+      return oldList;
+    }).toList();
   }
 
   void removeItemFromList(String listID, String itemID) {
-    state.firstWhere((list) => list.id == listID).items = state
-        .firstWhere((list) => list.id == listID)
-        .items
-        .where((item) => item.id != itemID)
-        .toList();
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.where((item) => item.id != itemID).toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
+
+  void removeSelected(String listID) {
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.where((item) => item.isDone == false).toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
+
+  void selectAll(String listID) {
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.map((item) => item.copyWith(isDone: true)).toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
+
+  void unselectAll(String listID) {
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items:
+              list.items.map((item) => item.copyWith(isDone: false)).toList(),
+        );
+      }
+      return list;
+    }).toList();
   }
 }
 
 final listProvider = StateNotifierProvider<ListNotifier, List<ListModel>>(
   (ref) => ListNotifier(),
 );
+
+final selectedListProvider = StateProvider<ListModel>((ref) {
+  return ref.watch(listProvider).first;
+});

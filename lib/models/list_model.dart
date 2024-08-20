@@ -1,23 +1,44 @@
+import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
 
 class ListModel {
   final String id;
-  String name;
-  List<ItemModel> items;
+  final String name;
+  final List<ItemModel> items;
 
-  ListModel({required this.name, required this.items}) : id = uuid.v4();
+  ListModel({
+    String? id,
+    required this.name,
+    this.items = const [],
+  }) : id = id ?? UniqueKey().toString();
 
-  int get totalItems => items.length;
+  ListModel copyWith({String? name, List<ItemModel>? items}) {
+    return ListModel(
+      id: id,
+      name: name ?? this.name,
+      items: items ?? this.items,
+    );
+  }
 }
 
 class ItemModel {
   final String id;
-  String name;
-  String? subtitle;
-  bool isDone = false;
+  final String name;
+  bool isDone;
 
-  ItemModel({required this.name, this.subtitle, required this.isDone})
-      : id = uuid.v4();
+  ItemModel({
+    String? id,
+    required this.name,
+    this.isDone = false,
+  }) : id = id ?? UniqueKey().toString();
+
+  ItemModel copyWith({String? name, bool? isDone}) {
+    return ItemModel(
+      id: id,
+      name: name ?? this.name,
+      isDone: isDone ?? this.isDone,
+    );
+  }
 }

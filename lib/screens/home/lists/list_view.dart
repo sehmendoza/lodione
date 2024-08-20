@@ -49,12 +49,12 @@ class _MyListViewState extends ConsumerState<MyListView> {
                   items.name,
                   style: const TextStyle(color: Colors.white),
                 ),
-                subtitle: items.subtitle == null
-                    ? null
-                    : Text(
-                        items.subtitle!,
-                        style: const TextStyle(color: Colors.white),
-                      ),
+                // subtitle: items.subtitle == null
+                //     ? null
+                //     : Text(
+                //         items.subtitle!,
+                //         style: const TextStyle(color: Colors.white),
+                //       ),
                 trailing: PopupMenuButton(
                   itemBuilder: (_) => [
                     const PopupMenuItem(
@@ -63,9 +63,9 @@ class _MyListViewState extends ConsumerState<MyListView> {
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        setState(() {
-                          widget.selectedList.items[index].subtitle == 'Sub';
-                        });
+                        // setState(() {
+                        //   widget.selectedList.items[index].subtitle == 'Sub';
+                        // });
                       },
                       value: 'option2',
                       child: const Text('Add detail'),
