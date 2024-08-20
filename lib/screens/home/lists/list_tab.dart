@@ -61,8 +61,6 @@ class _ListTabState extends ConsumerState<ListTab> {
   Widget build(BuildContext context) {
     final mgaLists = ref.watch(listProvider);
 
-    int itemLength = selectedList.items.length;
-
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -121,14 +119,13 @@ class _ListTabState extends ConsumerState<ListTab> {
                                 color: Colors.white,
                               ),
                               child: Text(
-                                itemLength.toString(),
-                                // ref
-                                //     .watch(listProvider)
-                                //     .firstWhere(
-                                //         (list) => list.id == listModel.id)
-                                //     .items
-                                //     .length
-                                //     .toString(),
+                                ref
+                                    .watch(listProvider)
+                                    .firstWhere(
+                                        (list) => list.id == listModel.id)
+                                    .items
+                                    .length
+                                    .toString(),
                                 style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,

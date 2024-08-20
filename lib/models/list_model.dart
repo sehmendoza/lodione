@@ -4,7 +4,7 @@ const uuid = Uuid();
 
 class ListModel {
   final String id;
-  final String name;
+  String name;
   List<ItemModel> items;
 
   ListModel({required this.name, required this.items}) : id = uuid.v4();
@@ -14,7 +14,7 @@ class ListModel {
 
 class ItemModel {
   final String id;
-  final String name;
+  String name;
   String? subtitle;
   bool isDone = false;
 
