@@ -22,9 +22,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false)
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),
@@ -37,9 +37,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false)
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),
@@ -52,9 +52,9 @@ class _EventsTabState extends State<EventsTab> {
         location: 'Marikina City',
         info: 'Reunion',
         requirements: [
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false),
-          ListItem(name: 'Sago', isDone: false)
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false),
+          ItemModel(name: 'Sago', isDone: false)
         ],
         invites: [
           UserModel(username: 'sehmendoza'),
@@ -259,7 +259,7 @@ class EventModel {
   final String time;
   final String location;
   final String info;
-  final List<ListItem> requirements;
+  final List<ItemModel> requirements;
   final List<UserModel> invites;
 
   EventModel(

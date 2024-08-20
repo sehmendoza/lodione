@@ -7,15 +7,15 @@ List<RecipeModel> recipes = [
     isFavorite: false,
     name: 'Goto',
     ingredients: [
-      ListItem(
+      ItemModel(
         name: 'name',
         isDone: false,
       ),
-      ListItem(
+      ItemModel(
         name: 'fff',
         isDone: false,
       ),
-      ListItem(
+      ItemModel(
         name: 'gfg',
         isDone: false,
       ),
@@ -27,15 +27,15 @@ List<RecipeModel> recipes = [
     name: 'Dinuguan',
     isFavorite: false,
     ingredients: [
-      ListItem(
+      ItemModel(
         name: 'ghashh',
         isDone: false,
       ),
-      ListItem(
+      ItemModel(
         name: 'vcvav',
         isDone: false,
       ),
-      ListItem(
+      ItemModel(
         name: 'asdfsadf',
         isDone: false,
       ),

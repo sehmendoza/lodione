@@ -14,7 +14,7 @@ const categoryIcon = {
 
 class RecipeModel {
   String name;
-  List<ListItem> ingredients;
+  List<ItemModel> ingredients;
   List<String> steps;
   FoodCategory foodCategory;
   bool isFavorite = false;

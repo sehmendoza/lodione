@@ -85,12 +85,18 @@ class _RecipeOverviewState extends State<RecipeOverview> {
                       ),
                     ),
                     const Spacer(),
-                    IconButton(icon: widget.recipe.isFavorite ? Icons.favorite :Icons.favorite_outline, color: Colors.red, onPressed: () {
-                      widget.onFavorite(widget.recipe);
-                      setState(() {
-                        widget.recipe.isFavorite = !widget.recipe.isFavorite;
-                      });
-                    }),
+                    IconButton(
+                        icon: Icon(widget.recipe.isFavorite
+                            ? Icons.favorite
+                            : Icons.favorite_outline),
+                        color: Colors.red,
+                        onPressed: () {
+                          widget.onFavorite(widget.recipe);
+                          setState(() {
+                            widget.recipe.isFavorite =
+                                !widget.recipe.isFavorite;
+                          });
+                        }),
                   ],
                 ),
                 const SizedBox(height: 10),
@@ -114,7 +120,7 @@ class _RecipeOverviewState extends State<RecipeOverview> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      for (ListItem ing in widget.recipe.ingredients)
+                      for (ItemModel ing in widget.recipe.ingredients)
                         Text(
                           '• ${ing.name}',
                           style: const TextStyle(

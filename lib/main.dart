@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
 import 'screens/main/start_screen.dart';
 //import 'package:flutter/services.dart';
@@ -12,7 +13,11 @@ void main() {
   //   ],
   // ).then((fn) => const StartUp());
 
-  runApp(const StartUp());
+  runApp(
+    const ProviderScope(
+      child: StartUp(),
+    ),
+  );
 }
 
 class StartUp extends StatelessWidget {

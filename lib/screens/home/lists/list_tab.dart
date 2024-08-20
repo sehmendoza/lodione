@@ -1,40 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/widgets/dialogs.dart';
 
 import '../../../models/list_model.dart';
-import '../../../storage/lists_list.dart';
+import 'package:lodione/providers/list_provider.dart';
 import 'list_view.dart';
 
-class ListTab extends StatefulWidget {
+class ListTab extends ConsumerStatefulWidget {
   const ListTab({super.key});
 
   @override
-  State<ListTab> createState() => _ListTabState();
+  ConsumerState<ListTab> createState() => _ListTabState();
 }
 
-class _ListTabState extends State<ListTab> {
-  List<ListModel> mgaLists = lists;
-
+class _ListTabState extends ConsumerState<ListTab> {
   late String dropdownValue;
   late ListModel selectedList;
+
   @override
   void initState() {
     super.initState();
-    dropdownValue = mgaLists[0].id;
-    selectedList = mgaLists[0];
+    dropdownValue = ref.read(listProvider).first.id;
+    selectedList = ref.read(listProvider).first;
   }
 
   void selectList(id) {
     setState(() {
-      selectedList = mgaLists.firstWhere((list) => list.id == id);
+      selectedList = ref.read(listProvider).firstWhere((list) => list.id == id);
     });
   }
 
-  void addItem({required String listID, required ListItem item}) {
-    setState(() {
-      mgaLists.firstWhere((list) => list.id == listID).items.insert(0, item);
-      itemNode.requestFocus();
-      itemController.clear();
-    });
+  void addItem({required String listID, required ItemModel item}) {
+    ref
+                .read(listProvider)
+                .where((list) => list.id == listID)
+                .first
+                .items
+                .length >=
+            100
+        ? showSimpleDialog(context, 'Cannot add more items',
+            'You have reached the maximum number of items.')
+        : setState(() {
+            ref.read(listProvider.notifier).addItemToList(listID, item);
+
+            itemNode.requestFocus();
+            itemController.clear();
+          });
   }
 
   FocusNode itemNode = FocusNode();
@@ -48,6 +59,10 @@ class _ListTabState extends State<ListTab> {
 
   @override
   Widget build(BuildContext context) {
+    final mgaLists = ref.watch(listProvider);
+
+    int itemLength = selectedList.items.length;
+
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.all(10),
@@ -79,8 +94,7 @@ class _ListTabState extends State<ListTab> {
                         const Icon(Icons.arrow_drop_down, color: Colors.white),
                     iconSize: 18,
                     underline: Container(
-                        height: 1,
-                        color: Colors.white), // Fixed underline styling
+                        height: 1, color: null), // Fixed underline styling
                     borderRadius: BorderRadius.circular(2),
                     dropdownColor: const Color.fromARGB(255, 30, 30, 30),
                     onChanged: (newValue) {
@@ -93,30 +107,40 @@ class _ListTabState extends State<ListTab> {
                         .map<DropdownMenuItem<String>>((ListModel listModel) {
                       return DropdownMenuItem<String>(
                         value: listModel.id,
-                        child: Text(listModel.name,
-                            style: const TextStyle(color: Colors.white)),
+                        child: Row(
+                          children: [
+                            Text(
+                              listModel.name,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 6),
+                              padding: const EdgeInsets.all(7.5),
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: Text(
+                                itemLength.toString(),
+                                // ref
+                                //     .watch(listProvider)
+                                //     .firstWhere(
+                                //         (list) => list.id == listModel.id)
+                                //     .items
+                                //     .length
+                                //     .toString(),
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
                   ),
 
-                  // // Button Group
-                  // Row(
-                  //   mainAxisSize: MainAxisSize.min,
-                  //   children: [
-                  //     MyButton(
-                  //       text: 'Add',
-                  //       icon: Icons.add,
-                  //       onPressed: addNewList,
-                  //     ),
-                  //     const SizedBox(width: 3),
-                  //     MyButton(
-                  //       text: 'Share',
-                  //       icon: Icons.share,
-                  //       onPressed:
-                  //           () {}, // Placeholder for future implementation
-                  //     ),
-                  //   ],
-                  // ),
                   const Spacer(),
                   // Popup Menu
                   PopupMenuButton<String>(
@@ -154,6 +178,20 @@ class _ListTabState extends State<ListTab> {
                           selectedList.items.clear();
                         });
                       }),
+                      _buildMenuItem('Delete list', Icons.close, () {
+                        ref.read(listProvider).length == 1
+                            ? showSimpleDialog(
+                                context,
+                                'Cannot delete "My List"',
+                                'You must have at least one list.')
+                            : setState(() {
+                                ref
+                                    .read(listProvider.notifier)
+                                    .removeList(selectedList.id);
+                                selectedList = ref.read(listProvider).first;
+                                dropdownValue = selectedList.id;
+                              });
+                      }),
                     ],
                   ),
                 ],
@@ -174,7 +212,7 @@ class _ListTabState extends State<ListTab> {
                     }
                     addItem(
                       listID: dropdownValue,
-                      item: ListItem(
+                      item: ItemModel(
                         name: itemController.text,
                         isDone: false,
                       ),
@@ -202,7 +240,7 @@ class _ListTabState extends State<ListTab> {
                   }
                   addItem(
                     listID: dropdownValue,
-                    item: ListItem(
+                    item: ItemModel(
                       name: itemController.text,
                       isDone: false,
                     ),
@@ -279,11 +317,15 @@ class _ListTabState extends State<ListTab> {
               actions: [
                 TextButton(
                     onPressed: () {
-                      setState(() {
-                        mgaLists.add(
-                            ListModel(name: nameController.text, items: []));
-                      });
-                      Navigator.pop(context);
+                      nameController.text.isEmpty
+                          ? null
+                          : setState(() {
+                              ref.read(listProvider.notifier).addList(ListModel(
+                                  name: nameController.text, items: []));
+                              dropdownValue = ref.read(listProvider).last.id;
+                              selectedList = ref.read(listProvider).last;
+                              Navigator.pop(context);
+                            });
                     },
                     child: const Text(
                       'Add',

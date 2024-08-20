@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/list_model.dart';
+import '../../../providers/list_provider.dart';
 
-class MyListView extends StatefulWidget {
+class MyListView extends ConsumerStatefulWidget {
   const MyListView({super.key, required this.selectedList});
 
   final ListModel selectedList;
 
   @override
-  State<MyListView> createState() => _MyListViewState();
+  ConsumerState<MyListView> createState() => _MyListViewState();
 }
 
-class _MyListViewState extends State<MyListView> {
+class _MyListViewState extends ConsumerState<MyListView> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -28,8 +30,9 @@ class _MyListViewState extends State<MyListView> {
               ),
               onDismissed: (direction) {
                 setState(() {
-                  widget.selectedList.items
-                      .removeWhere((item) => item.id == items.id);
+                  ref
+                      .read(listProvider.notifier)
+                      .removeItemFromList(widget.selectedList.id, items.id);
                 });
               },
               key: ValueKey(items.id),
@@ -70,8 +73,8 @@ class _MyListViewState extends State<MyListView> {
                     PopupMenuItem(
                       onTap: () {
                         setState(() {
-                          widget.selectedList.items
-                              .removeWhere((item) => item.id == items.id);
+                          ref.read(listProvider.notifier).removeItemFromList(
+                              widget.selectedList.id, items.id);
                         });
                       },
                       value: 'delete',

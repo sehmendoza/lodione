@@ -32,14 +32,14 @@ class _NewRecipeState extends State<NewRecipe> {
     super.dispose();
   }
 
-  List<ListItem> ingredients = [];
+  List<ItemModel> ingredients = [];
   TextEditingController itemController = TextEditingController();
   TextEditingController directionController = TextEditingController();
   final FocusNode _ingFocus = FocusNode();
 
   void addIngredient() {
     setState(() {
-      ingredients.add(ListItem(name: itemController.text, isDone: false));
+      ingredients.add(ItemModel(name: itemController.text, isDone: false));
       itemController.clear();
       _ingFocus.requestFocus();
     });

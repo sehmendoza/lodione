@@ -5,19 +5,19 @@ const uuid = Uuid();
 class ListModel {
   final String id;
   final String name;
-  final List<ListItem> items;
+  List<ItemModel> items;
 
   ListModel({required this.name, required this.items}) : id = uuid.v4();
 
   int get totalItems => items.length;
 }
 
-class ListItem {
+class ItemModel {
   final String id;
   final String name;
   String? subtitle;
   bool isDone = false;
 
-  ListItem({required this.name, this.subtitle, required this.isDone})
+  ItemModel({required this.name, this.subtitle, required this.isDone})
       : id = uuid.v4();
 }

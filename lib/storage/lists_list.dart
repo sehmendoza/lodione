@@ -4,19 +4,19 @@ List<ListModel> lists = [
   ListModel(
     name: 'Mendoza',
     items: [
-      ListItem(name: 'Banana', isDone: false),
-      ListItem(name: 'Saging', isDone: false),
-      ListItem(name: 'Apple', isDone: false),
-      ListItem(name: 'Root Beer', isDone: false),
+      ItemModel(name: 'Banana', isDone: false),
+      ItemModel(name: 'Saging', isDone: false),
+      ItemModel(name: 'Apple', isDone: false),
+      ItemModel(name: 'Root Beer', isDone: false),
     ],
   ),
   ListModel(
     name: 'Policarpio',
     items: [
-      ListItem(name: 'Chens', isDone: false),
-      ListItem(name: 'Saging', isDone: false),
-      ListItem(name: 'Beer', isDone: false),
-      ListItem(name: 'Root Beer', isDone: false),
+      ItemModel(name: 'Chens', isDone: false),
+      ItemModel(name: 'Saging', isDone: false),
+      ItemModel(name: 'Beer', isDone: false),
+      ItemModel(name: 'Root Beer', isDone: false),
     ],
   ),
 ];
