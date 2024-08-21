@@ -142,11 +142,6 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
       }
       return list;
     }).toList();
-    // state.firstWhere((list) => list.id == listID).items = state
-    //     .firstWhere((list) => list.id == listID)
-    //     .items
-    //     .where((item) => item.id != itemID)
-    //     .toList();
   }
 
   void removeCompleted(String listID) {
@@ -156,6 +151,33 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
           id: list.id,
           name: list.name,
           items: list.items.where((item) => !item.isDone).toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
+
+  void moveItemsToOtherList(listID, itemID, newListID) {
+    final items = state
+        .firstWhere((list) => list.id == listID)
+        .items
+        .where((item) => item.isDone)
+        .toList();
+    final uncheckItems =
+        items.map((item) => item.copyWith(isDone: false)).toList();
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.where((item) => !item.isDone).toList(),
+        );
+      }
+      if (list.id == newListID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: [...uncheckItems, ...list.items],
         );
       }
       return list;

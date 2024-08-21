@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
 import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
+import 'move_list_dialog.dart';
 
 class ListTab extends ConsumerStatefulWidget {
   const ListTab({super.key});
@@ -162,8 +163,10 @@ class _ListTabState extends ConsumerState<ListTab> {
                       }),
                       _buildMenuItem('Move marked items to other list',
                           Icons.drive_file_move, () {
-                        showSimpleDialog(context, 'Move items to other list',
-                            'This feature is not yet available.');
+                        showDialog(
+                            context: context,
+                            builder: (context) => MoveListDialog(
+                                selectedListID: selectedList.id, ref: ref));
                       }),
                       _buildMenuItem('Share list', Icons.share, () {
                         showSimpleDialog(context, 'Share list',

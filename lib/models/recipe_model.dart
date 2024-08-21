@@ -14,6 +14,8 @@ const categoryIcon = {
 };
 
 class RecipeModel {
+  String id = UniqueKey().toString();
+
   String name;
   List<ItemModel> ingredients;
   List<String> steps;
