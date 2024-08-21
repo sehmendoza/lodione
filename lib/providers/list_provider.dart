@@ -9,45 +9,17 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
     state.length > 10 ? null : state = [...state, list];
   }
 
-  void removeList(String id) {
-    state = state.where((list) => list.id != id).toList();
+  void removeList(String listID) {
+    state = state.where((list) => list.id != listID).toList();
   }
 
-  void addItemToList(ListModel list, ItemModel item) {
-    state = state.map((oldList) {
-      if (oldList.id == list.id) {
-        if (oldList.items.length < 100) {
-          return ListModel(
-            id: list.id,
-            name: list.name,
-            items: [item, ...list.items],
-          );
-        }
-      }
-      return oldList;
-    }).toList();
-  }
-
-  void removeItemFromList(String listID, String itemID) {
+  void addItemToList(String listID, ItemModel item) {
     state = state.map((list) {
       if (list.id == listID) {
         return ListModel(
           id: list.id,
           name: list.name,
-          items: list.items.where((item) => item.id != itemID).toList(),
-        );
-      }
-      return list;
-    }).toList();
-  }
-
-  void removeSelected(String listID) {
-    state = state.map((list) {
-      if (list.id == listID) {
-        return ListModel(
-          id: list.id,
-          name: list.name,
-          items: list.items.where((item) => item.isDone == false).toList(),
+          items: [item, ...list.items],
         );
       }
       return list;
@@ -80,6 +52,35 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
       return list;
     }).toList();
   }
+
+  void updateItemInList(String listID, String itemID, ItemModel item) {
+    state.firstWhere((list) => list.id == listID).items = state
+        .firstWhere((list) => list.id == listID)
+        .items
+        .map((oldItem) => oldItem.id == itemID ? item : oldItem)
+        .toList();
+  }
+
+  void removeItemFromList(String listID, String itemID) {
+    state.firstWhere((list) => list.id == listID).items = state
+        .firstWhere((list) => list.id == listID)
+        .items
+        .where((item) => item.id != itemID)
+        .toList();
+  }
+
+  void removeCompleted(String listID) {
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.where((item) => !item.isDone).toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
 }
 
 final listProvider = StateNotifierProvider<ListNotifier, List<ListModel>>(
@@ -87,5 +88,6 @@ final listProvider = StateNotifierProvider<ListNotifier, List<ListModel>>(
 );
 
 final selectedListProvider = StateProvider<ListModel>((ref) {
-  return ref.watch(listProvider).first;
+  final selectedList = ref.watch(listProvider).last;
+  return selectedList;
 });

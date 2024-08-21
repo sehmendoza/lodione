@@ -16,11 +16,12 @@ class MyListView extends ConsumerStatefulWidget {
 class _MyListViewState extends ConsumerState<MyListView> {
   @override
   Widget build(BuildContext context) {
+    final selectedList = widget.selectedList;
     return Expanded(
       child: ListView.builder(
-          itemCount: widget.selectedList.items.length,
+          itemCount: selectedList.items.length,
           itemBuilder: (context, index) {
-            var items = widget.selectedList.items[index];
+            var items = selectedList.items[index];
             return Dismissible(
               background: Container(
                 color: Colors.white38,
@@ -32,7 +33,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                 setState(() {
                   ref
                       .read(listProvider.notifier)
-                      .removeItemFromList(widget.selectedList.id, items.id);
+                      .removeItemFromList(selectedList.id, items.id);
                 });
               },
               key: ValueKey(items.id),
@@ -73,8 +74,9 @@ class _MyListViewState extends ConsumerState<MyListView> {
                     PopupMenuItem(
                       onTap: () {
                         setState(() {
-                          ref.read(listProvider.notifier).removeItemFromList(
-                              widget.selectedList.id, items.id);
+                          ref
+                              .read(listProvider.notifier)
+                              .removeItemFromList(selectedList.id, items.id);
                         });
                       },
                       value: 'delete',

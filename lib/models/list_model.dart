@@ -5,8 +5,8 @@ const uuid = Uuid();
 
 class ListModel {
   final String id;
-  final String name;
-  final List<ItemModel> items;
+  String name;
+  List<ItemModel> items;
 
   ListModel({
     String? id,
@@ -25,7 +25,7 @@ class ListModel {
 
 class ItemModel {
   final String id;
-  final String name;
+  String name;
   bool isDone;
 
   ItemModel({

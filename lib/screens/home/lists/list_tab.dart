@@ -5,14 +5,18 @@ import '../../../models/list_model.dart';
 import 'package:lodione/providers/list_provider.dart';
 import 'list_view.dart';
 
-class ListTab extends ConsumerWidget {
+class ListTab extends ConsumerStatefulWidget {
   const ListTab({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ListTab> createState() => _ListTabState();
+}
+
+class _ListTabState extends ConsumerState<ListTab> {
+  @override
+  Widget build(BuildContext context) {
     final allList = ref.watch(listProvider);
     final selectedList = ref.watch(selectedListProvider);
-    print(selectedList.name);
 
     return Container(
       width: double.infinity,
@@ -134,8 +138,10 @@ class ListTab extends ConsumerWidget {
       WidgetRef ref, TextEditingController controller, ListModel selectedList) {
     if (controller.text.trim().isEmpty) return;
     ref.read(listProvider.notifier).addItemToList(
-        selectedList, ItemModel(name: controller.text, isDone: false));
-
+          selectedList.id,
+          ItemModel(name: controller.text, isDone: false),
+        );
+    // ref.read(selectedListProvider.notifier).state = selectedList.copyWith();
     controller.clear();
   }
 
@@ -149,7 +155,7 @@ class ListTab extends ConsumerWidget {
         ref.read(listProvider.notifier).selectAll(selectedList.id);
         break;
       case 'Delete all selected items':
-        ref.read(listProvider.notifier).removeSelected(selectedList.id);
+        ref.read(listProvider.notifier).removeCompleted(selectedList.id);
         break;
       case 'Unselect all items':
         ref.read(listProvider.notifier).unselectAll(selectedList.id);
@@ -189,8 +195,6 @@ class ListTab extends ConsumerWidget {
                     .read(listProvider.notifier)
                     .addList(ListModel(name: nameController.text, items: []));
                 Navigator.pop(context);
-                ref.read(selectedListProvider.notifier).state =
-                    ref.read(listProvider).last;
               }
             },
             child: const Text('Add', style: TextStyle(color: Colors.white)),
