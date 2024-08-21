@@ -76,6 +76,21 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
     }).toList();
   }
 
+  void updateItemInList(String listID, ItemModel item) {
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items
+              .map((oldItem) => oldItem.id == item.id ? item : oldItem)
+              .toList(),
+        );
+      }
+      return list;
+    }).toList();
+  }
+
   void selectAll(String listID) {
     state = state.map((list) {
       if (list.id == listID) {
@@ -117,11 +132,21 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
   }
 
   void removeItemFromList(String listID, String itemID) {
-    state.firstWhere((list) => list.id == listID).items = state
-        .firstWhere((list) => list.id == listID)
-        .items
-        .where((item) => item.id != itemID)
-        .toList();
+    state = state.map((list) {
+      if (list.id == listID) {
+        return ListModel(
+          id: list.id,
+          name: list.name,
+          items: list.items.where((item) => item.id != itemID).toList(),
+        );
+      }
+      return list;
+    }).toList();
+    // state.firstWhere((list) => list.id == listID).items = state
+    //     .firstWhere((list) => list.id == listID)
+    //     .items
+    //     .where((item) => item.id != itemID)
+    //     .toList();
   }
 
   void removeCompleted(String listID) {
@@ -146,12 +171,14 @@ final selectedListProvider = StateProvider<String>((ref) {
 // Model for list items
 class ItemModel {
   final String id;
-  final String name;
+  String name;
+  String details;
   bool isDone;
 
   ItemModel({
     String? id,
     required this.name,
+    this.details = "",
     this.isDone = false,
   }) : id = id ?? UniqueKey().toString();
 

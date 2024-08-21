@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/widgets/buttons.dart';
 
 import '../../../providers/list_provider.dart';
 
@@ -54,26 +56,28 @@ class _MyListViewState extends ConsumerState<MyListView> {
                   item.name,
                   style: const TextStyle(color: Colors.white),
                 ),
-                // subtitle: items.subtitle == null
-                //     ? null
-                //     : Text(
-                //         items.subtitle!,
-                //         style: const TextStyle(color: Colors.white),
-                //       ),
+                subtitle: item.details == ''
+                    ? null
+                    : Text(
+                        item.details,
+                        style: const TextStyle(color: Colors.white60),
+                      ),
                 trailing: PopupMenuButton(
                   itemBuilder: (_) => [
-                    const PopupMenuItem(
+                    PopupMenuItem(
+                      onTap: () {
+                        showEditDialog(selectedList.id, item);
+                      },
                       value: 'option1',
-                      child: Text('Edit item'),
+                      child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        // setState(() {
-                        //   widget.selectedList.items[index].subtitle == 'Sub';
-                        // });
+                        showAddDetailDialog(selectedList.id, item);
                       },
                       value: 'option2',
-                      child: const Text('Add detail'),
+                      child: Text(
+                          item.details == '' ? 'Add details' : 'Edit details'),
                     ),
                     PopupMenuItem(
                       onTap: () {
@@ -94,6 +98,98 @@ class _MyListViewState extends ConsumerState<MyListView> {
               ),
             );
           }),
+    );
+  }
+
+  void showEditDialog(String listID, ItemModel item) {
+    TextEditingController controller = TextEditingController(text: item.name);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: Colors.white),
+          ),
+          title: const Center(
+              child: Text('Edit item', style: TextStyle(color: Colors.white))),
+          content: TextField(
+            style: const TextStyle(color: Colors.white),
+            controller: controller,
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            MyButton(
+                text: 'Save',
+                icon: Icons.save,
+                onPressed: () {
+                  item.name = controller.text;
+                  setState(() {
+                    ref
+                        .read(listProvider.notifier)
+                        .updateItemInList(listID, item);
+                  });
+                  Navigator.of(context).pop();
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  void showAddDetailDialog(String listID, ItemModel item) {
+    TextEditingController controller =
+        TextEditingController(text: item.details);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: const BorderSide(color: Colors.white),
+          ),
+          title: Center(
+              child: Text(item.details == '' ? 'Add details' : 'Edit details',
+                  style: const TextStyle(color: Colors.white))),
+          content: TextField(
+            style: const TextStyle(color: Colors.white),
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Enter details',
+              hintStyle: TextStyle(color: Colors.white60),
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Cancel'),
+            ),
+            MyButton(
+                text: 'Save',
+                icon: Icons.save,
+                onPressed: () {
+                  item.details = controller.text;
+                  setState(() {
+                    ref
+                        .read(listProvider.notifier)
+                        .updateItemInList(listID, item);
+                  });
+                  Navigator.of(context).pop();
+                })
+          ],
+        );
+      },
     );
   }
 }
