@@ -1,5 +1,5 @@
-import '../models/list_model.dart';
 import '../models/recipe_model.dart';
+import '../providers/list_provider.dart';
 
 List<RecipeModel> recipes = [
   RecipeModel(

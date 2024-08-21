@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
-
-import '../../../models/list_model.dart';
+import '../../../providers/list_provider.dart';
 import '../contacts/contacts_tab.dart';
 
 class EventsTab extends StatefulWidget {
@@ -259,8 +258,8 @@ class EventModel {
   final String time;
   final String location;
   final String info;
-  final List<ItemModel> requirements;
-  final List<UserModel> invites;
+  List<ItemModel> requirements;
+  List<UserModel> invites;
 
   EventModel(
       {required this.title,

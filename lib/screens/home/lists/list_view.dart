@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
 
 class MyListView extends ConsumerStatefulWidget {
-  const MyListView({super.key, required this.selectedList});
+  const MyListView({super.key, required this.listID});
 
-  final ListModel selectedList;
+  final String listID;
 
   @override
   ConsumerState<MyListView> createState() => _MyListViewState();
@@ -16,12 +15,17 @@ class MyListView extends ConsumerStatefulWidget {
 class _MyListViewState extends ConsumerState<MyListView> {
   @override
   Widget build(BuildContext context) {
-    final selectedList = widget.selectedList;
+    final items = ref
+        .watch(listProvider)
+        .firstWhere((list) => list.id == widget.listID)
+        .items;
+    final selectedList =
+        ref.watch(listProvider).firstWhere((list) => list.id == widget.listID);
     return Expanded(
       child: ListView.builder(
-          itemCount: selectedList.items.length,
+          itemCount: items.length,
           itemBuilder: (context, index) {
-            var items = selectedList.items[index];
+            var item = items[index];
             return Dismissible(
               background: Container(
                 color: Colors.white38,
@@ -33,21 +37,21 @@ class _MyListViewState extends ConsumerState<MyListView> {
                 setState(() {
                   ref
                       .read(listProvider.notifier)
-                      .removeItemFromList(selectedList.id, items.id);
+                      .removeItemFromList(selectedList.id, item.id);
                 });
               },
-              key: ValueKey(items.id),
+              key: ValueKey(item.id),
               child: ListTile(
-                key: ValueKey(items.id),
+                key: ValueKey(item.id),
                 leading: Checkbox(
-                    value: items.isDone,
+                    value: item.isDone,
                     onChanged: (value) {
                       setState(() {
-                        items.isDone = !items.isDone;
+                        item.isDone = !item.isDone;
                       });
                     }),
                 title: Text(
-                  items.name,
+                  item.name,
                   style: const TextStyle(color: Colors.white),
                 ),
                 // subtitle: items.subtitle == null
@@ -76,7 +80,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                         setState(() {
                           ref
                               .read(listProvider.notifier)
-                              .removeItemFromList(selectedList.id, items.id);
+                              .removeItemFromList(selectedList.id, item.id);
                         });
                       },
                       value: 'delete',
