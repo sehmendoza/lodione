@@ -94,11 +94,16 @@ class _MoveListDialogState extends ConsumerState<MoveListDialog> {
       actions: [
         TextButton(
             onPressed: () {
+              if (newListDropdownValue == widget.selectedListID) {
+                Navigator.pop(context);
+                return;
+              }
               ref.read(listProvider.notifier).moveItemsToOtherList(
                   widget.selectedListID,
                   widget.selectedListID,
                   newListDropdownValue);
-              Navigator.pop(context);
+
+              Navigator.pop(context, newListDropdownValue);
             },
             child: const Text(
               'Move',

@@ -163,10 +163,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                       }),
                       _buildMenuItem('Move marked items to other list',
                           Icons.drive_file_move, () {
-                        showDialog(
-                            context: context,
-                            builder: (context) => MoveListDialog(
-                                selectedListID: selectedList.id, ref: ref));
+                        _showMoveListDialog();
                       }),
                       _buildMenuItem('Share list', Icons.share, () {
                         showSimpleDialog(context, 'Share list',
@@ -333,5 +330,19 @@ class _ListTabState extends ConsumerState<ListTab> {
                     ))
               ],
             ));
+  }
+
+  void _showMoveListDialog() async {
+    final String result = await showDialog(
+      context: context,
+      builder: (context) => MoveListDialog(
+        selectedListID: selectedList.id,
+        ref: ref,
+      ),
+    );
+    dropdownValue = result;
+
+    String moveToList = result;
+    selectList(moveToList);
   }
 }
