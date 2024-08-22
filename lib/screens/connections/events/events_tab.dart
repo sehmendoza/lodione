@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
-import '../../../providers/list_provider.dart';
+import '../../../models/list_model.dart';
 import '../contacts/contacts_tab.dart';
 
 class EventsTab extends StatefulWidget {

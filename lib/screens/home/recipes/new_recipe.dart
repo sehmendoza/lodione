@@ -3,7 +3,7 @@ import 'package:lodione/models/recipe_model.dart';
 import 'package:lodione/storage/recipe_list.dart';
 import 'package:lodione/widgets/buttons.dart';
 
-import '../../../providers/list_provider.dart';
+import '../../../models/list_model.dart';
 
 class NewRecipe extends StatefulWidget {
   const NewRecipe({super.key});

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
 
+import '../../../models/list_model.dart';
 import '../../../models/recipe_model.dart';
-import '../../../providers/list_provider.dart';
 
 class RecipeOverview extends StatefulWidget {
   const RecipeOverview({

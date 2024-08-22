@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
 
 class MoveListDialog extends ConsumerStatefulWidget {
