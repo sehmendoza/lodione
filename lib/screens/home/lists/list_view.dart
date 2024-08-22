@@ -179,6 +179,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                 icon: Icons.save,
                 onPressed: () {
                   item.details = controller.text;
+
                   setState(() {
                     ref
                         .read(listProvider.notifier)
