@@ -333,16 +333,21 @@ class _ListTabState extends ConsumerState<ListTab> {
   }
 
   void _showMoveListDialog() async {
-    final String result = await showDialog(
-      context: context,
-      builder: (context) => MoveListDialog(
-        selectedListID: selectedList.id,
-        ref: ref,
-      ),
-    );
-    dropdownValue = result;
+    try {
+      final String result = await showDialog(
+        context: context,
+        builder: (context) => MoveListDialog(
+          selectedListID: selectedList.id,
+          ref: ref,
+        ),
+      );
 
-    String moveToList = result;
-    selectList(moveToList);
+      dropdownValue = result;
+
+      String moveToList = result;
+      selectList(moveToList);
+    } catch (e) {
+      print(e);
+    }
   }
 }
