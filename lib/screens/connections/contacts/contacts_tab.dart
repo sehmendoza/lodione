@@ -294,4 +294,16 @@ class GroupConnection {
 class UserModel {
   String username;
   UserModel({required this.username});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'username': username,
+    };
+  }
+
+  factory UserModel.fromMap(Map<String, dynamic> data) {
+    return UserModel(
+      username: data['username'],
+    );
+  }
 }

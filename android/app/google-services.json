@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "350828900623",
+    "firebase_url": "https://lodione-lifestyle-default-rtdb.firebaseio.com",
+    "project_id": "lodione-lifestyle",
+    "storage_bucket": "lodione-lifestyle.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350828900623:android:30375d03fbf45120e54e7a",
+        "android_client_info": {
+          "package_name": "com.example.lodione"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASu97JPAaSPLMe5s8C6nas6JLVPReiuis"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

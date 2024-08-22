@@ -21,6 +21,21 @@ class ItemModel {
       isDone: isDone ?? this.isDone,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'details': details,
+      'isDone': isDone,
+    };
+  }
+
+  ItemModel.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        details = json['details'],
+        isDone = json['isDone'];
 }
 
 // Model for lists
@@ -41,5 +56,25 @@ class ListModel {
       name: name ?? this.name,
       items: items ?? this.items,
     );
+  }
+
+  ListModel.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        items = (json['items'] as List)
+            .map((item) => ItemModel(
+                  id: item['id'],
+                  name: item['name'],
+                  details: item['details'],
+                  isDone: item['isDone'],
+                ))
+            .toList();
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'items': items.map((item) => item.toJson()).toList(),
+    };
   }
 }

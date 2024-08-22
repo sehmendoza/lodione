@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
-import 'screens/main/start_screen.dart';
-//import 'package:flutter/services.dart';
 
-void main() {
+import 'screens/main/start_screen.dart';
+
+void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
   // SystemChrome.setPreferredOrientations(
   //   [
@@ -12,6 +12,8 @@ void main() {
   //     DeviceOrientation.portraitDown,
   //   ],
   // ).then((fn) => const StartUp());
+  // WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
     const ProviderScope(

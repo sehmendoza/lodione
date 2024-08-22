@@ -1,7 +1,11 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import '../models/list_model.dart';
 
+final url =
+    Uri.https('lodione-lifestyle-default-rtdb.firebaseio.com', 'listList.json');
 // Provider for managing lists
 final listProvider =
     StateNotifierProvider<ListNotifier, List<ListModel>>((ref) {
@@ -9,10 +13,29 @@ final listProvider =
 });
 
 class ListNotifier extends StateNotifier<List<ListModel>> {
-  ListNotifier() : super([ListModel(name: "My List", items: [])]);
+  ListNotifier()
+      : super([
+          ListModel(name: 'My List', items: []),
+        ]);
 
-  void addList(ListModel newList) {
+  void setLists(List<ListModel> lists) {
+    state = lists;
+  }
+
+  void addList(ListModel newList) async {
     state = [...state, newList];
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(
+        {
+          'id': newList.id,
+          'name': newList.name,
+          'items': newList.items.map((item) => item.toJson()).toList(),
+        },
+      ),
+    );
+    print(response.body);
   }
 
   void removeList(String id) {
