@@ -210,9 +210,9 @@ class _ListTabState extends ConsumerState<ListTab> {
                     addItem(
                       listID: dropdownValue,
                       item: ItemModel(
-                        name: itemController.text,
-                        isDone: false,
-                      ),
+                          name: itemController.text,
+                          isDone: false,
+                          details: ''),
                     );
                   },
                   controller: itemController,
@@ -238,9 +238,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                   addItem(
                     listID: dropdownValue,
                     item: ItemModel(
-                      name: itemController.text,
-                      isDone: false,
-                    ),
+                        name: itemController.text, isDone: false, details: ''),
                   );
                 },
                 child: const Text(

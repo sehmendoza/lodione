@@ -39,7 +39,8 @@ class _NewRecipeState extends State<NewRecipe> {
 
   void addIngredient() {
     setState(() {
-      ingredients.add(ItemModel(name: itemController.text, isDone: false));
+      ingredients.add(
+          ItemModel(name: itemController.text, isDone: false, details: ''));
       itemController.clear();
       _ingFocus.requestFocus();
     });

@@ -99,9 +99,7 @@ class _MoveListDialogState extends ConsumerState<MoveListDialog> {
                 return;
               }
               ref.read(listProvider.notifier).moveItemsToOtherList(
-                  widget.selectedListID,
-                  widget.selectedListID,
-                  newListDropdownValue);
+                  widget.selectedListID, newListDropdownValue);
 
               Navigator.pop(context, newListDropdownValue);
             },
