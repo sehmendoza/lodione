@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
-
+import 'package:http/http.dart' as http;
 import '../../../models/places_model.dart';
+
+final url = Uri.https(
+    'lodione-lifestyle-default-rtdb.firebaseio.com', 'gotoPlace.json');
 
 class GotoPlaces extends StatefulWidget {
   const GotoPlaces({super.key});
@@ -172,6 +175,7 @@ class _GotoPlacesState extends State<GotoPlaces> {
                       locationController.text.isEmpty) {
                     return;
                   } else {
+                    http.post(url);
                     setState(() {
                       places.add(PlaceModel(
                           name: nameController.text,

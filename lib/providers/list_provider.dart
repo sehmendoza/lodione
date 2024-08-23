@@ -1,8 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/list_model.dart';
 
-final url =
-    Uri.https('lodione-lifestyle-default-rtdb.firebaseio.com', 'listList.json');
 // Provider for managing lists
 final listProvider =
     StateNotifierProvider<ListNotifier, List<ListModel>>((ref) {
