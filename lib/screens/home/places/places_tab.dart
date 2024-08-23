@@ -140,26 +140,15 @@ class _GotoPlacesState extends State<GotoPlaces> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                        hintText: 'Restaurant Name',
-                        hintStyle: TextStyle(color: Colors.white70)),
-                  ),
+                  gotoTextfield(
+                      nameController: nameController,
+                      hintText: 'Restaurant Name'),
                   const SizedBox(height: 10),
-                  TextField(
-                      controller: locationController,
-                      decoration: const InputDecoration(
-                        hintText: 'Location',
-                        hintStyle: TextStyle(color: Colors.white70),
-                      )),
+                  gotoTextfield(
+                      nameController: locationController, hintText: 'Location'),
                   const SizedBox(height: 10),
-                  TextField(
-                      controller: detailController,
-                      decoration: const InputDecoration(
-                        hintText: 'Location',
-                        hintStyle: TextStyle(color: Colors.white70),
-                      )),
+                  gotoTextfield(
+                      nameController: detailController, hintText: 'Details'),
                 ],
               ),
             ),
@@ -279,12 +268,8 @@ class _GotoPlacesState extends State<GotoPlaces> {
                 side: const BorderSide(color: Colors.white, width: 2)),
             title: const Text('Edit Place Name',
                 style: TextStyle(color: Colors.white)),
-            content: TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                  hintText: 'Place Name',
-                  hintStyle: TextStyle(color: Colors.white70)),
-            ),
+            content: gotoTextfield(
+                nameController: nameController, hintText: 'Place Name'),
             actionsAlignment: MainAxisAlignment.spaceBetween,
             actions: [
               TextButton(
@@ -301,7 +286,9 @@ class _GotoPlacesState extends State<GotoPlaces> {
                     backgroundColor: Colors.black,
                     side: const BorderSide(color: Colors.white, width: 2)),
                 onPressed: () {
-                  place.name = nameController.text;
+                  setState(() {
+                    place.name = nameController.text;
+                  });
 
                   Navigator.pop(context);
                 },
@@ -315,7 +302,7 @@ class _GotoPlacesState extends State<GotoPlaces> {
 
   void editRestaurantLocation(PlaceModel place) {
     TextEditingController locationController =
-        TextEditingController(text: place.location); // Set the initial value
+        TextEditingController(text: place.location);
 
     showDialog(
         context: context,
@@ -327,12 +314,9 @@ class _GotoPlacesState extends State<GotoPlaces> {
                 side: const BorderSide(color: Colors.white, width: 2)),
             title: const Text('Edit Restaurant Location',
                 style: TextStyle(color: Colors.white)),
-            content: TextField(
-              controller: locationController,
-              decoration: const InputDecoration(
-                  hintText: 'Restaurant Location',
-                  hintStyle: TextStyle(color: Colors.white70)),
-            ),
+            content: gotoTextfield(
+                nameController: locationController,
+                hintText: 'Restaurant Location'),
             actionsAlignment: MainAxisAlignment.spaceBetween,
             actions: [
               TextButton(
@@ -349,7 +333,9 @@ class _GotoPlacesState extends State<GotoPlaces> {
                     backgroundColor: Colors.black,
                     side: const BorderSide(color: Colors.white, width: 2)),
                 onPressed: () {
-                  place.location = locationController.text;
+                  setState(() {
+                    place.location = locationController.text;
+                  });
 
                   Navigator.pop(context);
                 },
@@ -360,4 +346,14 @@ class _GotoPlacesState extends State<GotoPlaces> {
           );
         });
   }
+}
+
+Widget gotoTextfield(
+    {required TextEditingController nameController, required String hintText}) {
+  return TextField(
+    style: const TextStyle(color: Colors.white),
+    controller: nameController,
+    decoration: InputDecoration(
+        hintText: hintText, hintStyle: const TextStyle(color: Colors.white70)),
+  );
 }

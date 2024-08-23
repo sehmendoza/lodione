@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
@@ -7,7 +5,6 @@ import '../../../models/list_model.dart';
 import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
 import 'move_list_dialog.dart';
-import 'package:http/http.dart' as http;
 
 class ListTab extends ConsumerStatefulWidget {
   const ListTab({super.key});
@@ -25,23 +22,6 @@ class _ListTabState extends ConsumerState<ListTab> {
     super.initState();
     dropdownValue = ref.read(listProvider).first.id;
     selectedList = ref.read(listProvider).first;
-    loadData();
-  }
-
-  void loadData() async {
-    final response = await http.get(url);
-
-    final Map<String, dynamic> listData = json.decode(response.body);
-    final List<ListModel> loadedLists = [];
-    for (final list in listData.entries) {
-      loadedLists.add(ListModel(
-          id: list.key, name: list.value['name'], items: list.value['items']));
-    }
-    setState(() {
-      ref.read(listProvider.notifier).setLists(loadedLists);
-      dropdownValue = ref.read(listProvider).first.id;
-      selectedList = ref.read(listProvider).first;
-    });
   }
 
   void selectList(id) {
