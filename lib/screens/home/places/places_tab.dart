@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/places_provider.dart';
 import 'package:lodione/widgets/buttons.dart';
-import 'package:http/http.dart' as http;
 import '../../../models/places_model.dart';
 
 final url = Uri.https(
@@ -18,30 +15,6 @@ class GotoPlaces extends ConsumerStatefulWidget {
 }
 
 class _GotoPlacesState extends ConsumerState<GotoPlaces> {
-  @override
-  void initState() {
-    loadData();
-    super.initState();
-  }
-
-  void loadData() {
-    http.get(url).then((response) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final List<PlaceModel> loadedPlaces = [];
-      for (final place in data.entries) {
-        loadedPlaces.add(PlaceModel(
-            name: place.value['name'],
-            location: place.value['location'],
-            details: place.value['details']));
-      }
-
-      ref.read(placesProvider.notifier).setPlaces(loadedPlaces);
-      setState(() {
-        places = loadedPlaces;
-      });
-    });
-  }
-
   List<PlaceModel> places = [];
 
   @override
@@ -205,20 +178,10 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                     return;
                   } else {
                     setState(() {
-                      http.post(
-                        url,
-                        headers: {'Content-Type': 'application/json'},
-                        body: json.encode({
-                          'name': nameController.text,
-                          'location': locationController.text,
-                          'details': detailController.text
-                        }),
-                      );
-
-                      // ref.read(placesProvider.notifier).addPlace(PlaceModel(
-                      //     name: nameController.text,
-                      //     location: locationController.text,
-                      //     details: detailController.text));
+                      ref.read(placesProvider.notifier).addPlace(PlaceModel(
+                          name: nameController.text,
+                          location: locationController.text,
+                          details: detailController.text));
                     });
                     Navigator.of(context).pop();
                   }
@@ -288,8 +251,11 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                       ),
                     ),
                     onTap: () {
-                      // places.removeAt(places.indexOf((place)));
-                      // Navigator.pop(context);
+                      setState(() {
+                        ref.read(placesProvider.notifier).removePlace(place);
+                      });
+
+                      Navigator.pop(context);
                     },
                   ),
                 ],
