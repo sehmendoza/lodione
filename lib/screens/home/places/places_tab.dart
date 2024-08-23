@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/providers/places_provider.dart';
 import 'package:lodione/widgets/buttons.dart';
 import 'package:http/http.dart' as http;
 import '../../../models/places_model.dart';
@@ -6,14 +8,14 @@ import '../../../models/places_model.dart';
 final url = Uri.https(
     'lodione-lifestyle-default-rtdb.firebaseio.com', 'gotoPlace.json');
 
-class GotoPlaces extends StatefulWidget {
+class GotoPlaces extends ConsumerStatefulWidget {
   const GotoPlaces({super.key});
 
   @override
-  State<GotoPlaces> createState() => _GotoPlacesState();
+  ConsumerState<GotoPlaces> createState() => _GotoPlacesState();
 }
 
-class _GotoPlacesState extends State<GotoPlaces> {
+class _GotoPlacesState extends ConsumerState<GotoPlaces> {
   List<PlaceModel> places = [
     PlaceModel(
         name: 'Jollibee', location: 'Scarborough', details: 'Very nice food'),
@@ -23,6 +25,7 @@ class _GotoPlacesState extends State<GotoPlaces> {
   ];
   @override
   Widget build(BuildContext context) {
+    final places = ref.watch(placesProvider);
     return SingleChildScrollView(
       child: Column(
         children: [
