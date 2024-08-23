@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/places_provider.dart';
@@ -16,111 +18,135 @@ class GotoPlaces extends ConsumerStatefulWidget {
 }
 
 class _GotoPlacesState extends ConsumerState<GotoPlaces> {
-  List<PlaceModel> places = [
-    PlaceModel(
-        name: 'Jollibee', location: 'Scarborough', details: 'Very nice food'),
-    PlaceModel(
-        name: 'McDonalds', location: 'North York', details: 'Garbage food'),
-    PlaceModel(name: 'McDonalds', location: 'North York', details: ''),
-  ];
+  @override
+  void initState() {
+    loadData();
+    super.initState();
+  }
+
+  void loadData() {
+    http.get(url).then((response) {
+      final Map<String, dynamic> data = json.decode(response.body);
+      final List<PlaceModel> loadedPlaces = [];
+      for (final place in data.entries) {
+        loadedPlaces.add(PlaceModel(
+            name: place.value['name'],
+            location: place.value['location'],
+            details: place.value['details']));
+      }
+
+      ref.read(placesProvider.notifier).setPlaces(loadedPlaces);
+      setState(() {
+        places = loadedPlaces;
+      });
+    });
+  }
+
+  List<PlaceModel> places = [];
+
   @override
   Widget build(BuildContext context) {
-    final places = ref.watch(placesProvider);
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8, top: 10),
-            child: Row(
-              children: [
-                const Text(
-                  'Go to Places:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+    List<PlaceModel> places = ref.watch(placesProvider);
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 8, top: 10),
+          child: Row(
+            children: [
+              const Text(
+                'Go to Places:',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
-                MyButton(
-                  text: 'Add',
-                  icon: Icons.add,
-                  onPressed: addRestaurant,
-                ),
-              ],
-            ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              MyButton(
+                text: 'Add',
+                icon: Icons.add,
+                onPressed: addRestaurant,
+              ),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: places.length,
-              itemBuilder: (context, index) {
-                PlaceModel place = places[index];
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    onLongPress: () {
-                      openOption(place);
-                    },
-                    shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(10)),
-                    title: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            place.name,
-                            style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
-                          ),
-                          place.details == ''
-                              ? const SizedBox()
-                              : Text(
-                                  place.details,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 18),
-                                ),
-                        ],
-                      ),
-                    ),
-                    subtitle: Padding(
+        ),
+        Expanded(
+          child: ListView(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: places.length,
+                  itemBuilder: (context, index) {
+                    PlaceModel place = places[index];
+                    return Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.location_on_outlined,
-                            color: Colors.white,
+                      child: ListTile(
+                        onLongPress: () {
+                          openOption(place);
+                        },
+                        shape: RoundedRectangleBorder(
+                            side:
+                                const BorderSide(color: Colors.white, width: 2),
+                            borderRadius: BorderRadius.circular(10)),
+                        title: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                place.name,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              place.details == ''
+                                  ? const SizedBox()
+                                  : Text(
+                                      place.details,
+                                      style: const TextStyle(
+                                          color: Colors.white, fontSize: 18),
+                                    ),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 5,
+                        ),
+                        subtitle: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on_outlined,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text(place.location,
+                                  style: const TextStyle(
+                                      color: Colors.white, fontSize: 18)),
+                            ],
                           ),
-                          Text(place.location,
-                              style: const TextStyle(
-                                  color: Colors.white, fontSize: 18)),
-                        ],
+                        ),
+                        // trailing: IconButton(
+                        //   onPressed: () {
+                        //     //  launchMapsUrl(place.location);
+                        //   },
+                        //   icon: const Icon(Icons.location_on_outlined,
+                        //       color: Colors.white, size: 30.0),
+                        // ),
                       ),
-                    ),
-                    // trailing: IconButton(
-                    //   onPressed: () {
-                    //     //  launchMapsUrl(place.location);
-                    //   },
-                    //   icon: const Icon(Icons.location_on_outlined,
-                    //       color: Colors.white, size: 30.0),
-                    // ),
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -173,19 +199,28 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     side: const BorderSide(color: Colors.white, width: 2)),
-                onPressed: () {
+                onPressed: () async {
                   if (nameController.text.isEmpty &&
                       locationController.text.isEmpty) {
                     return;
                   } else {
-                    http.post(url);
                     setState(() {
-                      places.add(PlaceModel(
-                          name: nameController.text,
-                          location: locationController.text,
-                          details: detailController.text));
-                      Navigator.pop(context);
+                      http.post(
+                        url,
+                        headers: {'Content-Type': 'application/json'},
+                        body: json.encode({
+                          'name': nameController.text,
+                          'location': locationController.text,
+                          'details': detailController.text
+                        }),
+                      );
+
+                      // ref.read(placesProvider.notifier).addPlace(PlaceModel(
+                      //     name: nameController.text,
+                      //     location: locationController.text,
+                      //     details: detailController.text));
                     });
+                    Navigator.of(context).pop();
                   }
                 },
                 child: const Text(
@@ -253,8 +288,8 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                       ),
                     ),
                     onTap: () {
-                      places.removeAt(places.indexOf((place)));
-                      Navigator.pop(context);
+                      // places.removeAt(places.indexOf((place)));
+                      // Navigator.pop(context);
                     },
                   ),
                 ],

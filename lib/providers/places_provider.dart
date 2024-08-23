@@ -5,6 +5,10 @@ import '../models/places_model.dart';
 class PlacesNotifier extends StateNotifier<List<PlaceModel>> {
   PlacesNotifier() : super([]);
 
+  void setPlaces(List<PlaceModel> places) {
+    state = places;
+  }
+
   void addPlace(PlaceModel place) {
     state = [...state, place];
   }
