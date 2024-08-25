@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
-
 import 'screens/main/start_screen.dart';
 
 void main() async {

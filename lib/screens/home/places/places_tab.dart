@@ -18,7 +18,12 @@ class GotoPlaces extends ConsumerStatefulWidget {
 class _GotoPlacesState extends ConsumerState<GotoPlaces> {
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     final places = ref.watch(placesProvider);
+=======
+    List<PlaceModel> places = ref.watch(placesProvider);
+
+>>>>>>> bf0ebe4 (d)
     return Column(
       children: [
         Padding(
@@ -43,7 +48,96 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
             ],
           ),
         ),
+<<<<<<< HEAD
         PlacesListView(places: places, openOption: openOption)
+=======
+        places.isEmpty
+            ? const Column(children: [
+                SizedBox(height: 240),
+                Center(
+                    child: Text('No added places yet.',
+                        style: TextStyle(
+                          color: Colors.white70,
+                        )))
+              ])
+            : Expanded(
+                child: ListView(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: places.length,
+                        itemBuilder: (context, index) {
+                          PlaceModel place = places[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ListTile(
+                              onLongPress: () {
+                                openOption(place);
+                              },
+                              shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                      color: Colors.white, width: 2),
+                                  borderRadius: BorderRadius.circular(10)),
+                              title: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      place.name,
+                                      style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    place.details == ''
+                                        ? const SizedBox()
+                                        : Text(
+                                            place.details,
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                  ],
+                                ),
+                              ),
+                              subtitle: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on_outlined,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(place.location,
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 18)),
+                                  ],
+                                ),
+                              ),
+                              // trailing: IconButton(
+                              //   onPressed: () {
+                              //     //  launchMapsUrl(place.location);
+                              //   },
+                              //   icon: const Icon(Icons.location_on_outlined,
+                              //       color: Colors.white, size: 30.0),
+                              // ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+>>>>>>> bf0ebe4 (d)
       ],
     );
   }
