@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/places_provider.dart';
+import 'package:lodione/screens/home/places/places_list.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/places_model.dart';
 
@@ -42,81 +43,7 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
             ],
           ),
         ),
-        Expanded(
-          child: ListView(
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: places.length,
-                  itemBuilder: (context, index) {
-                    PlaceModel place = places[index];
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ListTile(
-                        onLongPress: () {
-                          openOption(place);
-                        },
-                        shape: RoundedRectangleBorder(
-                            side:
-                                const BorderSide(color: Colors.white, width: 2),
-                            borderRadius: BorderRadius.circular(10)),
-                        title: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                place.name,
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 24,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              place.details == ''
-                                  ? const SizedBox()
-                                  : Text(
-                                      place.details,
-                                      style: const TextStyle(
-                                          color: Colors.white, fontSize: 18),
-                                    ),
-                            ],
-                          ),
-                        ),
-                        subtitle: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                Icons.location_on_outlined,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text(place.location,
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 18)),
-                            ],
-                          ),
-                        ),
-                        // trailing: IconButton(
-                        //   onPressed: () {
-                        //     //  launchMapsUrl(place.location);
-                        //   },
-                        //   icon: const Icon(Icons.location_on_outlined,
-                        //       color: Colors.white, size: 30.0),
-                        // ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+        PlacesListView(places: places, openOption: openOption)
       ],
     );
   }
@@ -176,10 +103,12 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                     return;
                   } else {
                     setState(() {
-                      ref.read(placesProvider.notifier).addPlace(PlaceModel(
-                          name: nameController.text,
-                          location: locationController.text,
-                          details: detailController.text));
+                      ref.read(placesProvider.notifier).addPlace(
+                            PlaceModel(
+                                name: nameController.text,
+                                location: locationController.text,
+                                details: detailController.text),
+                          );
                     });
                     Navigator.of(context).pop();
                   }
@@ -252,10 +181,10 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                     return;
                   } else {
                     setState(() {
-                      ref.read(placesProvider.notifier).updatePlace(PlaceModel(
-                          name: nameController.text,
-                          location: locationController.text,
-                          details: detailController.text));
+                      place.name = nameController.text;
+                      place.details = detailController.text;
+                      place.location = locationController.text;
+                      ref.read(placesProvider.notifier).updatePlace(place);
                     });
                     Navigator.of(context).pop();
                   }
@@ -319,98 +248,6 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                 ],
               ),
             ));
-  }
-
-  void editRestaurantName(PlaceModel place) {
-    TextEditingController nameController =
-        TextEditingController(text: place.name);
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: Colors.white, width: 2)),
-            title: const Text('Edit Place Name',
-                style: TextStyle(color: Colors.white)),
-            content: gotoTextfield(
-                nameController: nameController, hintText: 'Place Name'),
-            actionsAlignment: MainAxisAlignment.spaceBetween,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    side: const BorderSide(color: Colors.white, width: 2)),
-                onPressed: () {
-                  setState(() {
-                    place.name = nameController.text;
-                  });
-
-                  Navigator.pop(context);
-                },
-                child:
-                    const Text('Save', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          );
-        });
-  }
-
-  void editRestaurantLocation(PlaceModel place) {
-    TextEditingController locationController =
-        TextEditingController(text: place.location);
-
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-                side: const BorderSide(color: Colors.white, width: 2)),
-            title: const Text('Edit Restaurant Location',
-                style: TextStyle(color: Colors.white)),
-            content: gotoTextfield(
-                nameController: locationController,
-                hintText: 'Restaurant Location'),
-            actionsAlignment: MainAxisAlignment.spaceBetween,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Cancel',
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    side: const BorderSide(color: Colors.white, width: 2)),
-                onPressed: () {
-                  setState(() {
-                    place.location = locationController.text;
-                  });
-
-                  Navigator.pop(context);
-                },
-                child:
-                    const Text('Save', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          );
-        });
   }
 }
 

@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
+
+final uuid = const Uuid().v4();
 
 class PlaceModel {
   String id;
@@ -8,5 +10,5 @@ class PlaceModel {
 
   PlaceModel(
       {required this.name, required this.location, required this.details})
-      : id = UniqueKey().toString();
+      : id = uuid;
 }
