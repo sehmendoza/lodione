@@ -1,42 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
-class ItemModel {
-  final String id;
-  String name;
-  String details;
-  bool isDone;
-
-  ItemModel({
-    String? id,
-    required this.name,
-    required this.details,
-    this.isDone = false,
-  }) : id = id ?? UniqueKey().toString();
-
-  ItemModel copyWith({String? name, bool? isDone}) {
-    return ItemModel(
-      id: id,
-      name: name ?? this.name,
-      details: details,
-      isDone: isDone ?? this.isDone,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'details': details,
-      'isDone': isDone,
-    };
-  }
-
-  ItemModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        details = json['details'],
-        isDone = json['isDone'];
-}
+const uuid = Uuid();
 
 // Model for lists
 class ListModel {
@@ -48,7 +12,7 @@ class ListModel {
     String? id,
     required this.name,
     this.items = const [],
-  }) : id = id ?? UniqueKey().toString();
+  }) : id = id ?? uuid.v4();
 
   ListModel copyWith({String? name, List<ItemModel>? items}) {
     return ListModel(
@@ -77,4 +41,42 @@ class ListModel {
       'items': items.map((item) => item.toJson()).toList(),
     };
   }
+}
+
+class ItemModel {
+  String id;
+  String name;
+  String details;
+  bool isDone;
+
+  ItemModel({
+    String? id,
+    required this.name,
+    required this.details,
+    this.isDone = false,
+  }) : id = id ?? uuid.v4();
+
+  ItemModel copyWith({String? name, bool? isDone}) {
+    return ItemModel(
+      id: id,
+      name: name ?? this.name,
+      details: details,
+      isDone: isDone ?? this.isDone,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'details': details,
+      'isDone': isDone,
+    };
+  }
+
+  ItemModel.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        details = json['details'],
+        isDone = json['isDone'];
 }

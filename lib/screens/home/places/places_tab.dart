@@ -16,9 +16,17 @@ class GotoPlaces extends ConsumerStatefulWidget {
 }
 
 class _GotoPlacesState extends ConsumerState<GotoPlaces> {
+  late Future<void> placesFuture;
+
+  @override
+  void initState() {
+    placesFuture = ref.read(placesProvider.notifier).fetchPlaces();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<PlaceModel> places = ref.watch(placesProvider);
+    final places = ref.watch(placesProvider);
 
     return Column(
       children: [
@@ -44,16 +52,37 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
             ],
           ),
         ),
-        places.isEmpty
-            ? const Column(children: [
-                SizedBox(height: 240),
-                Center(
-                    child: Text('No added places yet.',
-                        style: TextStyle(
-                          color: Colors.white70,
-                        )))
-              ])
-            : PlacesListView(places: places, openOption: openOption),
+        FutureBuilder(
+            future: placesFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                return const Center(
+                  child: Text('An error occurred'),
+                );
+              } else {
+                return places.isEmpty
+                    ? const Center(
+                        child: Text('No added places yet.',
+                            style: TextStyle(
+                              color: Colors.white70,
+                            )))
+                    : PlacesListView(places: places, openOption: openOption);
+              }
+            }),
+        // places.isEmpty
+        //     ? const Column(children: [
+        //         SizedBox(height: 240),
+        //         Center(
+        //             child: Text('No added places yet.',
+        //                 style: TextStyle(
+        //                   color: Colors.white70,
+        //                 )))
+        //       ])
+        //     : PlacesListView(places: places, openOption: openOption),
       ],
     );
   }

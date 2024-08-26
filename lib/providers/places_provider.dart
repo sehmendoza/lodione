@@ -9,6 +9,10 @@ class PlacesNotifier extends StateNotifier<List<PlaceModel>> {
     state = places;
   }
 
+  Future<void> fetchPlaces() async {
+    state = state;
+  }
+
   void addPlace(PlaceModel place) {
     state = [place, ...state];
   }
