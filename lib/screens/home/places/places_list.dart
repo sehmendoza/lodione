@@ -25,6 +25,7 @@ class PlacesListView extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ListTile(
+                    key: ValueKey(place.id),
                     onTap: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
