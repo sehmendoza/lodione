@@ -10,18 +10,21 @@ class PlacesNotifier extends StateNotifier<List<PlaceModel>> {
   }
 
   void addPlace(PlaceModel place) {
-    state = [...state, place];
+    state = [place, ...state];
   }
 
   void removePlace(PlaceModel place) {
     state = state.where((p) => p != place).toList();
   }
 
-  void updatePlace(int index, PlaceModel newPlace) {
-    state = [
-      for (int i = 0; i < state.length; i++)
-        if (i == index) newPlace else state[i],
-    ];
+  void updatePlace(PlaceModel newPlace) {
+    state = state.map((place) {
+      if (place.id == newPlace.id) {
+        print('place updated');
+        return newPlace;
+      }
+      return place;
+    }).toList();
   }
 }
 

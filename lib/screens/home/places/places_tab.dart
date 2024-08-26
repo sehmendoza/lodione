@@ -15,11 +15,9 @@ class GotoPlaces extends ConsumerStatefulWidget {
 }
 
 class _GotoPlacesState extends ConsumerState<GotoPlaces> {
-  List<PlaceModel> places = [];
-
   @override
   Widget build(BuildContext context) {
-    List<PlaceModel> places = ref.watch(placesProvider);
+    final places = ref.watch(placesProvider);
     return Column(
       children: [
         Padding(
@@ -196,6 +194,82 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
         });
   }
 
+  void editRestaurant(PlaceModel place) {
+    TextEditingController nameController =
+        TextEditingController(text: place.name);
+    TextEditingController locationController =
+        TextEditingController(text: place.location);
+    TextEditingController detailController =
+        TextEditingController(text: place.details);
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: const BorderSide(color: Colors.white, width: 2)),
+            title: const Center(
+              child: Text(
+                'Edit Restaurant',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  gotoTextfield(
+                      nameController: nameController,
+                      hintText: 'Restaurant Name'),
+                  const SizedBox(height: 10),
+                  gotoTextfield(
+                      nameController: locationController, hintText: 'Location'),
+                  const SizedBox(height: 10),
+                  gotoTextfield(
+                      nameController: detailController, hintText: 'Details'),
+                ],
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Cancel',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    side: const BorderSide(color: Colors.white, width: 2)),
+                onPressed: () async {
+                  if (nameController.text.isEmpty &&
+                      locationController.text.isEmpty) {
+                    return;
+                  } else {
+                    setState(() {
+                      ref.read(placesProvider.notifier).updatePlace(PlaceModel(
+                          name: nameController.text,
+                          location: locationController.text,
+                          details: detailController.text));
+                    });
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Text(
+                  'Save',
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
   void openOption(PlaceModel place) {
     showDialog(
         context: context,
@@ -214,29 +288,13 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                         borderRadius: BorderRadius.circular(20)),
                     title: const Center(
                       child: Text(
-                        'Edit Restaurant Name',
+                        'Edit Restaurant',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                     onTap: () {
                       Navigator.pop(context);
-                      editRestaurantName(place);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  ListTile(
-                    shape: RoundedRectangleBorder(
-                        side: const BorderSide(color: Colors.white, width: 1),
-                        borderRadius: BorderRadius.circular(20)),
-                    title: const Center(
-                      child: Text(
-                        'Edit Restaurant Address',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      editRestaurantLocation(place);
+                      editRestaurant(place);
                     },
                   ),
                   const SizedBox(height: 10),
