@@ -55,73 +55,75 @@ class _CreateAccountState extends State<CreateAccount> {
         ),
       ),
       body: SafeArea(
-          child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              textfield1(usernameController, 'Username', (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a username';
-                } else if (value.length < 3) {
-                  return 'Username must be at least 3 characters';
-                }
-                return null;
-              }),
-              const SizedBox(
-                height: 20,
-              ),
-              textfield1(emailController, 'Email address', (value) {
-                if (value.isEmpty) {
-                  return 'Please enter an email address';
-                } else if (!value.contains('@') || !value.contains('.')) {
-                  return 'Please enter a valid email address';
-                }
-                return null;
-              }),
-              const SizedBox(
-                height: 20,
-              ),
-              textfieldpw1(passwordController, 'New password', (value) {
-                if (value.isEmpty) {
-                  return 'Please enter a password';
-                }
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
-              }),
-              const SizedBox(
-                height: 20,
-              ),
-              textfieldpw1(cpasswordController, 'Confirm password', (value) {
-                if (value.isEmpty) {
-                  return 'Please confirm your password';
-                }
-                if (value != passwordController.text) {
-                  return 'Passwords do not match';
-                }
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
-              }),
-              const SizedBox(
-                height: 20,
-              ),
-              ElevatedButton(
-                onPressed: _createAccount,
-                style: ElevatedButton.styleFrom(
-                    shadowColor: Colors.white,
-                    elevation: 5,
-                    fixedSize: const Size(250, 40),
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    side: const BorderSide(width: 2, color: Colors.white)),
-                child: const Text('Submit'),
-              )
-            ],
+          child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                textfield1(emailController, 'Email address', (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter an email address';
+                  } else if (!value.contains('@') || !value.contains('.')) {
+                    return 'Please enter a valid email address';
+                  }
+                  return null;
+                }),
+                const SizedBox(
+                  height: 20,
+                ),
+                textfield1(usernameController, 'Username', (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a username';
+                  } else if (value.length < 3) {
+                    return 'Username must be at least 3 characters';
+                  }
+                  return null;
+                }),
+                const SizedBox(
+                  height: 20,
+                ),
+                textfieldpw1(passwordController, 'New password', (value) {
+                  if (value.isEmpty) {
+                    return 'Please enter a password';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                }),
+                const SizedBox(
+                  height: 20,
+                ),
+                textfieldpw1(cpasswordController, 'Confirm password', (value) {
+                  if (value.isEmpty) {
+                    return 'Please confirm your password';
+                  }
+                  if (value != passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                }),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                  onPressed: _createAccount,
+                  style: ElevatedButton.styleFrom(
+                      shadowColor: Colors.white,
+                      elevation: 5,
+                      fixedSize: const Size(250, 40),
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(width: 2, color: Colors.white)),
+                  child: const Text('Submit'),
+                )
+              ],
+            ),
           ),
         ),
       )),
@@ -133,6 +135,8 @@ Widget textfield1(controller, label, validate) {
   return TextFormField(
     validator: validate,
     controller: controller,
+    autocorrect: false,
+    textCapitalization: TextCapitalization.none,
     style: const TextStyle(color: Colors.white, letterSpacing: 2),
     decoration: InputDecoration(
       label: Text(
@@ -162,6 +166,7 @@ Widget textfieldpw1(controller, label, validate) {
     validator: validate,
     controller: controller,
     obscureText: true,
+    textCapitalization: TextCapitalization.none,
     style: const TextStyle(color: Colors.white, letterSpacing: 2),
     decoration: InputDecoration(
       label: Text(

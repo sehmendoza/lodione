@@ -88,4 +88,5 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://lodione-lifestyle-default-rtdb.firebaseio.com',
     storageBucket: 'lodione-lifestyle.appspot.com',
   );
+
 }

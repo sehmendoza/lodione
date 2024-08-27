@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-void showSimpleDialog(BuildContext context, String title, String content) {
+void showMyErrorDialog(BuildContext context, String title, String content) {
   showDialog(
     context: context,
     builder: (context) {
@@ -15,6 +15,7 @@ void showSimpleDialog(BuildContext context, String title, String content) {
           style: const TextStyle(color: Colors.white),
         ),
         content: Text(content, style: const TextStyle(color: Colors.white70)),
+        actionsAlignment: MainAxisAlignment.spaceBetween,
         actions: <Widget>[
           TextButton(
             onPressed: () {

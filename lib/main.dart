@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
-import 'screens/main/start_screen.dart';
+import 'package:lodione/screens/main/sign_in_screen.dart';
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ class StartUp extends StatelessWidget {
     return MaterialApp(
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      home: const StartScreen(),
+      home: const SignInScreen(),
     );
   }
 }
