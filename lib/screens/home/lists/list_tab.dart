@@ -139,6 +139,9 @@ class _ListTabState extends ConsumerState<ListTab> {
                 // Popup Menu
                 const Spacer(),
                 PopupMenuButton<String>(
+                  onOpened: () {
+                    itemNode.unfocus();
+                  },
                   icon: const Icon(Icons.more_vert, color: Colors.white70),
                   itemBuilder: (BuildContext context) => [
                     _buildMenuItem('Add new list', Icons.add_box, addNewList),

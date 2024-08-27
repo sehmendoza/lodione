@@ -46,6 +46,8 @@ class _CreateAccountState extends State<CreateAccount> {
           'username': usernameController.text,
           'createdAt': Timestamp.now(),
           'isPrivate': true,
+          'lists': [],
+          'connections': [],
         });
 
         //  Navigate to main screen after successful account creation

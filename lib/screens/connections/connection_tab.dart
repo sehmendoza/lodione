@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'community/community_tab.dart';
 import 'contacts/contacts_tab.dart';
 import 'events/events_tab.dart';
 import 'inbox/inbox_tab.dart';
@@ -10,7 +11,7 @@ class ConnectionTab extends StatelessWidget {
   final List<ConnectTab> tabs = [
     ConnectTab(
       name: 'Inbox',
-      iconData: Icons.contact_emergency,
+      iconData: Icons.inbox,
       child: const InboxTab(),
     ),
     ConnectTab(
@@ -20,13 +21,19 @@ class ConnectionTab extends StatelessWidget {
     ),
     ConnectTab(
       name: 'Events',
-      iconData: Icons.groups,
+      iconData: Icons.local_fire_department,
       child: const EventsTab(),
+    ),
+    ConnectTab(
+      name: 'Community',
+      iconData: Icons.groups,
+      child: const UsersList(),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: tabs.length,
       child: Scaffold(
@@ -43,7 +50,7 @@ class ConnectionTab extends StatelessWidget {
           indicatorColor: Colors.white,
           tabs: tabs.map((ConnectTab tab) {
             return Tab(
-              text: tab.name,
+              text: size > 690 ? tab.name : null,
               icon: Icon(tab.iconData),
               // child: Text(tab.name),
             );

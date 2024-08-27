@@ -15,7 +15,7 @@ void showMyErrorDialog(BuildContext context, String title, String content) {
           style: const TextStyle(color: Colors.white),
         ),
         content: Text(content, style: const TextStyle(color: Colors.white70)),
-        actionsAlignment: MainAxisAlignment.spaceBetween,
+        actionsAlignment: MainAxisAlignment.end,
         actions: <Widget>[
           TextButton(
             onPressed: () {
