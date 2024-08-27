@@ -232,6 +232,7 @@ class _ListTabState extends ConsumerState<ListTab> {
               TextButton(
                 onPressed: () {
                   if (itemController.text.trim().isEmpty) {
+                    itemController.clear();
                     return;
                   }
                   addItem(

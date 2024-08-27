@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
 import 'package:lodione/screens/connections/connection_tab.dart';
@@ -30,6 +31,12 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.logout),
+          onPressed: () {
+            FirebaseAuth.instance.signOut();
+          },
+        ),
         centerTitle: true,
         title: Image.asset(
           'lib/images/lodione_logo_lang.png',

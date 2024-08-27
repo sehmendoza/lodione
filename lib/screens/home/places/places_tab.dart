@@ -65,11 +65,13 @@ class _GotoPlacesState extends ConsumerState<GotoPlaces> {
                 );
               } else {
                 return places.isEmpty
-                    ? const Center(
+                    ? const Expanded(
+                        child: Center(
                         child: Text('No added places yet.',
                             style: TextStyle(
                               color: Colors.white70,
-                            )))
+                            )),
+                      ))
                     : PlacesListView(places: places, openOption: openOption);
               }
             }),

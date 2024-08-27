@@ -19,18 +19,6 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
 
   void addList(ListModel newList) async {
     state = [...state, newList];
-    // final response = await http.post(
-    //   url,
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: json.encode(
-    //     {
-    //       'id': newList.id,
-    //       'name': newList.name,
-    //       'items': newList.items.map((item) => item.toJson()).toList(),
-    //     },
-    //   ),
-    // );
-    // print(response.body);
   }
 
   void removeList(String id) {

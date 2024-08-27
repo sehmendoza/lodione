@@ -1,8 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
-import 'package:lodione/storage/user_list.dart';
-
-import 'main_screen.dart';
 
 class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
@@ -26,17 +24,55 @@ class _CreateAccountState extends State<CreateAccount> {
     super.dispose();
   }
 
-  void _createAccount() {
-    if (_formKey.currentState!.validate()) {
-      userList.add(
-        UserModel(username: usernameController.text),
-      );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MainScreen(),
-        ),
-      );
+  void _createAccount(context) async {
+    final isValid = _formKey.currentState!.validate();
+
+    if (!isValid) {
+      return;
+    }
+
+    if (isValid) {
+      try {
+        // Use createUserWithEmailAndPassword for account creation
+        final userCred = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(
+                email: emailController.text, password: passwordController.text);
+
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCred.user!.uid)
+            .set({
+          'email': emailController.text,
+          'username': usernameController.text,
+          'createdAt': Timestamp.now(),
+          'isPrivate': true,
+        });
+
+        //  Navigate to main screen after successful account creation
+        Navigator.of(context).pop();
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = 'An error occurred. Please try again.';
+        switch (e.code) {
+          case 'weak-password':
+            errorMessage = 'The password provided is too weak.';
+          case 'email-already-in-use':
+            errorMessage = 'The account already exists for that email.';
+          case 'invalid-email':
+            errorMessage = 'The email address is badly formatted.';
+        }
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Center(child: Text(errorMessage))),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Center(
+                  child:
+                      Text('An unexpected error occurred: ${e.toString()}'))),
+        );
+      }
     }
   }
 
@@ -112,7 +148,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: _createAccount,
+                  onPressed: () => _createAccount(context),
                   style: ElevatedButton.styleFrom(
                       shadowColor: Colors.white,
                       elevation: 5,

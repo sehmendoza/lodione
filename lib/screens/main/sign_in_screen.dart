@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'create_account.dart';
-import 'main_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -25,29 +25,45 @@ class _SignInScreenState extends State<SignInScreen> {
 
   bool visiblePW = true;
 
-  void signIn() {
+  void signIn(context) async {
     final isValid = _formKey.currentState!.validate();
     if (isValid) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const MainScreen(),
-        ),
-      );
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: usernameController.text,
+          password: passwordController.text,
+        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const MainScreen(),
+        //   ),
+        // );
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = 'An error occurred. Please try again.';
+        switch (e.code) {
+          case 'user-not-found':
+            errorMessage = 'No user found for that email.';
+            break;
+          case 'wrong-password':
+            errorMessage = 'Wrong password provided for that user.';
+            break;
+          case 'invalid-email':
+            errorMessage = 'The email address is badly formatted.';
+            break;
+          case 'user-disabled':
+            errorMessage =
+                'The user account has been disabled. Please contact support.';
+            break;
+        }
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Center(child: Text(errorMessage))),
+        );
+      }
+    } else {
+      return;
     }
-    // ScaffoldMessenger.of(context).clearSnackBars();
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   const SnackBar(
-    //     duration: Duration(seconds: 3),
-    //     content: Text('Sign In Error. Please try again'),
-    //   ),
-    // );
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(
-    //     builder: (context) => const MainScreen(),
-    //   ),
-    // );
   }
 
   @override
@@ -74,6 +90,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 250,
                     ),
                     TextFormField(
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
                       validator: (value) {
                         if (value!.isEmpty || value.trim().isEmpty) {
                           return 'Please enter a username';
@@ -117,6 +135,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 20,
                     ),
                     TextFormField(
+                      autocorrect: false,
                       validator: (value) {
                         if (value!.isEmpty || value.trim().isEmpty) {
                           return 'Please enter a password';
@@ -172,7 +191,7 @@ class _SignInScreenState extends State<SignInScreen> {
                         backgroundColor: Colors.white,
                         fixedSize: const Size(200, 40),
                       ),
-                      onPressed: signIn,
+                      onPressed: () => signIn(context),
                       child: const Text(
                         'Sign In',
                         style: TextStyle(
