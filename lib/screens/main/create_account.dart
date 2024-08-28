@@ -46,8 +46,20 @@ class _CreateAccountState extends State<CreateAccount> {
           'username': usernameController.text,
           'createdAt': Timestamp.now(),
           'isPrivate': true,
-          'lists': [],
+          'recipes': [],
+          'mealPlans': [],
+          'goToPlaces': [],
+          'fitness': [],
           'connections': [],
+        });
+
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCred.user!.uid)
+            .collection('lists')
+            .add({
+          'listName': 'My List',
+          'listItems': [],
         });
 
         //  Navigate to main screen after successful account creation

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/models/recipe_model.dart';
-import 'package:lodione/storage/recipe_list.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/list_model.dart';
+import '../../../storage/recipe_list.dart';
 
 class NewRecipe extends StatefulWidget {
   const NewRecipe({super.key});

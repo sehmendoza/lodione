@@ -38,25 +38,30 @@ class _MainScreenState extends State<MainScreen> {
         },
       ),
       appBar: AppBar(
+        leadingWidth: 200,
+
         leading: Builder(
-          builder: (context) => IconButton(
-            icon: const Icon(Icons.notifications, color: Colors.white70),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+          builder: (context) => InkWell(
+            onTap: () => Scaffold.of(context).openDrawer(),
+            child: Image.asset(
+              'lib/images/lodione_logo_side.png',
+            ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
-          ),
-        ],
-        centerTitle: true,
-        title: Image.asset(
-          'lib/images/lodione_logo_lang.png',
-          height: 40,
-        ),
+
+        // actions: [
+        //   IconButton(
+        //     icon: const Icon(Icons.logout),
+        //     onPressed: () async {
+        //       await FirebaseAuth.instance.signOut();
+        //     },
+        //   ),
+        // ],
+        // centerTitle: true,
+        // title: Image.asset(
+        //   'lib/images/lodione_logo_lang.png',
+        //   height: 40,
+        // ),
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),

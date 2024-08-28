@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../models/user_model.dart';
 import 'contact_list.dart';
 
 class ContactsTab extends StatefulWidget {
@@ -13,28 +14,28 @@ class _ContactsTabState extends State<ContactsTab> {
     GroupConnection(
       title: 'All',
       users: [
-        UserModel(username: 'sehmendoza'),
-        UserModel(username: 'recypoli'),
+        // UserModel(username: 'sehmendoza'),
+        // UserModel(username: 'recypoli'),
       ],
     ),
     GroupConnection(
       title: 'Family',
       users: [
-        UserModel(username: 'sehmendoza'),
-        UserModel(username: 'gian'),
-        UserModel(username: 'gsel'),
-        UserModel(username: 'mami'),
-        UserModel(username: 'dadi'),
+        // UserModel(username: 'sehmendoza'),
+        // UserModel(username: 'gian'),
+        // UserModel(username: 'gsel'),
+        // UserModel(username: 'mami'),
+        // UserModel(username: 'dadi'),
       ],
     ),
     GroupConnection(
       title: 'Friends',
       users: [
-        UserModel(username: 'sehmendoza'),
-        UserModel(username: 'sam'),
-        UserModel(username: 'brian'),
-        UserModel(username: 'philip'),
-        UserModel(username: 'ads'),
+        // UserModel(username: 'sehmendoza'),
+        // UserModel(username: 'sam'),
+        // UserModel(username: 'brian'),
+        // UserModel(username: 'philip'),
+        // UserModel(username: 'ads'),
       ],
     ),
   ];
@@ -75,11 +76,11 @@ class _ContactsTabState extends State<ContactsTab> {
                         GroupConnection(
                           title: 'Friends',
                           users: [
-                            UserModel(username: 'sehmendoza'),
-                            UserModel(username: 'sam'),
-                            UserModel(username: 'brian'),
-                            UserModel(username: 'philip'),
-                            UserModel(username: 'ads'),
+                            // UserModel(username: 'sehmendoza'),
+                            // UserModel(username: 'sam'),
+                            // UserModel(username: 'brian'),
+                            // UserModel(username: 'philip'),
+                            // UserModel(username: 'ads'),
                           ],
                         ),
                       );
@@ -112,19 +113,19 @@ class GroupConnection {
   GroupConnection({required this.title, required this.users});
 }
 
-class UserModel {
-  String username;
-  UserModel({required this.username});
+// class UserModel {
+//   String username;
+//   UserModel({required this.username});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'username': username,
-    };
-  }
+//   Map<String, dynamic> toMap() {
+//     return {
+//       'username': username,
+//     };
+//   }
 
-  factory UserModel.fromMap(Map<String, dynamic> data) {
-    return UserModel(
-      username: data['username'],
-    );
-  }
-}
+//   factory UserModel.fromMap(Map<String, dynamic> data) {
+//     return UserModel(
+//       username: data['username'],
+//     );
+//   }
+// }

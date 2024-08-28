@@ -3,7 +3,7 @@ import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/list_model.dart';
-import '../contacts/contacts_tab.dart';
+import '../../../models/user_model.dart';
 
 class EventsTab extends StatefulWidget {
   const EventsTab({super.key});
@@ -26,8 +26,8 @@ class _EventsTabState extends State<EventsTab> {
           ItemModel(name: 'Sago', isDone: false, details: '')
         ],
         invites: [
-          UserModel(username: 'sehmendoza'),
-          UserModel(username: 'recypoli'),
+          // UserModel(username: 'sehmendoza'),
+          // UserModel(username: 'recypoli'),
         ]),
     EventModel(
         title: 'Party',
@@ -41,8 +41,8 @@ class _EventsTabState extends State<EventsTab> {
           ItemModel(name: 'Sago', isDone: false, details: '')
         ],
         invites: [
-          UserModel(username: 'sehmendoza'),
-          UserModel(username: 'recypoli'),
+          // UserModel(username: 'sehmendoza'),
+          // UserModel(username: 'recypoli'),
         ]),
     EventModel(
         title: 'Party',
@@ -56,8 +56,8 @@ class _EventsTabState extends State<EventsTab> {
           ItemModel(name: 'Sago', isDone: false, details: '')
         ],
         invites: [
-          UserModel(username: 'sehmendoza'),
-          UserModel(username: 'recypoli'),
+          // UserModel(username: 'sehmendoza'),
+          // UserModel(username: 'recypoli'),
         ]),
   ];
 
@@ -198,7 +198,7 @@ class _EventsTabState extends State<EventsTab> {
                                 child: Row(
                                   children: [
                                     Text(
-                                      user.username,
+                                      user.name,
                                       style: const TextStyle(color: white),
                                     ),
                                   ],

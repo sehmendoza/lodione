@@ -128,7 +128,7 @@ class ConnectionList extends StatelessWidget {
                           width: 1,
                         )),
                     title: Text(
-                      user.username,
+                      user.name,
                       style: const TextStyle(
                           fontSize: 21,
                           color: Colors.white,
