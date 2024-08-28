@@ -52,21 +52,60 @@ class _MyDrawerState extends ConsumerState<MyDrawer> {
                 ],
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: 99,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Icon(Icons.notifications),
-                  title: Text('Notification ${index + 1}'),
-                  subtitle: const Text('This is a sample notification'),
-                  onTap: () {
-                    // Handle notification tap
-                  },
-                );
-              },
-            ),
+            ExpansionTile(
+                leading:
+                    const Icon(Icons.person_add_alt_1, color: Colors.white),
+                title: Row(
+                  children: [
+                    const Text('Friend Requests',
+                        style: TextStyle(color: Colors.white70)),
+                    Container(
+                      margin: const EdgeInsets.only(left: 6),
+                      padding: const EdgeInsets.all(7.5),
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                      child: const Text(
+                        '1',
+                        // ref
+                        //     .watch(listProvider)
+                        //     .firstWhere((list) => list.id == listModel.id)
+                        //     .items
+                        //     .length
+                        //     .toString(),
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                children: [
+                  ListTile(
+                    title: const Text(
+                      'Recyline',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    subtitle: const Text('@recypoli',
+                        style: TextStyle(color: Colors.white60)),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.close, color: Colors.red),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.check, color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                ]),
           ],
         );
       }),
