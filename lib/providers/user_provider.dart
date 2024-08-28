@@ -11,9 +11,11 @@ class UserDataNotifier extends StateNotifier<Map<String, dynamic>> {
   UserDataNotifier() : super({}) {
     _initUserData();
   }
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final User? _user = FirebaseAuth.instance.currentUser;
+
+  String get currentUsername => state['username'] ?? 'No Username';
+  String get currentName => state['name'] ?? 'No Name';
 
   void _initUserData() {
     if (_user != null) {

@@ -1,11 +1,60 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 class ConnectionList extends StatelessWidget {
   const ConnectionList({required this.group, super.key});
   final GroupConnection group;
+  void addUserDialog(context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              side: const BorderSide(
+                color: Colors.white,
+                width: 2,
+              ),
+              borderRadius: BorderRadius.circular(15),
+            ),
+            title: const Center(
+              child: Text(
+                'Add by Username',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+            content: const TextField(
+              style: TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                hintText: 'Enter username',
+                hintStyle: TextStyle(color: Colors.white54),
+              ),
+            ),
+            actionsAlignment: MainAxisAlignment.spaceBetween,
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel',
+                    style: TextStyle(color: Colors.white60)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text(
+                  'Send request',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +66,7 @@ class ConnectionList extends StatelessWidget {
             children: [
               Expanded(
                 child: TextField(
+                  style: const TextStyle(color: Colors.white),
                   decoration: InputDecoration(
                     prefixIcon: const Icon(
                       Icons.search,
@@ -24,6 +74,11 @@ class ConnectionList extends StatelessWidget {
                     ),
                     hintStyle: const TextStyle(color: Colors.white54),
                     hintText: 'Search name',
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.close),
+                      onPressed: () {},
+                      color: Colors.white60,
+                    ),
                     enabledBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                       borderSide: const BorderSide(
@@ -39,16 +94,13 @@ class ConnectionList extends StatelessWidget {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                ),
-                child: MyButton(
-                  text: 'Add user',
+              const SizedBox(
+                width: 8,
+              ),
+              MyButton(
+                  text: 'Add a friend',
                   icon: Icons.add,
-                  onPressed: () => addUserDialog(context),
-                ),
-              )
+                  onPressed: () => addUserDialog(context))
             ],
           ),
           const SizedBox(
@@ -192,55 +244,5 @@ class ConnectionList extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void addUserDialog(context) {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.black,
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(
-                color: Colors.white,
-                width: 2,
-              ),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            title: const Center(
-              child: Text(
-                'Add user',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            content: const TextField(
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Enter username',
-                hintStyle: TextStyle(color: Colors.white54),
-              ),
-            ),
-            actionsAlignment: MainAxisAlignment.spaceBetween,
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Text(
-                  'Send request',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
   }
 }

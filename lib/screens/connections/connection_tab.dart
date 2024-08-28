@@ -3,17 +3,11 @@ import 'package:flutter/material.dart';
 import 'community/community_tab.dart';
 import 'contacts/contacts_tab.dart';
 import 'events/events_tab.dart';
-import 'inbox/inbox_tab.dart';
 
 class ConnectionTab extends StatelessWidget {
   ConnectionTab({super.key});
 
   final List<ConnectTab> tabs = [
-    ConnectTab(
-      name: 'Inbox',
-      iconData: Icons.inbox,
-      child: const InboxTab(),
-    ),
     ConnectTab(
       name: 'Contacts',
       iconData: Icons.contact_emergency,
