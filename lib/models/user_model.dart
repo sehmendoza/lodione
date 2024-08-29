@@ -14,14 +14,21 @@ class UserModel {
       required this.createdAt,
       required this.isPrivate});
 
-  UserModel copyWith({String? username}) {
+  UserModel copyWith({
+    String? id,
+    String? name,
+    String? email,
+    String? username,
+    String? createdAt,
+    bool? isPrivate,
+  }) {
     return UserModel(
-      id: id,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
       username: username ?? this.username,
-      name: name,
-      email: email,
-      createdAt: createdAt,
-      isPrivate: isPrivate,
+      createdAt: createdAt ?? this.createdAt,
+      isPrivate: isPrivate ?? this.isPrivate,
     );
   }
 

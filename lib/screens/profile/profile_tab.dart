@@ -9,13 +9,11 @@ class ProfileTab extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userData = ref.watch(userDataProvider);
+    final userData = ref.watch(userProvider);
 
     void editProfile() {
-      var usernameController =
-          TextEditingController(text: userData['username']);
-      var nameController =
-          TextEditingController(text: userData['name'] ?? 'No Name');
+      var usernameController = TextEditingController(text: userData!.username);
+      var nameController = TextEditingController(text: userData.name);
       showDialog(
           context: context,
           builder: (context) {
@@ -60,15 +58,13 @@ class ProfileTab extends ConsumerWidget {
                       if (usernameController.text.isEmpty) {
                         return showMyErrorDialog(
                             context, 'Error', 'Username cannot be empty');
-                      } else if (userData['username'] ==
-                              usernameController.text &&
-                          userData['name'] == nameController.text) {
+                      } else if (userData.username == usernameController.text &&
+                          userData.name == nameController.text) {
                         return Navigator.of(context).pop();
                       }
-                      ref.read(userDataProvider.notifier).updateUserData({
-                        'name': nameController.text,
-                        'username': usernameController.text,
-                      });
+                      userData.name = nameController.text;
+                      userData.username = usernameController.text;
+                      ref.read(userProvider.notifier).updateUser(userData);
                       Navigator.of(context).pop();
                     })
               ],
@@ -78,79 +74,69 @@ class ProfileTab extends ConsumerWidget {
 
     return Scaffold(
       backgroundColor: Colors.black,
-      body: userData.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+      body: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(
+                  color: Colors.white,
+                  width: 2,
+                )),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      border: Border.all(
+                const Center(
+                  child: Text('My Profile',
+                      style: TextStyle(
                         color: Colors.white,
-                        width: 2,
+                        fontSize: 20,
+                        decoration: TextDecoration.underline,
+                        decorationColor: Colors.white,
+                        fontWeight: FontWeight.bold,
                       )),
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Center(
-                        child: Text('My Profile',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            )),
-                      ),
-                      profileTextfield(
-                        controller: TextEditingController(
-                            text: userData['name'] ?? 'No Name'),
-                        edit: false,
-                        label: 'Preferred name',
-                      ),
-                      profileTextfield(
-                        controller:
-                            TextEditingController(text: userData['username']),
-                        edit: false,
-                        label: 'Username',
-                      ),
-
-                      // Private Account Switch
-                      SwitchListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        thumbIcon: WidgetStateProperty.all(
-                          Icon(userData['isPrivate']
-                              ? Icons.lock
-                              : Icons.lock_open),
-                        ),
-                        title: const Text('Private account',
-                            style: TextStyle(color: Colors.white)),
-                        subtitle: const Text('Your profile will be private',
-                            style: TextStyle(color: Colors.white60)),
-                        value: userData['isPrivate'] ?? true,
-                        onChanged: (value) {
-                          ref
-                              .read(userDataProvider.notifier)
-                              .updateUserData({'isPrivate': value});
-                        },
-                        activeColor: Colors.white,
-                      ),
-                    ],
-                  ),
                 ),
-                const SizedBox(height: 20),
-                MyButton(
-                    text: ' Edit Profile',
-                    icon: Icons.edit,
-                    onPressed: editProfile)
+                profileTextfield(
+                  controller: TextEditingController(text: userData!.name),
+                  edit: false,
+                  label: 'Preferred name',
+                ),
+                profileTextfield(
+                  controller: TextEditingController(text: userData.username),
+                  edit: false,
+                  label: 'Username',
+                ),
+
+                // Private Account Switch
+                SwitchListTile(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  thumbIcon: WidgetStateProperty.all(
+                    Icon(userData.isPrivate ? Icons.lock : Icons.lock_open),
+                  ),
+                  title: const Text('Private account',
+                      style: TextStyle(color: Colors.white)),
+                  subtitle: const Text('Your profile will be private',
+                      style: TextStyle(color: Colors.white60)),
+                  value: userData.isPrivate,
+                  onChanged: (value) {
+                    ref.read(userProvider.notifier).togglePrivacy(value);
+                  },
+                  activeColor: Colors.white,
+                ),
               ],
             ),
+          ),
+          const SizedBox(height: 20),
+          MyButton(
+              text: ' Edit Profile', icon: Icons.edit, onPressed: editProfile)
+        ],
+      ),
     );
   }
 }

@@ -14,7 +14,7 @@ class MyDrawer extends ConsumerStatefulWidget {
 class _MyDrawerState extends ConsumerState<MyDrawer> {
   @override
   Widget build(BuildContext context) {
-    final userData = ref.watch(userDataProvider);
+    final userData = ref.watch(userProvider);
     return Drawer(
       backgroundColor: Colors.black,
       child: Consumer(builder: (context, ref, child) {
@@ -32,7 +32,7 @@ class _MyDrawerState extends ConsumerState<MyDrawer> {
                   const Spacer(),
                   ListTile(
                     title: Text(
-                      userData['name'] ?? 'No Name',
+                      userData!.name,
                       style: const TextStyle(
                         overflow: TextOverflow.ellipsis,
                         letterSpacing: 1.5,
@@ -41,7 +41,7 @@ class _MyDrawerState extends ConsumerState<MyDrawer> {
                       ),
                     ),
                     subtitle: Text(
-                      userData['username'] ?? 'No Username',
+                      userData.username,
                       style: const TextStyle(
                         letterSpacing: 1.2,
                         color: Colors.white60,

@@ -1,43 +1,66 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-final userDataProvider =
-    StateNotifierProvider<UserDataNotifier, Map<String, dynamic>>((ref) {
-  return UserDataNotifier();
-});
+import '../models/user_model.dart';
 
-class UserDataNotifier extends StateNotifier<Map<String, dynamic>> {
-  UserDataNotifier() : super({}) {
-    _initUserData();
-  }
+class UserProvider extends StateNotifier<UserModel?> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final User? _user = FirebaseAuth.instance.currentUser;
 
-  String get currentUsername => state['username'] ?? 'Username';
-  String get currentName => state['name'] ?? 'Name';
+  UserProvider() : super(null) {
+    _initializeUser();
+  }
+  String uid = FirebaseAuth.instance.currentUser!.uid;
 
-  void _initUserData() {
-    if (_user != null) {
-      _firestore
+  Future<void> _initializeUser() async {
+    try {
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      if (userDoc.exists) {
+        state = UserModel.fromFirestore(userDoc.data()!);
+      } else {
+        state = null;
+      }
+    } catch (e) {
+      print('Failed to fetch user: $e');
+      state = null;
+    }
+  }
+
+  Future<void> updateUser(UserModel updatedUser) async {
+    if (state == null) return;
+
+    try {
+      await _firestore
           .collection('users')
-          .doc(_user.uid)
-          .snapshots()
-          .listen((snapshot) {
-        if (snapshot.exists) {
-          state = snapshot.data()!;
-        }
-      });
+          .doc(state!.id)
+          .set(updatedUser.toFirestore());
+      state = updatedUser;
+    } catch (e) {
+      print('Failed to update user: $e');
     }
   }
 
-  void updateUserData(Map<String, dynamic> newData) {
-    if (_user != null) {
-      _firestore.collection('users').doc(_user.uid).update(newData);
-      state = {
-        ...state,
-        ...newData
-      }; // Update local state immediately for better UX
+  void togglePrivacy(value) {
+    if (state == null) return;
+    state = state!.copyWith(isPrivate: value);
+    _updateUser();
+  }
+
+  Future<void> _updateUser() async {
+    if (state == null) return;
+
+    try {
+      await _firestore
+          .collection('users')
+          .doc(state!.id)
+          .update(state!.toFirestore());
+    } catch (e) {
+      print('Failed to update user: $e');
     }
   }
+  //end
 }
+
+final userProvider =
+    StateNotifierProvider<UserProvider, UserModel?>((ref) => UserProvider());

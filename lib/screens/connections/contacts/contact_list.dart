@@ -20,7 +20,7 @@ class ConnectionList extends ConsumerWidget {
         .limit(1)
         .get();
 
-    final fromUsername = ref.read(userDataProvider.notifier).currentUsername;
+    final fromUsername = ref.read(userProvider)!.username;
 
     var notify = NotificationModel(
       type: NotificationType.friendRequest,

@@ -4,15 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/user_model.dart';
 
-final userProvider = ChangeNotifierProvider<UserProvider>((ref) {
-  return UserProvider();
+final allUserProvider = ChangeNotifierProvider<AllUserProvider>((ref) {
+  return AllUserProvider();
 });
 
-class UserProvider extends ChangeNotifier {
+class AllUserProvider extends ChangeNotifier {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Stream<QuerySnapshot> _userStream;
 
-  UserProvider() {
+  AllUserProvider() {
     _userStream = _firestore.collection('users').snapshots();
     _userStream.listen((snapshot) {
       _users = snapshot.docs

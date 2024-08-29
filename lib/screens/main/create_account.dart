@@ -52,7 +52,7 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             name: nameController.text,
             createdAt: Timestamp.now().toString(),
             isPrivate: true);
-        ref.watch(userProvider).addUser(newUser);
+        ref.watch(allUserProvider).addUser(newUser);
 
         await FirebaseFirestore.instance
             .collection('users')
