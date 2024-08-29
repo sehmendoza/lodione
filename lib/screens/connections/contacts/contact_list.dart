@@ -1,11 +1,40 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/providers/user_provider.dart';
 import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
 import 'package:lodione/widgets/buttons.dart';
 
-class ConnectionList extends StatelessWidget {
+import '../../../models/notification_model.dart';
+
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+class ConnectionList extends ConsumerWidget {
   const ConnectionList({required this.group, super.key});
   final GroupConnection group;
-  void addUserDialog(context) {
+
+  void addUser(String username, WidgetRef ref) async {
+    final users = await _firestore
+        .collection('users')
+        .where('username', isEqualTo: username)
+        .limit(1)
+        .get();
+
+    final fromUsername = ref.read(userDataProvider.notifier).currentUsername;
+
+    var notify = NotificationModel(
+      type: NotificationType.friendRequest,
+      message: 'Friend request from $fromUsername',
+    );
+
+    _firestore.collection('users').doc(users.docs[0].data()['id']).set({
+      'notification': FieldValue.arrayUnion([notify.toFirestore()])
+    });
+    print(users.docs[0].data()['id']);
+  }
+
+  void addUserDialog(context, ref) {
+    var username = TextEditingController();
     showDialog(
         context: context,
         builder: (context) {
@@ -24,9 +53,10 @@ class ConnectionList extends StatelessWidget {
                 style: TextStyle(color: Colors.white),
               ),
             ),
-            content: const TextField(
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+            content: TextField(
+              controller: username,
+              style: const TextStyle(color: Colors.white),
+              decoration: const InputDecoration(
                 hintText: 'Enter username',
                 hintStyle: TextStyle(color: Colors.white54),
               ),
@@ -42,6 +72,7 @@ class ConnectionList extends StatelessWidget {
               ),
               TextButton(
                 onPressed: () {
+                  addUser(username.text, ref);
                   Navigator.of(context).pop();
                 },
                 child: const Text(
@@ -57,7 +88,7 @@ class ConnectionList extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -100,7 +131,7 @@ class ConnectionList extends StatelessWidget {
               MyButton(
                   text: 'Add a friend',
                   icon: Icons.add,
-                  onPressed: () => addUserDialog(context))
+                  onPressed: () => addUserDialog(context, ref))
             ],
           ),
           const SizedBox(

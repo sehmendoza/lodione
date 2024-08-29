@@ -10,13 +10,6 @@ import 'screens/main/main_screen.dart';
 import 'screens/main/waiting_screen.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // SystemChrome.setPreferredOrientations(
-  //   [
-  //     DeviceOrientation.portraitUp,
-  //     DeviceOrientation.portraitDown,
-  //   ],
-  // ).then((fn) => const StartUp());
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 

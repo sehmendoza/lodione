@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
-import '../../../models/list_model.dart';
+import '../../../models/item_model.dart';
 import '../../../models/user_model.dart';
 
 class EventsTab extends StatefulWidget {

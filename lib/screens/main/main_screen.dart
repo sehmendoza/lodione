@@ -49,14 +49,14 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ),
 
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.logout),
-        //     onPressed: () async {
-        //       await FirebaseAuth.instance.signOut();
-        //     },
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+            },
+          ),
+        ],
         // centerTitle: true,
         // title: Image.asset(
         //   'lib/images/lodione_logo_lang.png',

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'list_model.dart';
+import 'item_model.dart';
 
 enum FoodCategory { breakfast, lunch, dinner, treats, drinks, others }
 

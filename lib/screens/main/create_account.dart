@@ -1,19 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreateAccount extends StatefulWidget {
+import '../../models/list_model.dart';
+import '../../models/user_model.dart';
+import '../../providers/new_user_provider.dart';
+
+class CreateAccount extends ConsumerStatefulWidget {
   const CreateAccount({super.key});
 
   @override
-  State<CreateAccount> createState() => _CreateAccountState();
+  ConsumerState<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _CreateAccountState extends State<CreateAccount> {
+class _CreateAccountState extends ConsumerState<CreateAccount> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController cpasswordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   void dispose() {
@@ -21,10 +27,11 @@ class _CreateAccountState extends State<CreateAccount> {
     emailController.dispose();
     passwordController.dispose();
     cpasswordController.dispose();
+    nameController.dispose();
     super.dispose();
   }
 
-  void _createAccount(context) async {
+  void _createAccount(context, ref) async {
     final isValid = _formKey.currentState!.validate();
 
     if (!isValid) {
@@ -38,29 +45,32 @@ class _CreateAccountState extends State<CreateAccount> {
             .createUserWithEmailAndPassword(
                 email: emailController.text, password: passwordController.text);
 
-        FirebaseFirestore.instance
+        final newUser = UserModel(
+            id: userCred.user!.uid,
+            username: usernameController.text,
+            email: emailController.text,
+            name: nameController.text,
+            createdAt: Timestamp.now().toString(),
+            isPrivate: true);
+        ref.watch(userProvider).addUser(newUser);
+
+        await FirebaseFirestore.instance
             .collection('users')
             .doc(userCred.user!.uid)
-            .set({
-          'email': emailController.text,
-          'username': usernameController.text,
-          'createdAt': Timestamp.now(),
-          'isPrivate': true,
-          'recipes': [],
-          'mealPlans': [],
-          'goToPlaces': [],
-          'fitness': [],
-          'connections': [],
-        });
+            .set(
+              newUser.toFirestore(),
+            );
 
-        FirebaseFirestore.instance
+        final newList = ListModel(
+          name: 'My List',
+          items: [],
+        );
+
+        await FirebaseFirestore.instance
             .collection('users')
             .doc(userCred.user!.uid)
             .collection('lists')
-            .add({
-          'listName': 'My List',
-          'listItems': [],
-        });
+            .add(newList.toFirestore());
 
         //  Navigate to main screen after successful account creation
         Navigator.of(context).pop();
@@ -112,6 +122,10 @@ class _CreateAccountState extends State<CreateAccount> {
             key: _formKey,
             child: Column(
               children: [
+                textfield1(nameController, 'Name (optional)', (value) {}),
+                const SizedBox(
+                  height: 20,
+                ),
                 textfield1(emailController, 'Email address', (value) {
                   if (value.isEmpty) {
                     return 'Please enter an email address';
@@ -162,7 +176,7 @@ class _CreateAccountState extends State<CreateAccount> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () => _createAccount(context),
+                  onPressed: () => _createAccount(context, ref),
                   style: ElevatedButton.styleFrom(
                       shadowColor: Colors.white,
                       elevation: 5,

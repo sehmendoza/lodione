@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../models/item_model.dart';
 import '../models/list_model.dart';
 
 // Provider for managing lists

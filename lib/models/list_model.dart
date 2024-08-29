@@ -1,30 +1,45 @@
+import 'package:lodione/models/item_model.dart';
+import 'package:lodione/models/user_model.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
 
-// Model for lists
 class ListModel {
   final String id;
   final String name;
   List<ItemModel> items;
+  List<UserModel> users;
 
   ListModel({
     String? id,
     required this.name,
     this.items = const [],
+    this.users = const [],
   }) : id = id ?? uuid.v4();
 
-  ListModel copyWith({String? name, List<ItemModel>? items}) {
+  ListModel copyWith(
+      {String? name, List<ItemModel>? items, List<UserModel>? users}) {
     return ListModel(
       id: id,
       name: name ?? this.name,
       items: items ?? this.items,
+      users: users ?? this.users,
     );
   }
 
   ListModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         name = json['name'],
+        users = (json['users'] as List)
+            .map((user) => UserModel(
+                  id: user['id'],
+                  name: user['name'],
+                  email: user['email'],
+                  username: user['username'],
+                  createdAt: user['createdAt'],
+                  isPrivate: user['isPrivate'],
+                ))
+            .toList(),
         items = (json['items'] as List)
             .map((item) => ItemModel(
                   id: item['id'],
@@ -34,49 +49,12 @@ class ListModel {
                 ))
             .toList();
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toFirestore() {
     return {
       'id': id,
       'name': name,
-      'items': items.map((item) => item.toJson()).toList(),
+      'items': items.map((item) => item.toFirestore()).toList(),
+      'users': users.map((user) => user.toFirestore()).toList(),
     };
   }
-}
-
-class ItemModel {
-  String id;
-  String name;
-  String details;
-  bool isDone;
-
-  ItemModel({
-    String? id,
-    required this.name,
-    required this.details,
-    this.isDone = false,
-  }) : id = id ?? uuid.v4();
-
-  ItemModel copyWith({String? name, bool? isDone}) {
-    return ItemModel(
-      id: id,
-      name: name ?? this.name,
-      details: details,
-      isDone: isDone ?? this.isDone,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'details': details,
-      'isDone': isDone,
-    };
-  }
-
-  ItemModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        details = json['details'],
-        isDone = json['isDone'];
 }

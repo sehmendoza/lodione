@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
 import 'package:lodione/widgets/buttons.dart';
+import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
 import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
