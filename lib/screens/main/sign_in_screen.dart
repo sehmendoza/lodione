@@ -10,28 +10,49 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final FocusNode _usernameFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  TextEditingController usernameController = TextEditingController();
-
-  TextEditingController passwordController = TextEditingController();
+  // Using ValueNotifier for better state management
+  final ValueNotifier<String> _username = ValueNotifier('');
+  final ValueNotifier<String> _password = ValueNotifier('');
+  bool _visiblePW = false;
+  @override
+  void initState() {
+    super.initState();
+    _username.addListener(() {
+      setState(() {}); // Refresh UI if needed
+    });
+    _password.addListener(() {
+      setState(() {}); // Refresh UI if needed
+    });
+  }
 
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
+    _usernameFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
-  bool visiblePW = true;
+  void _handleEnterKey() {
+    print('Enter key pressed!');
+    // Add your logic here for what should happen when Enter is pressed
+  }
 
   void signIn(context) async {
-    final isValid = _formKey.currentState!.validate();
-    if (isValid) {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save(); // Save the form data
+
       try {
+        await Future.delayed(
+          const Duration(seconds: 2),
+        ); // Simulate network delay
+
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: usernameController.text,
-          password: passwordController.text,
+          email: _username.value,
+          password: _username.value,
         );
         // Navigator.pushReplacement(
         //   context,
@@ -89,98 +110,129 @@ class _SignInScreenState extends State<SignInScreen> {
                       'lib/images/lodione_logo.png',
                       height: 250,
                     ),
-                    TextFormField(
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      validator: (value) {
-                        if (value!.isEmpty || value.trim().isEmpty) {
-                          return 'Please enter a username';
-                        }
-                        return null;
-                      },
-                      controller: usernameController,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                            onPressed: () {
-                              setState(() {
-                                usernameController.clear();
-                              });
-                            },
-                            icon: const Icon(Icons.close)),
-                        label: Text(
-                          'Username',
-                          style: TextStyle(color: Colors.white.withAlpha(200)),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 1),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 109, 17, 11),
-                              width: 1),
-                        ),
-                        focusedErrorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 109, 17, 11),
-                              width: 2),
-                        ),
+                    ValueListenableBuilder<String>(
+                      valueListenable: _username,
+                      builder: (context, value, child) => FormField<String>(
+                        initialValue: value,
+                        validator: (value) {
+                          if (value!.isEmpty || value.trim().isEmpty) {
+                            return 'Please enter a username';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => _username.value = value!,
+                        builder: (FormFieldState<String> field) {
+                          return Focus(
+                            focusNode: _usernameFocusNode,
+                            child: TextFormField(
+                              initialValue: value,
+                              autocorrect: false,
+                              textCapitalization: TextCapitalization.none,
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _username.value = '';
+                                  },
+                                  icon: const Icon(Icons.close),
+                                ),
+                                label: Text('Username',
+                                    style: TextStyle(
+                                        color: Colors.white.withAlpha(200))),
+                                errorText: field.errorText,
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white, width: 1),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white, width: 2),
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 109, 17, 11),
+                                      width: 1),
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 109, 17, 11),
+                                      width: 2),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                  color: Colors.white, letterSpacing: 2),
+                              onFieldSubmitted: (value) {
+                                FocusScope.of(context)
+                                    .requestFocus(_passwordFocusNode);
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      autocorrect: false,
-                      validator: (value) {
-                        if (value!.isEmpty || value.trim().isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                      controller: passwordController,
-                      obscureText: visiblePW,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            visiblePW ? Icons.visibility_off : Icons.visibility,
-                            // color: Colors.white,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              visiblePW = !visiblePW;
-                            });
-                          },
-                        ),
-                        label: Text(
-                          'Password',
-                          style: TextStyle(color: Colors.white.withAlpha(200)),
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 1),
-                        ),
-                        focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.white, width: 2),
-                        ),
-                        errorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 109, 17, 11),
-                              width: 1),
-                        ),
-                        focusedErrorBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromARGB(255, 109, 17, 11),
-                              width: 2),
-                        ),
+                    const SizedBox(height: 20),
+                    ValueListenableBuilder<String>(
+                      valueListenable: _password,
+                      builder: (context, value, child) => FormField<String>(
+                        initialValue: value,
+                        validator: (value) {
+                          if (value!.isEmpty || value.trim().isEmpty) {
+                            return 'Please enter a password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
+                        onSaved: (value) => _password.value = value!,
+                        builder: (FormFieldState<String> field) {
+                          return Focus(
+                            focusNode: _passwordFocusNode,
+                            child: TextFormField(
+                              initialValue: value,
+                              autocorrect: false,
+                              obscureText: _visiblePW,
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  icon: Icon(_visiblePW
+                                      ? Icons.visibility_off
+                                      : Icons.visibility),
+                                  onPressed: () {
+                                    setState(() {
+                                      _visiblePW = !_visiblePW;
+                                    });
+                                  },
+                                ),
+                                label: Text('Password',
+                                    style: TextStyle(
+                                        color: Colors.white.withAlpha(200))),
+                                errorText: field.errorText,
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white, width: 1),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Colors.white, width: 2),
+                                ),
+                                errorBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 109, 17, 11),
+                                      width: 1),
+                                ),
+                                focusedErrorBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromARGB(255, 109, 17, 11),
+                                      width: 2),
+                                ),
+                              ),
+                              style: const TextStyle(
+                                  color: Colors.white, letterSpacing: 2),
+                              onFieldSubmitted: (value) {
+                                signIn(context);
+                              },
+                            ),
+                          );
+                        },
                       ),
                     ),
                     const SizedBox(
