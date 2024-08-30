@@ -10,7 +10,7 @@ class UserService {
     return FirebaseAuth.instance.authStateChanges().asyncMap((user) async {
       if (user == null) return null;
       final doc = await _firestore.collection('users').doc(user.uid).get();
-      return doc.exists ? UserModel.fromFirestore(doc.data()!) : null;
+      return doc.exists ? UserModel.fromJson(doc.data()!) : null;
     });
   }
 

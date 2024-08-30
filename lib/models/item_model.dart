@@ -33,7 +33,7 @@ class ItemModel {
     };
   }
 
-  factory ItemModel.fromFirestore(Map<String, dynamic> json) {
+  factory ItemModel.fromJson(Map<String, dynamic> json) {
     return ItemModel(
       id: json['id'],
       name: json['name'],

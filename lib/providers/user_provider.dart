@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,12 +16,11 @@ class UserProvider extends StateNotifier<UserModel?> {
     try {
       final userDoc = await _firestore.collection('users').doc(uid).get();
       if (userDoc.exists) {
-        state = UserModel.fromFirestore(userDoc.data()!);
+        state = UserModel.fromJson(userDoc.data()!);
       } else {
         state = null;
       }
     } catch (e) {
-      print('Failed to fetch user: $e');
       state = null;
     }
   }

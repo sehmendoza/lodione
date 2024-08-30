@@ -7,6 +7,7 @@ import 'user_provider.dart';
 final listsProvider = StreamProvider<List<ListModel>>((ref) {
   final firestore = ref.watch(firestoreProvider);
   final user = ref.read(userProvider.notifier).uid;
+
   return firestore
       .collection('users')
       .doc(user)
@@ -17,14 +18,18 @@ final listsProvider = StreamProvider<List<ListModel>>((ref) {
   });
 });
 
-final selectedListProvider = StateProvider<ListModel?>((ref) => null);
+final listsNotifierProvider =
+    StateNotifierProvider<ListsNotifier, List<ListModel>>(
+  (ref) => ListsNotifier(ref, ref.read(userProvider.notifier).uid),
+);
 
 class ListsNotifier extends StateNotifier<List<ListModel>> {
-  ListsNotifier(this.ref) : super([]) {
+  ListsNotifier(this.ref, this.user) : super([]) {
     _initialize();
   }
 
   final Ref ref;
+  final String user;
 
   Future<void> _initialize() async {
     final lists = await _fetchLists();
@@ -42,7 +47,7 @@ class ListsNotifier extends StateNotifier<List<ListModel>> {
     return snapshot.docs.map((doc) => ListModel.fromJson(doc.data())).toList();
   }
 
-  void addTodo(ListModel list) {
+  void addList(ListModel list) {
     ref
         .read(firestoreProvider)
         .collection('users')
@@ -75,6 +80,6 @@ class ListsNotifier extends StateNotifier<List<ListModel>> {
   }
 }
 
-final listsNotifierProvider =
-    StateNotifierProvider<ListsNotifier, List<ListModel>>(
-        (ref) => ListsNotifier(ref));
+// final listsNotifierProvider =
+//     StateNotifierProvider<ListsNotifier, List<ListModel>>(
+//         (ref) => ListsNotifier(ref, ref.read(userProvider.notifier).uid));

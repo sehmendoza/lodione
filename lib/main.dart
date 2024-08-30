@@ -35,7 +35,10 @@ class StartUp extends StatelessWidget {
                 return const WaitingScreen();
               }
               if (snapshot.hasData) {
-                return const MainScreen();
+                snapshot6
+                6
+                006;
+                return const MainScreen(snapshot.data);
               }
               return const SignInScreen();
             }));

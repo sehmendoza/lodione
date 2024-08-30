@@ -17,19 +17,22 @@ class ListTab extends ConsumerStatefulWidget {
 }
 
 class _ListTabState extends ConsumerState<ListTab> {
-  late String dropdownValue;
+  String listOf = 'My List';
   late ListModel selectedList;
+  late String dropdownValue;
 
   @override
   void initState() {
     super.initState();
-    dropdownValue = ref.read(listsProvider).value!.first.id;
+
+    dropdownValue = ref.read(selectedListProvider);
     selectedList = ref.read(listsProvider).value!.first;
   }
 
   void selectList(id) {
     setState(() {
-      selectedList = ref.read(listProvider).firstWhere((list) => list.id == id);
+      selectedList =
+          ref.read(listsNotifierProvider).firstWhere((list) => list.id == id);
     });
   }
 
@@ -64,6 +67,8 @@ class _ListTabState extends ConsumerState<ListTab> {
   Widget build(BuildContext context) {
     final mgaLists = ref.watch(listsProvider);
     return Container(
+      width: double.infinity,
+      height: double.infinity,
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -82,62 +87,64 @@ class _ListTabState extends ConsumerState<ListTab> {
               //  crossAxisAlignment: CrossAxisAlignment.center,
               //   mainAxisSize: MainAxisSize.min,
               children: [
-                DropdownButton<String>(
-                  isExpanded: false,
-                  value: dropdownValue,
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                  iconSize: 18,
-                  // underline: Container(
-                  //     height: 1, color: null), // Fixed underline styling
-                  borderRadius: BorderRadius.circular(2),
-                  dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-                  onChanged: (newValue) {
-                    setState(() {
-                      dropdownValue = newValue!;
-                      selectList(
-                          dropdownValue); // Directly call selectList here
-                    });
-                  },
-                  underline: const SizedBox(),
-                  items: ref
-                      .watch(listsNotifierProvider)
-                      .map<DropdownMenuItem<String>>((ListModel listModel) {
-                    return DropdownMenuItem<String>(
-                      value: listModel.id,
-                      child: Row(
-                        children: [
-                          Text(
-                            listModel.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 6),
-                            padding: const EdgeInsets.all(7.5),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: Text(
-                              ref
-                                  .watch(listProvider)
-                                  .firstWhere((list) => list.id == listModel.id)
-                                  .items
-                                  .length
-                                  .toString(),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
+                _buildListSelector(mgaLists, ref),
+                // DropdownButton<String>(
+                //   isExpanded: false,
+                //   value: listOf,
+                //   icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                //   iconSize: 18,
+                //   // underline: Container(
+                //   //     height: 1, color: null), // Fixed underline styling
+                //   borderRadius: BorderRadius.circular(2),
+                //   dropdownColor: const Color.fromARGB(255, 30, 30, 30),
+                //   onChanged: (newValue) {
+                //     setState(() {
+                //       listOf = newValue!;
+                //       selectList(listOf); // Directly call selectList here
+                //     });
+                //   },
+                //   underline: const SizedBox(),
+                //   items: ref
+                //       .watch(listsNotifierProvider)
+                //       .map<DropdownMenuItem<String>>((ListModel listModel) {
+                //     return DropdownMenuItem<String>(
+                //       value: listModel.id,
+                //       child: Row(
+                //         children: [
+                //           Text(
+                //             listModel.name,
+                //             overflow: TextOverflow.ellipsis,
+                //             style: const TextStyle(
+                //               color: Colors.white,
+                //             ),
+                //           ),
+                //           Container(
+                //             margin: const EdgeInsets.only(left: 6),
+                //             padding: const EdgeInsets.all(7.5),
+                //             decoration: const BoxDecoration(
+                //               shape: BoxShape.circle,
+                //               color: Colors.white,
+                //             ),
+                //             child: const Text(
+                //               '0',
+                //               //  "ref
+                //               //       .watch(listProvider)
+                //               //       .firstWhere((list) => list.id == listModel.id)
+                //               //       .items
+                //               //       .length
+                //               //       .toString()",
+
+                //               style: TextStyle(
+                //                 color: Colors.black,
+                //                 fontSize: 16,
+                //               ),
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     );
+                //   }).toList(),
+                // ),
 
                 // Popup Menu
                 const Spacer(),
@@ -190,7 +197,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                                   .read(listProvider.notifier)
                                   .removeList(selectedList.id);
                               selectedList = ref.read(listProvider).first;
-                              dropdownValue = selectedList.id;
+                              listOf = selectedList.id;
                             });
                     }),
                   ],
@@ -213,7 +220,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                       return;
                     }
                     addItem(
-                      listID: dropdownValue,
+                      listID: listOf,
                       item: ItemModel(
                           name: itemController.text,
                           isDone: false,
@@ -242,7 +249,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                     return;
                   }
                   addItem(
-                    listID: dropdownValue,
+                    listID: listOf,
                     item: ItemModel(
                         name: itemController.text, isDone: false, details: ''),
                   );
@@ -257,9 +264,29 @@ class _ListTabState extends ConsumerState<ListTab> {
           const SizedBox(
             height: 3,
           ),
-          MyListView(
-            listID: selectedList.id,
+          mgaLists.when(
+            data: (lists) {
+              return MyListView(
+                listID: selectedList.id,
+              );
+            },
+            loading: () => const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+              ),
+            ),
+            error: (error, stackTrace) {
+              return Center(
+                child: Text(
+                  'Error: $error',
+                  style: const TextStyle(color: Colors.white),
+                ),
+              );
+            },
           ),
+          // MyListView(
+          //   listID: selectedList.id,
+          // ),
         ],
       ),
     );
@@ -321,9 +348,10 @@ class _ListTabState extends ConsumerState<ListTab> {
                       nameController.text.isEmpty
                           ? null
                           : setState(() {
-                              ref.read(listProvider.notifier).addList(ListModel(
-                                  name: nameController.text, items: []));
-                              dropdownValue = ref.read(listProvider).last.id;
+                              ref.read(listsNotifierProvider.notifier).addList(
+                                  ListModel(
+                                      name: nameController.text, items: []));
+                              listOf = ref.read(listProvider).last.id;
                               selectedList = ref.read(listProvider).last;
                               Navigator.pop(context);
                             });
@@ -346,7 +374,7 @@ class _ListTabState extends ConsumerState<ListTab> {
         ),
       );
 
-      dropdownValue = result;
+      listOf = result;
 
       String moveToList = result;
       selectList(moveToList);
@@ -390,4 +418,45 @@ class _ListTabState extends ConsumerState<ListTab> {
       },
     );
   }
+}
+
+Widget _buildListSelector(listOf, WidgetRef ref) {
+  return Consumer(
+    builder: (context, ref, child) {
+      final listsData = ref.watch(listsNotifierProvider);
+// DROPDOWN BUTTON TO SELECT LIST
+      return DropdownButton<String>(
+        iconSize: 18,
+        underline: const SizedBox(), // Fixed underline styling
+        borderRadius: BorderRadius.circular(2),
+        dropdownColor: const Color.fromARGB(255, 30, 30, 30),
+        value: ref.read(selectedListProvider),
+        onChanged: (String? newListID) {
+          if (newListID != null) {
+            ref.read(selectedListProvider.notifier).state = newListID;
+          }
+        },
+        items: listsData.map<DropdownMenuItem<String>>((ListModel list) {
+          return DropdownMenuItem<String>(
+            value: list.id, // Ensure this is unique
+            child: Text(
+              list.name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          );
+        }).toList(),
+
+        isExpanded: false,
+        hint: const Text('Select a list'),
+        icon: const Icon(Icons.arrow_drop_down_circle),
+
+        elevation: 16,
+        style: const TextStyle(color: Colors.deepPurple),
+      );
+    },
+  );
 }

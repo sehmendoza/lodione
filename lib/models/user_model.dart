@@ -32,7 +32,7 @@ class UserModel {
     );
   }
 
-  factory UserModel.fromFirestore(Map<String, dynamic> data) {
+  factory UserModel.fromJson(Map<String, dynamic> data) {
     return UserModel(
       id: data['id'] ?? '',
       name: data['name'] ?? '',

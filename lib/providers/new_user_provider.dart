@@ -18,8 +18,7 @@ class AllUserProvider extends ChangeNotifier {
       _users = snapshot.docs
           .map((doc) {
             if (doc.data() is Map<String, dynamic>) {
-              return UserModel.fromFirestore(
-                  doc.data() as Map<String, dynamic>);
+              return UserModel.fromJson(doc.data() as Map<String, dynamic>);
             } else {
               return null;
             }

@@ -7,8 +7,8 @@ const uuid = Uuid();
 class ListModel {
   final String id;
   final String name;
-  List<ItemModel> items;
-  List<UserModel> users;
+  final List<ItemModel> items;
+  final List<UserModel> users;
 
   ListModel({
     String? id,
@@ -17,8 +17,11 @@ class ListModel {
     this.users = const [],
   }) : id = id ?? uuid.v4();
 
-  ListModel copyWith(
-      {String? name, List<ItemModel>? items, List<UserModel>? users}) {
+  ListModel copyWith({
+    String? name,
+    List<ItemModel>? items,
+    List<UserModel>? users,
+  }) {
     return ListModel(
       id: id,
       name: name ?? this.name,
@@ -27,27 +30,20 @@ class ListModel {
     );
   }
 
-  ListModel.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        name = json['name'],
-        users = (json['users'] as List)
-            .map((user) => UserModel(
-                  id: user['id'],
-                  name: user['name'],
-                  email: user['email'],
-                  username: user['username'],
-                  createdAt: user['createdAt'],
-                  isPrivate: user['isPrivate'],
-                ))
-            .toList(),
-        items = (json['items'] as List)
-            .map((item) => ItemModel(
-                  id: item['id'],
-                  name: item['name'],
-                  details: item['details'],
-                  isDone: item['isDone'],
-                ))
-            .toList();
+  factory ListModel.fromJson(Map<String, dynamic> json) {
+    return ListModel(
+      id: json['id'] as String?,
+      name: json['name'] as String,
+      items: (json['items'] as List<dynamic>?)
+              ?.map((item) => ItemModel.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      users: (json['users'] as List<dynamic>?)
+              ?.map((user) => UserModel.fromJson(user as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
+  }
 
   Map<String, dynamic> toFirestore() {
     return {
