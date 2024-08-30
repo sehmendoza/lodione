@@ -4,6 +4,7 @@ import 'package:lodione/providers/list_provider.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
+import '../../../providers/new_list_provider.dart';
 import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
 import 'move_list_dialog.dart';
@@ -22,8 +23,8 @@ class _ListTabState extends ConsumerState<ListTab> {
   @override
   void initState() {
     super.initState();
-    dropdownValue = ref.read(listProvider).first.id;
-    selectedList = ref.read(listProvider).first;
+    dropdownValue = ref.read(listsProvider).value!.first.id;
+    selectedList = ref.read(listsProvider).value!.first;
   }
 
   void selectList(id) {
@@ -61,7 +62,7 @@ class _ListTabState extends ConsumerState<ListTab> {
 
   @override
   Widget build(BuildContext context) {
-    final mgaLists = ref.watch(listProvider);
+    final mgaLists = ref.watch(listsProvider);
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -98,7 +99,8 @@ class _ListTabState extends ConsumerState<ListTab> {
                     });
                   },
                   underline: const SizedBox(),
-                  items: mgaLists
+                  items: ref
+                      .watch(listsNotifierProvider)
                       .map<DropdownMenuItem<String>>((ListModel listModel) {
                     return DropdownMenuItem<String>(
                       value: listModel.id,
