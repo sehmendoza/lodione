@@ -1,13 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
+import 'package:lodione/services/firestore_service.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
-import '../../../providers/new_list_provider.dart';
 import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
 import 'move_list_dialog.dart';
+
+final _currentListModelProvider = StateProvider<ListModel?>((ref) => null);
+final FirestoreService firestoreService = FirestoreService();
 
 class ListTab extends ConsumerStatefulWidget {
   const ListTab({super.key});
@@ -17,22 +21,30 @@ class ListTab extends ConsumerStatefulWidget {
 }
 
 class _ListTabState extends ConsumerState<ListTab> {
-  String listOf = 'My List';
-  late ListModel selectedList;
-  late String dropdownValue;
-
   @override
   void initState() {
     super.initState();
+    _fetchAndSetModels();
+  }
 
-    dropdownValue = ref.read(selectedListProvider);
-    selectedList = ref.read(listsProvider).value!.first;
+  List<ListModel> _list = [];
+  late ListModel _currentList;
+
+  Future<void> _fetchAndSetModels() async {
+    List<ListModel> list = await firestoreService.fetchModels();
+    if (list.isNotEmpty) {
+      setState(() {
+        _list = list;
+        _currentList = list[0];
+      });
+    }
   }
 
   void selectList(id) {
+    var newList = _list.firstWhere((list) => list.id == id);
+
     setState(() {
-      selectedList =
-          ref.read(listsNotifierProvider).firstWhere((list) => list.id == id);
+      _currentList = newList;
     });
   }
 
@@ -65,7 +77,6 @@ class _ListTabState extends ConsumerState<ListTab> {
 
   @override
   Widget build(BuildContext context) {
-    final mgaLists = ref.watch(listsProvider);
     return Container(
       width: double.infinity,
       height: double.infinity,
@@ -87,64 +98,61 @@ class _ListTabState extends ConsumerState<ListTab> {
               //  crossAxisAlignment: CrossAxisAlignment.center,
               //   mainAxisSize: MainAxisSize.min,
               children: [
-                _buildListSelector(mgaLists, ref),
-                // DropdownButton<String>(
-                //   isExpanded: false,
-                //   value: listOf,
-                //   icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                //   iconSize: 18,
-                //   // underline: Container(
-                //   //     height: 1, color: null), // Fixed underline styling
-                //   borderRadius: BorderRadius.circular(2),
-                //   dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-                //   onChanged: (newValue) {
-                //     setState(() {
-                //       listOf = newValue!;
-                //       selectList(listOf); // Directly call selectList here
-                //     });
-                //   },
-                //   underline: const SizedBox(),
-                //   items: ref
-                //       .watch(listsNotifierProvider)
-                //       .map<DropdownMenuItem<String>>((ListModel listModel) {
-                //     return DropdownMenuItem<String>(
-                //       value: listModel.id,
-                //       child: Row(
-                //         children: [
-                //           Text(
-                //             listModel.name,
-                //             overflow: TextOverflow.ellipsis,
-                //             style: const TextStyle(
-                //               color: Colors.white,
-                //             ),
-                //           ),
-                //           Container(
-                //             margin: const EdgeInsets.only(left: 6),
-                //             padding: const EdgeInsets.all(7.5),
-                //             decoration: const BoxDecoration(
-                //               shape: BoxShape.circle,
-                //               color: Colors.white,
-                //             ),
-                //             child: const Text(
-                //               '0',
-                //               //  "ref
-                //               //       .watch(listProvider)
-                //               //       .firstWhere((list) => list.id == listModel.id)
-                //               //       .items
-                //               //       .length
-                //               //       .toString()",
+                DropdownButton<ListModel>(
+                  isExpanded: false,
+                  value: _currentList,
+                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                  iconSize: 18,
+                  // underline: Container(
+                  //     height: 1, color: null), // Fixed underline styling
+                  borderRadius: BorderRadius.circular(2),
+                  dropdownColor: const Color.fromARGB(255, 30, 30, 30),
+                  onChanged: (ListModel? newValue) {
+                    setState(() {
+                      _currentList = newValue!; // Directly call selectList here
+                    });
+                  },
+                  underline: const SizedBox(),
+                  items: _list
+                      .map<DropdownMenuItem<ListModel>>((ListModel listModel) {
+                    return DropdownMenuItem<ListModel>(
+                      value: listModel,
+                      child: Row(
+                        children: [
+                          Text(
+                            listModel.name,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(left: 6),
+                            padding: const EdgeInsets.all(7.5),
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: const Text(
+                              '0',
+                              //  "ref
+                              //       .watch(listProvider)
+                              //       .firstWhere((list) => list.id == listModel.id)
+                              //       .items
+                              //       .length
+                              //       .toString()",
 
-                //               style: TextStyle(
-                //                 color: Colors.black,
-                //                 fontSize: 16,
-                //               ),
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     );
-                //   }).toList(),
-                // ),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
 
                 // Popup Menu
                 const Spacer(),
@@ -158,20 +166,20 @@ class _ListTabState extends ConsumerState<ListTab> {
                     _buildMenuItem('Select all items', Icons.select_all, () {
                       ref
                           .read(listProvider.notifier)
-                          .selectAll(selectedList.id);
+                          .selectAll(_currentList.id);
                     }),
                     _buildMenuItem(
                         'Delete all checked items', Icons.delete_sweep, () {
                       ref
                           .read(listProvider.notifier)
-                          .removeCompleted(selectedList.id);
+                          .removeCompleted(_currentList.id);
                     }),
                     _buildMenuItem(
                         'Unselect all items', Icons.check_box_outline_blank,
                         () {
                       ref
                           .read(listProvider.notifier)
-                          .unselectAll(selectedList.id);
+                          .unselectAll(_currentList.id);
                     }),
                     _buildMenuItem('Move marked items to other list',
                         Icons.drive_file_move, () {
@@ -184,10 +192,10 @@ class _ListTabState extends ConsumerState<ListTab> {
                     _buildMenuItem('Clear all items', Icons.delete_forever, () {
                       ref
                           .read(listProvider.notifier)
-                          .clearList(selectedList.id);
+                          .clearList(_currentList.id);
                     }),
                     _buildMenuItem('Delete list', Icons.close, () {
-                      selectedList.name == 'My List'
+                      _currentList.name == 'My List'
                           ? showMyErrorDialog(
                               context,
                               'Cannot delete "My List"',
@@ -195,9 +203,8 @@ class _ListTabState extends ConsumerState<ListTab> {
                           : setState(() {
                               ref
                                   .read(listProvider.notifier)
-                                  .removeList(selectedList.id);
-                              selectedList = ref.read(listProvider).first;
-                              listOf = selectedList.id;
+                                  .removeList(_currentList.id);
+                              _currentList = ref.read(listProvider).first;
                             });
                     }),
                   ],
@@ -220,7 +227,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                       return;
                     }
                     addItem(
-                      listID: listOf,
+                      listID: _currentList.id,
                       item: ItemModel(
                           name: itemController.text,
                           isDone: false,
@@ -249,7 +256,7 @@ class _ListTabState extends ConsumerState<ListTab> {
                     return;
                   }
                   addItem(
-                    listID: listOf,
+                    listID: _currentList.id,
                     item: ItemModel(
                         name: itemController.text, isDone: false, details: ''),
                   );
@@ -264,29 +271,9 @@ class _ListTabState extends ConsumerState<ListTab> {
           const SizedBox(
             height: 3,
           ),
-          mgaLists.when(
-            data: (lists) {
-              return MyListView(
-                listID: selectedList.id,
-              );
-            },
-            loading: () => const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-              ),
-            ),
-            error: (error, stackTrace) {
-              return Center(
-                child: Text(
-                  'Error: $error',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              );
-            },
+          MyListView(
+            list: _currentList,
           ),
-          // MyListView(
-          //   listID: selectedList.id,
-          // ),
         ],
       ),
     );
@@ -348,11 +335,12 @@ class _ListTabState extends ConsumerState<ListTab> {
                       nameController.text.isEmpty
                           ? null
                           : setState(() {
-                              ref.read(listsNotifierProvider.notifier).addList(
-                                  ListModel(
-                                      name: nameController.text, items: []));
-                              listOf = ref.read(listProvider).last.id;
-                              selectedList = ref.read(listProvider).last;
+                              ListModel list = ListModel(
+                                  name: nameController.text, items: []);
+
+                              ref.read(listProvider.notifier).addList(list);
+
+                              _currentList = list;
                               Navigator.pop(context);
                             });
                     },
@@ -369,12 +357,10 @@ class _ListTabState extends ConsumerState<ListTab> {
       final String result = await showDialog(
         context: context,
         builder: (context) => MoveListDialog(
-          selectedListID: selectedList.id,
+          selectedListID: _currentList.id,
           ref: ref,
         ),
       );
-
-      listOf = result;
 
       String moveToList = result;
       selectList(moveToList);
@@ -418,45 +404,4 @@ class _ListTabState extends ConsumerState<ListTab> {
       },
     );
   }
-}
-
-Widget _buildListSelector(listOf, WidgetRef ref) {
-  return Consumer(
-    builder: (context, ref, child) {
-      final listsData = ref.watch(listsNotifierProvider);
-// DROPDOWN BUTTON TO SELECT LIST
-      return DropdownButton<String>(
-        iconSize: 18,
-        underline: const SizedBox(), // Fixed underline styling
-        borderRadius: BorderRadius.circular(2),
-        dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-        value: ref.read(selectedListProvider),
-        onChanged: (String? newListID) {
-          if (newListID != null) {
-            ref.read(selectedListProvider.notifier).state = newListID;
-          }
-        },
-        items: listsData.map<DropdownMenuItem<String>>((ListModel list) {
-          return DropdownMenuItem<String>(
-            value: list.id, // Ensure this is unique
-            child: Text(
-              list.name,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          );
-        }).toList(),
-
-        isExpanded: false,
-        hint: const Text('Select a list'),
-        icon: const Icon(Icons.arrow_drop_down_circle),
-
-        elevation: 16,
-        style: const TextStyle(color: Colors.deepPurple),
-      );
-    },
-  );
 }

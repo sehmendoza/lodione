@@ -2,21 +2,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/item_model.dart';
 import '../models/list_model.dart';
 
-// Provider for managing lists
+final selectedListProvider =
+    StateProvider<ListModel>((ref) => ListModel(name: 'Default List'));
+
 final listProvider =
     StateNotifierProvider<ListNotifier, List<ListModel>>((ref) {
   return ListNotifier();
 });
 
 class ListNotifier extends StateNotifier<List<ListModel>> {
-  ListNotifier()
-      : super([
-          ListModel(name: 'My List', items: []),
-        ]);
-
-  // void setLists(List<ListModel> lists) {
-  //   state = lists;
-  // }
+  ListNotifier() : super([]);
 
   void addList(ListModel newList) async {
     state = [...state, newList];
@@ -152,10 +147,3 @@ class ListNotifier extends StateNotifier<List<ListModel>> {
     }).toList();
   }
 }
-
-// Provider for the currently selected list
-final selectedListProvider = StateProvider<String>((ref) {
-  return ref.watch(listProvider).first.id;
-});
-
-// Model for list items

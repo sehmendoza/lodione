@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/screens/main/main_screen.dart';
 
 import '../../models/list_model.dart';
 import '../../models/user_model.dart';
-import '../../providers/new_user_provider.dart';
 
 class CreateAccount extends ConsumerStatefulWidget {
   const CreateAccount({super.key});
@@ -52,7 +52,7 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             name: nameController.text,
             createdAt: Timestamp.now().toString(),
             isPrivate: true);
-        ref.watch(allUserProvider).addUser(newUser);
+        // ref.watch(allUserProvider).addUser(newUser);
 
         await FirebaseFirestore.instance
             .collection('users')
@@ -72,8 +72,8 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             .collection('lists')
             .add(newList.toFirestore());
 
-        //  Navigate to main screen after successful account creation
-        Navigator.of(context).pop();
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => const MainScreen()));
       } on FirebaseAuthException catch (e) {
         String errorMessage = 'An error occurred. Please try again.';
         switch (e.code) {

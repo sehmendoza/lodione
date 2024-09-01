@@ -1,28 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/widgets/buttons.dart';
-
 import '../../../models/item_model.dart';
+import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
 
 class MyListView extends ConsumerStatefulWidget {
-  const MyListView({super.key, required this.listID});
+  const MyListView({super.key, required this.list});
 
-  final String listID;
+  final ListModel list;
 
   @override
   ConsumerState<MyListView> createState() => _MyListViewState();
 }
 
 class _MyListViewState extends ConsumerState<MyListView> {
+  List<ItemModel> items = [];
+
   @override
   Widget build(BuildContext context) {
-    final items = ref
-        .watch(listProvider)
-        .firstWhere((list) => list.id == widget.listID)
-        .items;
-    final selectedList =
-        ref.watch(listProvider).firstWhere((list) => list.id == widget.listID);
     return Expanded(
       child: ListView.builder(
           itemCount: items.length,
@@ -39,7 +35,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                 setState(() {
                   ref
                       .read(listProvider.notifier)
-                      .removeItemFromList(selectedList.id, item.id);
+                      .removeItemFromList(widget.list.id, item.id);
                 });
               },
               key: ValueKey(item.id),
@@ -66,14 +62,14 @@ class _MyListViewState extends ConsumerState<MyListView> {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       onTap: () {
-                        showEditDialog(selectedList.id, item);
+                        showEditDialog(widget.list.id, item);
                       },
                       value: 'option1',
                       child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        showAddDetailDialog(selectedList.id, item);
+                        showAddDetailDialog(widget.list.id, item);
                       },
                       value: 'option2',
                       child: Text(
@@ -84,7 +80,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                         setState(() {
                           ref
                               .read(listProvider.notifier)
-                              .removeItemFromList(selectedList.id, item.id);
+                              .removeItemFromList(widget.list.id, item.id);
                         });
                       },
                       value: 'delete',
