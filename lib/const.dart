@@ -29,3 +29,24 @@ final myTheme = ThemeData().copyWith(
     checkColor: WidgetStateProperty.all(Colors.white),
   ),
 );
+
+InputDecoration myTextfieldDeco(label) {
+  return InputDecoration(
+    label: Text(
+      label,
+      style: TextStyle(color: Colors.white.withAlpha(200)),
+    ),
+    enabledBorder: const OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.white, width: 1),
+    ),
+    focusedBorder: const OutlineInputBorder(
+      borderSide: BorderSide(color: Colors.white, width: 2),
+    ),
+    errorBorder: const OutlineInputBorder(
+      borderSide: BorderSide(color: Color.fromARGB(255, 109, 17, 11), width: 1),
+    ),
+    focusedErrorBorder: const OutlineInputBorder(
+      borderSide: BorderSide(color: Color.fromARGB(255, 109, 17, 11), width: 2),
+    ),
+  );
+}

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/const.dart';
 import 'package:lodione/screens/main/main_screen.dart';
 
 import '../../models/list_model.dart';
@@ -15,21 +16,7 @@ class CreateAccount extends ConsumerStatefulWidget {
 }
 
 class _CreateAccountState extends ConsumerState<CreateAccount> {
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController cpasswordController = TextEditingController();
-  TextEditingController nameController = TextEditingController();
-
-  @override
-  void dispose() {
-    usernameController.dispose();
-    emailController.dispose();
-    passwordController.dispose();
-    cpasswordController.dispose();
-    nameController.dispose();
-    super.dispose();
-  }
+  String username = '', email = '', password = '', cpassword = '', name = '';
 
   void _createAccount(context, ref) async {
     final isValid = _formKey.currentState!.validate();
@@ -42,14 +29,13 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
       try {
         // Use createUserWithEmailAndPassword for account creation
         final userCred = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(
-                email: emailController.text, password: passwordController.text);
+            .createUserWithEmailAndPassword(email: email, password: password);
 
         final newUser = UserModel(
             id: userCred.user!.uid,
-            username: usernameController.text,
-            email: emailController.text,
-            name: nameController.text,
+            username: username,
+            email: email,
+            name: name,
             createdAt: Timestamp.now().toString(),
             isPrivate: true);
         // ref.watch(allUserProvider).addUser(newUser);
@@ -71,9 +57,6 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             .doc(userCred.user!.uid)
             .collection('lists')
             .add(newList.toFirestore());
-
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const MainScreen()));
       } on FirebaseAuthException catch (e) {
         String errorMessage = 'An error occurred. Please try again.';
         switch (e.code) {
@@ -122,56 +105,92 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             key: _formKey,
             child: Column(
               children: [
-                textfield1(nameController, 'Name (optional)', (value) {}),
+                TextFormField(
+                  onChanged: (value) => name = value,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: myTextfieldDeco('Name (optional)'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                textfield1(emailController, 'Email address', (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter an email address';
-                  } else if (!value.contains('@') || !value.contains('.')) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                }),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter an email address';
+                    } else if (!value.contains('@') || !value.contains('.')) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => email = value,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: myTextfieldDeco('Email address'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                textfield1(usernameController, 'Username', (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a username';
-                  } else if (value.length < 3) {
-                    return 'Username must be at least 3 characters';
-                  }
-                  return null;
-                }),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a username';
+                    } else if (value.length < 3) {
+                      return 'Username must be at least 3 characters';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) => username = value,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: myTextfieldDeco('Username'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                textfieldpw1(passwordController, 'New password', (value) {
-                  if (value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                }),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter a password';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (value) => password = value,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: myTextfieldDeco('New password'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                textfieldpw1(cpasswordController, 'Confirm password', (value) {
-                  if (value.isEmpty) {
-                    return 'Please confirm your password';
-                  }
-                  if (value != passwordController.text) {
-                    return 'Passwords do not match';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters';
-                  }
-                  return null;
-                }),
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please confirm your password';
+                    }
+                    if (value != password) {
+                      return 'Passwords do not match';
+                    }
+                    if (value.length < 6) {
+                      return 'Password must be at least 6 characters';
+                    }
+                    return null;
+                  },
+                  obscureText: true,
+                  onChanged: (value) => password = value,
+                  autocorrect: false,
+                  textCapitalization: TextCapitalization.none,
+                  style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                  decoration: myTextfieldDeco('Confirm password'),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -197,8 +216,8 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
 
 Widget textfield1(controller, label, validate) {
   return TextFormField(
+    onChanged: (value) => controller = value,
     validator: validate,
-    controller: controller,
     autocorrect: false,
     textCapitalization: TextCapitalization.none,
     style: const TextStyle(color: Colors.white, letterSpacing: 2),
@@ -227,8 +246,8 @@ Widget textfield1(controller, label, validate) {
 
 Widget textfieldpw1(controller, label, validate) {
   return TextFormField(
+    onChanged: (value) => controller = value,
     validator: validate,
-    controller: controller,
     obscureText: true,
     textCapitalization: TextCapitalization.none,
     style: const TextStyle(color: Colors.white, letterSpacing: 2),
@@ -254,12 +273,3 @@ Widget textfieldpw1(controller, label, validate) {
     ),
   );
 }
-
-// class User {
-//   String? username;
-//   String? emailAddress;
-//   String? password;
-//   String? id;
-
-
-// }

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'create_account.dart';
@@ -10,31 +11,14 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  final FocusNode _usernameFocusNode = FocusNode();
-  final FocusNode _passwordFocusNode = FocusNode();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   // Using ValueNotifier for better state management
-  final ValueNotifier<String> _username = ValueNotifier('');
-  final ValueNotifier<String> _password = ValueNotifier('');
-  bool _visiblePW = false;
-  @override
-  void initState() {
-    super.initState();
-    _username.addListener(() {
-      setState(() {}); // Refresh UI if needed
-    });
-    _password.addListener(() {
-      setState(() {}); // Refresh UI if needed
-    });
-  }
 
-  @override
-  void dispose() {
-    _usernameFocusNode.dispose();
-    _passwordFocusNode.dispose();
-    super.dispose();
-  }
+  String _username = '';
+  final String _password = '';
+  bool _visiblePW = false;
+  bool userFound = false;
 
   void _handleEnterKey() {
     print('Enter key pressed!');
@@ -46,20 +30,17 @@ class _SignInScreenState extends State<SignInScreen> {
       _formKey.currentState!.save(); // Save the form data
 
       try {
-        await Future.delayed(
-          const Duration(seconds: 2),
-        ); // Simulate network delay
-
+        FirebaseFirestore.instance.collection('users').get().then((value) {
+          for (var i in value.docs) {
+            if (i['username'] == _username) {
+              userFound = true;
+            }
+          }
+        });
         await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _username.value,
-          password: _username.value,
+          email: _username,
+          password: _password,
         );
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const MainScreen(),
-        //   ),
-        // );
       } on FirebaseAuthException catch (e) {
         String errorMessage = 'An error occurred. Please try again.';
         switch (e.code) {
@@ -110,130 +91,82 @@ class _SignInScreenState extends State<SignInScreen> {
                       'lib/images/lodione_logo.png',
                       height: 250,
                     ),
-                    ValueListenableBuilder<String>(
-                      valueListenable: _username,
-                      builder: (context, value, child) => FormField<String>(
-                        initialValue: value,
-                        validator: (value) {
-                          if (value!.isEmpty || value.trim().isEmpty) {
-                            return 'Please enter a username';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => _username.value = value!,
-                        builder: (FormFieldState<String> field) {
-                          return Focus(
-                            focusNode: _usernameFocusNode,
-                            child: TextFormField(
-                              initialValue: value,
-                              autocorrect: false,
-                              textCapitalization: TextCapitalization.none,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  onPressed: () {
-                                    _username.value = '';
-                                  },
-                                  icon: const Icon(Icons.close),
-                                ),
-                                label: Text('Username',
-                                    style: TextStyle(
-                                        color: Colors.white.withAlpha(200))),
-                                errorText: field.errorText,
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white, width: 1),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white, width: 2),
-                                ),
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 109, 17, 11),
-                                      width: 1),
-                                ),
-                                focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 109, 17, 11),
-                                      width: 2),
-                                ),
-                              ),
-                              style: const TextStyle(
-                                  color: Colors.white, letterSpacing: 2),
-                              onFieldSubmitted: (value) {
-                                FocusScope.of(context)
-                                    .requestFocus(_passwordFocusNode);
-                              },
-                            ),
-                          );
-                        },
+                    TextFormField(
+                      autocorrect: false,
+                      textCapitalization: TextCapitalization.none,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            _username = '';
+                          },
+                          icon: const Icon(Icons.close),
+                        ),
+                        label: Text('Username',
+                            style:
+                                TextStyle(color: Colors.white.withAlpha(200))),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white, width: 1),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 109, 17, 11),
+                              width: 1),
+                        ),
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 109, 17, 11),
+                              width: 2),
+                        ),
                       ),
+                      style: const TextStyle(
+                          color: Colors.white, letterSpacing: 2),
+                      onFieldSubmitted: (value) {
+                        _username = value;
+                      },
                     ),
                     const SizedBox(height: 20),
-                    ValueListenableBuilder<String>(
-                      valueListenable: _password,
-                      builder: (context, value, child) => FormField<String>(
-                        initialValue: value,
-                        validator: (value) {
-                          if (value!.isEmpty || value.trim().isEmpty) {
-                            return 'Please enter a password';
-                          }
-                          if (value.length < 6) {
-                            return 'Password must be at least 6 characters';
-                          }
-                          return null;
-                        },
-                        onSaved: (value) => _password.value = value!,
-                        builder: (FormFieldState<String> field) {
-                          return Focus(
-                            focusNode: _passwordFocusNode,
-                            child: TextFormField(
-                              initialValue: value,
-                              autocorrect: false,
-                              obscureText: _visiblePW,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  icon: Icon(_visiblePW
-                                      ? Icons.visibility_off
-                                      : Icons.visibility),
-                                  onPressed: () {
-                                    setState(() {
-                                      _visiblePW = !_visiblePW;
-                                    });
-                                  },
-                                ),
-                                label: Text('Password',
-                                    style: TextStyle(
-                                        color: Colors.white.withAlpha(200))),
-                                errorText: field.errorText,
-                                enabledBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white, width: 1),
-                                ),
-                                focusedBorder: const OutlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.white, width: 2),
-                                ),
-                                errorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 109, 17, 11),
-                                      width: 1),
-                                ),
-                                focusedErrorBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Color.fromARGB(255, 109, 17, 11),
-                                      width: 2),
-                                ),
-                              ),
-                              style: const TextStyle(
-                                  color: Colors.white, letterSpacing: 2),
-                              onFieldSubmitted: (value) {
-                                signIn(context);
-                              },
-                            ),
-                          );
-                        },
+                    TextFormField(
+                      autocorrect: false,
+                      obscureText: !_visiblePW,
+                      decoration: InputDecoration(
+                        suffixIcon: IconButton(
+                          icon: Icon(_visiblePW
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () {
+                            setState(() {
+                              _visiblePW = !_visiblePW;
+                            });
+                          },
+                        ),
+                        label: Text('Password',
+                            style:
+                                TextStyle(color: Colors.white.withAlpha(200))),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white, width: 1),
+                        ),
+                        focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white, width: 2),
+                        ),
+                        errorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 109, 17, 11),
+                              width: 1),
+                        ),
+                        focusedErrorBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromARGB(255, 109, 17, 11),
+                              width: 2),
+                        ),
                       ),
+                      style: const TextStyle(
+                          color: Colors.white, letterSpacing: 2),
+                      onFieldSubmitted: (value) {
+                        signIn(context);
+                      },
                     ),
                     const SizedBox(
                       height: 20,
