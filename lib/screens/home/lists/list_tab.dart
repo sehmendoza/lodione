@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
@@ -10,7 +9,6 @@ import '../../../widgets/dialogs.dart';
 import 'list_view.dart';
 import 'move_list_dialog.dart';
 
-final _currentListModelProvider = StateProvider<ListModel?>((ref) => null);
 final FirestoreService firestoreService = FirestoreService();
 
 class ListTab extends ConsumerStatefulWidget {
@@ -28,7 +26,7 @@ class _ListTabState extends ConsumerState<ListTab> {
   }
 
   List<ListModel> _list = [];
-  late ListModel _currentList;
+  ListModel _currentList = ListModel(name: 'My List', items: []);
 
   Future<void> _fetchAndSetModels() async {
     List<ListModel> list = await firestoreService.fetchModels();

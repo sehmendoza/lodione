@@ -35,7 +35,7 @@ class UserProvider extends StateNotifier<UserModel?> {
           .set(updatedUser.toFirestore());
       state = updatedUser;
     } catch (e) {
-      print('Failed to update user: $e');
+      state = state;
     }
   }
 
@@ -54,7 +54,7 @@ class UserProvider extends StateNotifier<UserModel?> {
           .doc(state!.id)
           .update(state!.toFirestore());
     } catch (e) {
-      print('Failed to update user: $e');
+      state = state;
     }
   }
   //end

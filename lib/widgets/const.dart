@@ -50,3 +50,37 @@ InputDecoration myTextfieldDeco(label) {
     ),
   );
 }
+
+Widget myButton1(name, onPressed) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.white,
+      fixedSize: const Size(200, 40),
+    ),
+    onPressed: onPressed,
+    child: Text(
+      name,
+      textAlign: TextAlign.center,
+      style: const TextStyle(
+          color: Colors.black, letterSpacing: 2, fontWeight: FontWeight.bold),
+    ),
+  );
+}
+
+Widget myButton2(name, onPressed) {
+  return ElevatedButton(
+    style: ElevatedButton.styleFrom(
+      shadowColor: Colors.white,
+      elevation: 5,
+      fixedSize: const Size(200, 40),
+      backgroundColor: Colors.black,
+      side: const BorderSide(color: Colors.white, width: 2),
+    ),
+    onPressed: onPressed,
+    child: Text(
+      name,
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: Colors.white, letterSpacing: 2),
+    ),
+  );
+}

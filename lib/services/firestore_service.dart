@@ -5,9 +5,6 @@ import '../models/item_model.dart';
 import '../models/list_model.dart';
 
 class FirestoreService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
-
   final userID = FirebaseAuth.instance.currentUser!.uid;
 
   Future<List<ListModel>> fetchModels() async {
@@ -32,7 +29,6 @@ class FirestoreService {
         );
       }).toList();
     } catch (e) {
-      print("Failed to fetch models: $e");
       return [];
     }
   }

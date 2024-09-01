@@ -2,10 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lodione/const.dart';
+import 'package:lodione/widgets/const.dart';
 import 'package:lodione/screens/main/sign_in_screen.dart';
 
-import 'firebase_options.dart';
+import 'services/firebase_options.dart';
 import 'screens/main/main_screen.dart';
 import 'screens/main/waiting_screen.dart';
 

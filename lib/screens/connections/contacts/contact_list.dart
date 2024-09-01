@@ -30,7 +30,6 @@ class ConnectionList extends ConsumerWidget {
     _firestore.collection('users').doc(users.docs[0].data()['id']).set({
       'notification': FieldValue.arrayUnion([notify.toFirestore()])
     });
-    print(users.docs[0].data()['id']);
   }
 
   void addUserDialog(context, ref) {

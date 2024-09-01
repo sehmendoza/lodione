@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/main/drawer.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
 import 'package:lodione/screens/connections/connection_tab.dart';
 
@@ -31,22 +30,17 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      drawer: MyDrawer(
-        onTap: () {
-          onTappedBar(2);
-          Navigator.of(context).pop();
-        },
-      ),
+      // drawer: MyDrawer(
+      //   onTap: () {
+      //     onTappedBar(2);
+      //     Navigator.of(context).pop();
+      //   },
+      // ),
       appBar: AppBar(
         leadingWidth: 200,
 
-        leading: Builder(
-          builder: (context) => InkWell(
-            onTap: () => Scaffold.of(context).openDrawer(),
-            child: Image.asset(
-              'lib/images/lodione_logo_side.png',
-            ),
-          ),
+        leading: Image.asset(
+          'lib/images/lodione_logo_side.png',
         ),
 
         actions: [

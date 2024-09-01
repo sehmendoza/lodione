@@ -1,70 +1,66 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lodione/widgets/const.dart';
 import 'create_account.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
   @override
-  State<SignInScreen> createState() => _SignInScreenState();
+  ConsumerState<SignInScreen> createState() => _SignInScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
+class _SignInScreenState extends ConsumerState<SignInScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
-  // Using ValueNotifier for better state management
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  String _username = '';
-  final String _password = '';
   bool _visiblePW = false;
-  bool userFound = false;
-
-  void _handleEnterKey() {
-    print('Enter key pressed!');
-    // Add your logic here for what should happen when Enter is pressed
-  }
 
   void signIn(context) async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save(); // Save the form data
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    try {
+      // First, find the email associated with the username
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: _usernameController.text)
+          .limit(1)
+          .get();
 
-      try {
-        FirebaseFirestore.instance.collection('users').get().then((value) {
-          for (var i in value.docs) {
-            if (i['username'] == _username) {
-              userFound = true;
-            }
-          }
-        });
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _username,
-          password: _password,
+      if (querySnapshot.docs.isNotEmpty) {
+        var userData = querySnapshot.docs.first;
+
+        String email = userData['email'];
+        await _auth.signInWithEmailAndPassword(
+          email: email,
+          password: _passwordController.text,
         );
-      } on FirebaseAuthException catch (e) {
-        String errorMessage = 'An error occurred. Please try again.';
-        switch (e.code) {
-          case 'user-not-found':
-            errorMessage = 'No user found for that email.';
-            break;
-          case 'wrong-password':
-            errorMessage = 'Wrong password provided for that user.';
-            break;
-          case 'invalid-email':
-            errorMessage = 'The email address is badly formatted.';
-            break;
-          case 'user-disabled':
-            errorMessage =
-                'The user account has been disabled. Please contact support.';
-            break;
-        }
-        ScaffoldMessenger.of(context).clearSnackBars();
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Center(child: Text(errorMessage))),
+          const SnackBar(content: Text('Username not found')),
         );
       }
-    } else {
-      return;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'too-many-requests') {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(
+                  '${e.message}. Please try again later or reset your password.')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to sign in: ${e.message}')),
+        );
+      }
     }
   }
 
@@ -92,12 +88,15 @@ class _SignInScreenState extends State<SignInScreen> {
                       height: 250,
                     ),
                     TextFormField(
+                      controller: _usernameController,
                       autocorrect: false,
                       textCapitalization: TextCapitalization.none,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
                           onPressed: () {
-                            _username = '';
+                            setState(() {
+                              _usernameController.clear();
+                            });
                           },
                           icon: const Icon(Icons.close),
                         ),
@@ -123,12 +122,16 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       style: const TextStyle(
                           color: Colors.white, letterSpacing: 2),
-                      onFieldSubmitted: (value) {
-                        _username = value;
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a username';
+                        }
+                        return null;
                       },
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
+                      controller: _passwordController,
                       autocorrect: false,
                       obscureText: !_visiblePW,
                       decoration: InputDecoration(
@@ -164,51 +167,31 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                       style: const TextStyle(
                           color: Colors.white, letterSpacing: 2),
-                      onFieldSubmitted: (value) {
-                        signIn(context);
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a password';
+                        }
+                        return null;
                       },
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        fixedSize: const Size(200, 40),
-                      ),
-                      onPressed: () => signIn(context),
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                            color: Colors.black,
-                            letterSpacing: 2,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    myButton1(
+                      'Sign In',
+                      () => signIn(context),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shadowColor: Colors.white,
-                        elevation: 5,
-                        fixedSize: const Size(200, 40),
-                        backgroundColor: Colors.black,
-                        side: const BorderSide(color: Colors.white, width: 2),
-                      ),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const CreateAccount(),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Create account',
-                        style: TextStyle(color: Colors.white, letterSpacing: 2),
-                      ),
-                    ),
+                    myButton2('Create account', () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CreateAccount(),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),

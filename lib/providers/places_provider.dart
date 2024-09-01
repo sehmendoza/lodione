@@ -24,7 +24,6 @@ class PlacesNotifier extends StateNotifier<List<PlaceModel>> {
   void updatePlace(PlaceModel newPlace) {
     state = state.map((place) {
       if (place.id == newPlace.id) {
-        print('place updated');
         return newPlace;
       }
       return place;

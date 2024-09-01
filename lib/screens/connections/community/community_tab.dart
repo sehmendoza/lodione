@@ -7,8 +7,6 @@ class UsersList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // final users = ref.watch(allUserProvider);
-    print('printed users list');
-    // print(users);
     return Scaffold(
       appBar: AppBar(title: const Text('Users List')),
       // body: ListView.builder(
