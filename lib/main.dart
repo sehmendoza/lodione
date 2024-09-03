@@ -1,12 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/widgets/const.dart';
-import 'package:lodione/screens/main/sign_in_screen.dart';
-
+import 'package:lodione/screens/auth/sign_in_screen.dart';
+import 'package:provider/provider.dart';
 import 'services/firebase_options.dart';
-import 'screens/main/main_screen.dart';
+import 'screens/main_screen.dart';
 import 'screens/main/waiting_screen.dart';
 
 void main() async {
@@ -14,8 +13,13 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(
-    const ProviderScope(
-      child: StartUp(),
+    MultiProvider(
+      providers: const [
+        // ChangeNotifierProvider(create: (context) => UserProvider()),
+
+        // Add other providers here
+      ],
+      child: const StartUp(),
     ),
   );
 }

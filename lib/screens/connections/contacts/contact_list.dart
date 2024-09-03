@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lodione/providers/user_provider.dart';
 import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/notification_model.dart';
+import '../../../providers/main_provider.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 

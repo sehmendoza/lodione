@@ -39,7 +39,7 @@ class ListModel {
               .toList() ??
           [],
       users: (json['users'] as List<dynamic>?)
-              ?.map((user) => UserModel.fromJson(user as Map<String, dynamic>))
+              ?.map((user) => UserModel.fromFirestore(user))
               .toList() ??
           [],
     );
