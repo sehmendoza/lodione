@@ -11,16 +11,16 @@ import 'screens/main/waiting_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   runApp(
-    MultiProvider(
-      providers: const [
-        // ChangeNotifierProvider(create: (context) => UserProvider()),
+    const StartUp(),
+    // MultiProvider(
+    //   providers: const [
+    //     // ChangeNotifierProvider(create: (context) => UserProvider()),
 
-        // Add other providers here
-      ],
-      child: const StartUp(),
-    ),
+    //     // Add other providers here
+    //   ],
+    //   child:
+    // ),
   );
 }
 

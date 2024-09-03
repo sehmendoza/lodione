@@ -1,67 +1,31 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/providers/list_provider.dart';
+import 'package:lodione/screens/main/waiting_screen.dart';
 import 'package:lodione/services/firestore_service.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
 import '../../../widgets/dialogs.dart';
+import 'dropdown_list.dart';
 import 'list_view.dart';
 import 'move_list_dialog.dart';
 
 final FirestoreService firestoreService = FirestoreService();
 
-class ListTab extends ConsumerStatefulWidget {
+class ListTab extends StatefulWidget {
   const ListTab({super.key});
 
   @override
-  ConsumerState<ListTab> createState() => _ListTabState();
+  State<ListTab> createState() => _ListTabState();
 }
 
-class _ListTabState extends ConsumerState<ListTab> {
-  @override
-  void initState() {
-    super.initState();
-    _fetchAndSetModels();
-  }
-
-  List<ListModel> _list = [];
-  ListModel _currentList = ListModel(name: 'My List', items: []);
-
-  Future<void> _fetchAndSetModels() async {
-    List<ListModel> list = await firestoreService.fetchModels();
-    if (list.isNotEmpty) {
-      setState(() {
-        _list = list;
-        _currentList = list[0];
-      });
-    }
-  }
-
-  void selectList(id) {
-    var newList = _list.firstWhere((list) => list.id == id);
-
-    setState(() {
-      _currentList = newList;
-    });
-  }
-
+class _ListTabState extends State<ListTab> {
   void addItem({required String listID, required ItemModel item}) {
-    ref
-                .read(listProvider)
-                .where((list) => list.id == listID)
-                .first
-                .items
-                .length >=
-            100
-        ? showErrorDialog(context, 'Cannot add more items',
-            'You have reached the maximum number of items.')
-        : setState(() {
-            ref.read(listProvider.notifier).addItemToList(listID, item);
-
-            itemNode.requestFocus();
-            itemController.clear();
-          });
+    firestoreService.addItemToList(listID, item);
   }
 
   FocusNode itemNode = FocusNode();
@@ -75,9 +39,10 @@ class _ListTabState extends ConsumerState<ListTab> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser!;
     return Container(
-      width: double.infinity,
-      height: double.infinity,
+      // width: double.infinity,
+      // height: double.infinity,
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
@@ -86,194 +51,226 @@ class _ListTabState extends ConsumerState<ListTab> {
           width: 2,
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0),
-            child: Row(
-              //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //  crossAxisAlignment: CrossAxisAlignment.center,
-              //   mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButton<ListModel>(
-                  isExpanded: false,
-                  value: _currentList,
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-                  iconSize: 18,
-                  // underline: Container(
-                  //     height: 1, color: null), // Fixed underline styling
-                  borderRadius: BorderRadius.circular(2),
-                  dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-                  onChanged: (ListModel? newValue) {
-                    setState(() {
-                      _currentList = newValue!; // Directly call selectList here
-                    });
-                  },
-                  underline: const SizedBox(),
-                  items: _list
-                      .map<DropdownMenuItem<ListModel>>((ListModel listModel) {
-                    return DropdownMenuItem<ListModel>(
-                      value: listModel,
-                      child: Row(
-                        children: [
-                          Text(
-                            listModel.name,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                          Container(
-                            margin: const EdgeInsets.only(left: 6),
-                            padding: const EdgeInsets.all(7.5),
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: const Text(
-                              '0',
-                              //  "ref
-                              //       .watch(listProvider)
-                              //       .firstWhere((list) => list.id == listModel.id)
-                              //       .items
-                              //       .length
-                              //       .toString()",
-
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
-                ),
-
-                // Popup Menu
-                const Spacer(),
-                PopupMenuButton<String>(
-                  onOpened: () {
-                    itemNode.unfocus();
-                  },
-                  icon: const Icon(Icons.more_vert, color: Colors.white70),
-                  itemBuilder: (BuildContext context) => [
-                    _buildMenuItem('Add new list', Icons.add_box, addNewList),
-                    _buildMenuItem('Select all items', Icons.select_all, () {
-                      ref
-                          .read(listProvider.notifier)
-                          .selectAll(_currentList.id);
-                    }),
-                    _buildMenuItem(
-                        'Delete all checked items', Icons.delete_sweep, () {
-                      ref
-                          .read(listProvider.notifier)
-                          .removeCompleted(_currentList.id);
-                    }),
-                    _buildMenuItem(
-                        'Unselect all items', Icons.check_box_outline_blank,
-                        () {
-                      ref
-                          .read(listProvider.notifier)
-                          .unselectAll(_currentList.id);
-                    }),
-                    _buildMenuItem('Move marked items to other list',
-                        Icons.drive_file_move, () {
-                      _showMoveListDialog();
-                    }),
-                    _buildMenuItem('Share list', Icons.share, () {
-                      showMyErrorDialog(context, 'Share list',
-                          'This feature is not yet available.');
-                    }),
-                    _buildMenuItem('Clear all items', Icons.delete_forever, () {
-                      ref
-                          .read(listProvider.notifier)
-                          .clearList(_currentList.id);
-                    }),
-                    _buildMenuItem('Delete list', Icons.close, () {
-                      _currentList.name == 'My List'
-                          ? showMyErrorDialog(
-                              context,
-                              'Cannot delete "My List"',
-                              "It's for your personal use only.")
-                          : setState(() {
-                              ref
-                                  .read(listProvider.notifier)
-                                  .removeList(_currentList.id);
-                              _currentList = ref.read(listProvider).first;
-                            });
-                    }),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const Divider(
-            height: 0,
-            color: Colors.white,
-            thickness: 2,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  focusNode: itemNode,
-                  onSubmitted: (value) {
-                    if (itemController.text.trim().isEmpty) {
-                      return;
-                    }
-                    addItem(
-                      listID: _currentList.id,
-                      item: ItemModel(
-                          name: itemController.text,
-                          isDone: false,
-                          details: ''),
-                    );
-                  },
-                  controller: itemController,
-                  cursorColor: Colors.white54,
+      child: StreamBuilder<QuerySnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('users')
+              .doc(currentUser.uid)
+              .collection('lists')
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Text(
+                  'Error: ${snapshot.error}',
                   style: const TextStyle(color: Colors.white),
-                  textCapitalization: TextCapitalization.sentences,
-                  decoration: const InputDecoration(
-                      focusedBorder: UnderlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Colors.white, width: 1.5)),
-                      contentPadding: EdgeInsets.only(left: 8),
-                      hintText: 'Enter item',
-                      hintStyle: TextStyle(
-                        color: Colors.white38,
-                      )),
                 ),
-              ),
-              TextButton(
-                onPressed: () {
-                  if (itemController.text.trim().isEmpty) {
-                    itemController.clear();
-                    return;
-                  }
-                  addItem(
-                    listID: _currentList.id,
-                    item: ItemModel(
-                        name: itemController.text, isDone: false, details: ''),
-                  );
-                },
-                child: const Text(
-                  'add',
-                  style: TextStyle(color: Colors.white70),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 3,
-          ),
-          MyListView(
-            list: _currentList,
-          ),
-        ],
-      ),
+              );
+            } else if (snapshot.hasData) {
+              var data = snapshot.data!.docs;
+              List<ListModel> list = data
+                  .map((list) => ListModel.fromFirestore(
+                      list.data() as Map<String, dynamic>))
+                  .toList()
+                ..sort((a, b) => a.dateCreated.compareTo(b.dateCreated));
+              ListModel currentList = list.last;
+
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Row(
+                      //  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //  crossAxisAlignment: CrossAxisAlignment.center,
+                      //   mainAxisSize: MainAxisSize.min,
+                      children: [
+                        DropdownList(
+                          currentValue: currentList.id,
+                          lists: list,
+                        ),
+
+                        // Popup Menu
+                        const Spacer(),
+                        PopupMenuButton<String>(
+                          onOpened: () {
+                            itemNode.unfocus();
+                          },
+                          icon: const Icon(Icons.more_vert,
+                              color: Colors.white70),
+                          itemBuilder: (BuildContext context) => [
+                            _buildMenuItem(
+                                'Add new list', Icons.add_box, addNewList),
+                            _buildMenuItem('Select all items', Icons.select_all,
+                                () {
+                              // ref
+                              //     .read(listProvider.notifier)
+                              //     .selectAll(_currentList.id);
+                            }),
+                            _buildMenuItem(
+                                'Delete all checked items', Icons.delete_sweep,
+                                () {
+                              // ref
+                              //     .read(listProvider.notifier)
+                              //     .removeCompleted(_currentList.id);
+                            }),
+                            _buildMenuItem('Unselect all items',
+                                Icons.check_box_outline_blank, () {
+                              // ref
+                              //     .read(listProvider.notifier)
+                              //     .unselectAll(_currentList.id);
+                            }),
+                            _buildMenuItem('Move marked items to other list',
+                                Icons.drive_file_move, () {
+                              //    _showMoveListDialog();
+                            }),
+                            _buildMenuItem('Share list', Icons.share, () {
+                              showMyErrorDialog(context, 'Share list',
+                                  'This feature is not yet available.');
+                            }),
+                            _buildMenuItem(
+                                'Clear all items', Icons.delete_forever, () {
+                              // ref
+                              //     .read(listProvider.notifier)
+                              //     .clearList(_currentList.id);
+                            }),
+                            _buildMenuItem('Delete list', Icons.close, () {
+                              // _currentList.name == 'My List'
+                              //     ? showMyErrorDialog(
+                              //         context,
+                              //         'Cannot delete "My List"',
+                              //         "It's for your personal use only.")
+                              //     : setState(() {
+                              //         ref
+                              //             .read(listProvider.notifier)
+                              //             .removeList(_currentList.id);
+                              //         _currentList =
+                              //             ref.read(listProvider).first;
+                              //       });
+                            }),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(
+                    height: 0,
+                    color: Colors.white,
+                    thickness: 2,
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  MyListView(
+                    list: currentList,
+                  ),
+                  const SizedBox(
+                    height: 3,
+                  ),
+                  const Divider(
+                    height: 0,
+                    color: Colors.white,
+                    thickness: 2,
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          focusNode: itemNode,
+                          onSubmitted: (value) {
+                            if (itemController.text.trim().isEmpty) {
+                              return;
+                            }
+                            // addItem(
+                            //   listID: _currentList.id,
+                            //   item: ItemModel(
+                            //       name: itemController.text,
+                            //       isDone: false,
+                            //       details: ''),
+                            // );
+                          },
+                          controller: itemController,
+                          cursorColor: Colors.white54,
+                          style: const TextStyle(color: Colors.white),
+                          textCapitalization: TextCapitalization.sentences,
+                          decoration: const InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.white, width: 1.5)),
+                              contentPadding: EdgeInsets.only(left: 8),
+                              hintText: 'Enter item',
+                              hintStyle: TextStyle(
+                                color: Colors.white38,
+                              )),
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          if (itemController.text.trim().isEmpty) {
+                            itemController.clear();
+                            return;
+                          }
+                          print(currentList.id);
+                          print(currentList.name);
+                          // addItem(
+                          //   listID: currentList.id,
+                          //   item: ItemModel(
+                          //       name: itemController.text,
+                          //       isDone: false,
+                          //       details: ''),
+                          // );
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.select_all),
+                        color: Colors.white60,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.check_box_outline_blank),
+                        color: Colors.white60,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete_sweep),
+                        color: Colors.white60,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.drive_file_move),
+                        color: Colors.white60,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.share),
+                        color: Colors.white60,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.delete),
+                        color: Colors.white60,
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            } else {
+              return const Text('Loading...');
+            }
+          }),
     );
   }
 
@@ -334,11 +331,16 @@ class _ListTabState extends ConsumerState<ListTab> {
                           ? null
                           : setState(() {
                               ListModel list = ListModel(
-                                  name: nameController.text, items: []);
+                                  createdBy:
+                                      FirebaseAuth.instance.currentUser!.uid,
+                                  shareWith: [],
+                                  dateCreated: Timestamp.now().toString(),
+                                  name: nameController.text,
+                                  items: []);
+                              firestoreService.createList(list);
+                              // ref.read(listProvider.notifier).addList(list);
 
-                              ref.read(listProvider.notifier).addList(list);
-
-                              _currentList = list;
+                              //  currentList = list;
                               Navigator.pop(context);
                             });
                     },
@@ -350,22 +352,22 @@ class _ListTabState extends ConsumerState<ListTab> {
             ));
   }
 
-  void _showMoveListDialog() async {
-    try {
-      final String result = await showDialog(
-        context: context,
-        builder: (context) => MoveListDialog(
-          selectedListID: _currentList.id,
-          ref: ref,
-        ),
-      );
+  // void _showMoveListDialog() async {
+  //   try {
+  //     final String result = await showDialog(
+  //       context: context,
+  //       builder: (context) => MoveListDialog(
+  //         selectedListID: currentList.id,
+  //         ref: ref,
+  //       ),
+  //     );
 
-      String moveToList = result;
-      selectList(moveToList);
-    } catch (e) {
-      // Do nothing
-    }
-  }
+  //     String moveToList = result;
+  //     selectList(moveToList);
+  //   } catch (e) {
+  //     // Do nothing
+  //   }
+  // }
 
   void showErrorDialog(BuildContext context, String title, String content) {
     showDialog(

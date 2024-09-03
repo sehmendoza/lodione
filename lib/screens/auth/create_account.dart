@@ -47,6 +47,9 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             );
 
         final newList = ListModel(
+          createdBy: userCred.user!.uid,
+          dateCreated: Timestamp.now().toString(),
+          shareWith: [],
           name: 'My List',
           items: [],
         );
@@ -55,7 +58,9 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
             .collection('users')
             .doc(userCred.user!.uid)
             .collection('lists')
-            .add(newList.toFirestore());
+            .doc(newList.id)
+            .set(newList.toFirestore());
+
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
         String errorMessage = 'An error occurred. Please try again.';
