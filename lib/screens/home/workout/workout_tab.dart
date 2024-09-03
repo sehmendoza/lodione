@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lodione/widgets/buttons.dart';
 
-import '../../../widgets/const.dart';
+import '../../../const.dart';
 
 class WorkoutTab extends StatefulWidget {
   const WorkoutTab({super.key});

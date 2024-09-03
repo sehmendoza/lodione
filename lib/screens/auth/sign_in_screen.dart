@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:lodione/widgets/const.dart';
+import 'package:lodione/const.dart';
 import 'create_account.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -100,9 +100,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                           },
                           icon: const Icon(Icons.close),
                         ),
-                        label: Text('Username',
-                            style:
-                                TextStyle(color: Colors.white.withAlpha(200))),
+                        label: Text(
+                          'Username',
+                          style: TextStyle(
+                            color: Colors.white.withAlpha(200),
+                          ),
+                        ),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.white, width: 1),
                         ),

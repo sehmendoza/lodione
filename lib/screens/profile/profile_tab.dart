@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lodione/models/user_model.dart';
+import '../../widgets/buttons.dart';
 import 'profile_view.dart';
 
 class ProfileTab extends StatefulWidget {
@@ -40,6 +41,12 @@ class _ProfileTabState extends State<ProfileTab> {
                       margin: const EdgeInsets.symmetric(horizontal: 8),
                       padding: const EdgeInsets.all(8),
                       child: ProfileView(user: user)),
+                  // MyButton(
+                  //     text: 'Edit Profile',
+                  //     icon: Icons.edit,
+                  //     onPressed: () {
+                  //       // editProfile();
+                  //     }),
                 ],
               );
             }

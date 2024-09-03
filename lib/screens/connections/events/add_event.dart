@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/widgets/const.dart';
+import 'package:lodione/const.dart';
 
 class AddEvent extends StatefulWidget {
   const AddEvent({super.key});

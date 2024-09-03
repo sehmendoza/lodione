@@ -24,17 +24,16 @@ class ListTab extends StatefulWidget {
 }
 
 class _ListTabState extends State<ListTab> {
-  void addItem({required String listID, required ItemModel item}) {
-    firestoreService.addItemToList(listID, item);
-  }
-
   FocusNode itemNode = FocusNode();
   TextEditingController itemController = TextEditingController();
-
   @override
   void dispose() {
     itemController.dispose();
     super.dispose();
+  }
+
+  void addItem({required String listID, required ItemModel item}) {
+    firestoreService.addItemToList(listID, item);
   }
 
   @override

@@ -100,26 +100,17 @@ class _ProfileViewState extends State<ProfileView> {
     var user = widget.user;
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Text('Account Details',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  )),
-            ),
-            MyButton(text: ' Edit', icon: Icons.edit, onPressed: editProfile)
-          ],
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text('Account Details',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+                decoration: TextDecoration.underline,
+                decorationColor: Colors.white,
+                fontWeight: FontWeight.bold,
+              )),
         ),
 
         myProfileBox('Name', user.name == '' ? 'Unknown' : user.name),
@@ -127,35 +118,48 @@ class _ProfileViewState extends State<ProfileView> {
         myProfileBox('Email address', user.email),
 
         // Private Account Switch
-        SwitchListTile(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+
+        Card(
+          color: Colors.white24,
+          child: SwitchListTile(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            thumbIcon: WidgetStateProperty.all(
+              Icon(user.isPrivate ? Icons.lock : Icons.lock_open),
+            ),
+            title: const Text('Private account',
+                style: TextStyle(color: Colors.white)),
+            subtitle: const Text('Your profile will be private',
+                style: TextStyle(color: Colors.white60)),
+            value: user.isPrivate,
+            onChanged: (value) async {
+              user.isPrivate = value;
+              await _updatePrivacy(value);
+            },
+            activeColor: Colors.white,
           ),
-          thumbIcon: WidgetStateProperty.all(
-            Icon(user.isPrivate ? Icons.lock : Icons.lock_open),
-          ),
-          title: const Text('Private account',
-              style: TextStyle(color: Colors.white)),
-          subtitle: const Text('Your profile will be private',
-              style: TextStyle(color: Colors.white60)),
-          value: user.isPrivate,
-          onChanged: (value) async {
-            user.isPrivate = value;
-            await _updatePrivacy(value);
-          },
-          activeColor: Colors.white,
         ),
+
+        // Edit Profile Button
       ],
     );
   }
 }
 
 Widget myProfileBox(title, value) {
-  return ListTile(
-    title: Text(title, style: const TextStyle(color: Colors.white60)),
-    subtitle: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Text(value,
+  return Card(
+    color: Colors.white24,
+    child: ListTile(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      onLongPress: () {},
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.white60),
+      ),
+      subtitle: Text(value,
           style: const TextStyle(
               color: Colors.white, fontSize: 20, letterSpacing: 2)),
     ),

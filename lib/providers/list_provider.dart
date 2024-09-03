@@ -13,6 +13,10 @@ final listProvider =
 class ListNotifier extends StateNotifier<List<ListModel>> {
   ListNotifier() : super([]);
 
+  initList(List<ListModel> lists) {
+    state = lists;
+  }
+
   void addList(ListModel newList) async {
     state = [...state, newList];
   }

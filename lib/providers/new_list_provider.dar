@@ -1,0 +1,89 @@
+
+
+
+class ListProvider with ChangeNotifier {
+  List<ListModel> _lists = [];
+  List<ListModel> get lists => _lists;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+final String _userID = FirebaseAuth.instance.currentUser.uid;
+final var listCollection = FirebaseFirestore.instance.collection('users').doc(_userID).collection('lists');
+  ListProvider() {
+    _init();
+  }
+
+  void _init() {
+    listCollection.snapshots().listen((snapshot) {
+      _lists = snapshot.docs.map((doc) => ListModel.fromFirestore(doc)).toList();
+      notifyListeners();
+    });
+  }
+
+    void _loadSharedList() {
+      // This should be dynamically set or passed
+    _firestore.collection('lists').where('sharedWith', arrayContains: _userID).snapshots().listen((snapshot) {
+      _lists = snapshot.docs.map((doc) => ListModel.fromFirestore(doc)).toList();
+      notifyListeners();
+    });
+  }
+
+  Future<void> addList(ListModel newList) async {
+   final listRef= await listCollection.add(newList.toFirestore());
+    // Firestore will trigger _init to update lists, but for immediate UI update:
+
+    newList.id = listRef.id;
+    _lists.add(newList);
+    notifyListeners();
+  }
+
+  Future<void> removeList(String id) async {
+    await listCollection.doc(id).delete();
+    _lists.removeWhere((list) => list.id == id);
+    notifyListeners();
+  }
+
+  Future<void> addItemToList(String listID, ItemModel item) async {
+    await _firestore.collection('lists').doc(listID).update({
+      'items': FieldValue.arrayUnion([item.toMap()])
+    });
+    // Assuming you update the local list here for UI responsiveness
+    final listIndex = _lists.indexWhere((list) => list.id == listID);
+    if (listIndex != -1) {
+      _lists[listIndex].items.add(item);
+      notifyListeners();
+    }
+  }
+
+  // Implement other methods like updateItemInList, moveItemsToOtherList, etc.,
+  // remembering to call notifyListeners() after any change to the state.
+
+  // Example for updating an item:
+  void updateItemInList(String listID, ItemModel newItem) {
+    
+
+    try {
+        await FirebaseFirestore.instance
+            .collection('lists')
+            .doc(listID)
+            .collection('items')
+            .doc(newItem.id)
+            .update(newItem.toMap());final listIndex = _lists.indexWhere((list) => list.id == listID);
+    if (listIndex != -1) {
+      int itemIndex = _lists[listIndex].items.indexWhere((item) => item.id == newItem.id);
+      if (itemIndex != -1) {
+        _lists[listIndex].items[itemIndex] = newItem;
+        notifyListeners();
+        // Here you would also update Firestore
+      }
+    }
+      } catch (e) {
+        // Handle Firestore update error, perhaps by reverting the local change or notifying the user
+        // showMyErrorDialog();
+        print('Failed to update item in Firestore: $e');
+        // Optionally, revert the change locally or show an error message
+        _lists[listIndex].items[itemIndex] = oldItem; // Assuming you kept a reference to the old item
+        notifyListeners();
+      }
+  }
+}

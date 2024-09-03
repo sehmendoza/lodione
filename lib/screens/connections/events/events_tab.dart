@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lodione/widgets/const.dart';
+import 'package:lodione/const.dart';
 import 'package:lodione/screens/connections/events/add_event.dart';
 import 'package:lodione/widgets/buttons.dart';
 import '../../../models/item_model.dart';
