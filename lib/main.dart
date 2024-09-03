@@ -3,8 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lodione/const.dart';
 import 'package:lodione/screens/auth/sign_in_screen.dart';
-import 'package:lodione/themes/black_white.dart';
 import 'package:provider/provider.dart';
+import 'providers/new_list_provider.dart';
 import 'services/firebase_options.dart';
 import 'screens/main_screen.dart';
 import 'screens/main/waiting_screen.dart';
@@ -13,15 +13,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(
-    const StartUp(),
-    // MultiProvider(
-    //   providers: const [
-    //     // ChangeNotifierProvider(create: (context) => UserProvider()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ListProvider()),
 
-    //     // Add other providers here
-    //   ],
-    //   child:
-    // ),
+        //  Add other providers here
+      ],
+      child: const StartUp(),
+    ),
   );
 }
 

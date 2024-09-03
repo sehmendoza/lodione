@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/widgets/buttons.dart';
+import 'package:provider/provider.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
-import '../../../providers/list_provider.dart';
+import '../../../providers/new_list_provider.dart';
 
-class MyListView extends ConsumerStatefulWidget {
+class MyListView extends StatefulWidget {
   const MyListView({super.key, required this.list});
 
   final ListModel list;
 
   @override
-  ConsumerState<MyListView> createState() => _MyListViewState();
+  State<MyListView> createState() => _MyListViewState();
 }
 
-class _MyListViewState extends ConsumerState<MyListView> {
-  List<ItemModel> items = [];
-
+class _MyListViewState extends State<MyListView> {
   @override
   Widget build(BuildContext context) {
+    List<ItemModel> items = widget.list.items;
+    var listsProvider = Provider.of<ListProvider>(context, listen: false);
     return Expanded(
       child: ListView.builder(
           itemCount: items.length,
@@ -33,9 +33,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
               ),
               onDismissed: (direction) {
                 setState(() {
-                  ref
-                      .read(listProvider.notifier)
-                      .removeItemFromList(widget.list.id, item.id);
+                  listsProvider.removeItemFromList(widget.list.id, item.id);
                 });
               },
               key: ValueKey(item.id),
@@ -62,14 +60,15 @@ class _MyListViewState extends ConsumerState<MyListView> {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       onTap: () {
-                        showEditDialog(widget.list.id, item);
+                        showEditDialog(widget.list.id, item, listsProvider);
                       },
                       value: 'option1',
                       child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        showAddDetailDialog(widget.list.id, item);
+                        showAddDetailDialog(
+                            widget.list.id, item, listsProvider);
                       },
                       value: 'option2',
                       child: Text(
@@ -78,9 +77,8 @@ class _MyListViewState extends ConsumerState<MyListView> {
                     PopupMenuItem(
                       onTap: () {
                         setState(() {
-                          ref
-                              .read(listProvider.notifier)
-                              .removeItemFromList(widget.list.id, item.id);
+                          listsProvider.removeItemFromList(
+                              widget.list.id, item.id);
                         });
                       },
                       value: 'delete',
@@ -97,7 +95,8 @@ class _MyListViewState extends ConsumerState<MyListView> {
     );
   }
 
-  void showEditDialog(String listID, ItemModel item) {
+  void showEditDialog(
+      String listID, ItemModel item, ListProvider listProvider) {
     TextEditingController controller = TextEditingController(text: item.name);
     showDialog(
       context: context,
@@ -128,9 +127,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                 onPressed: () {
                   item.name = controller.text;
                   setState(() {
-                    ref
-                        .read(listProvider.notifier)
-                        .updateItemInList(listID, item);
+                    listProvider.updateItemInList(listID, item);
                   });
                   Navigator.of(context).pop();
                 })
@@ -140,7 +137,8 @@ class _MyListViewState extends ConsumerState<MyListView> {
     );
   }
 
-  void showAddDetailDialog(String listID, ItemModel item) {
+  void showAddDetailDialog(
+      String listID, ItemModel item, ListProvider listProvider) {
     TextEditingController controller =
         TextEditingController(text: item.details);
     showDialog(
@@ -178,9 +176,7 @@ class _MyListViewState extends ConsumerState<MyListView> {
                   item.details = controller.text;
 
                   setState(() {
-                    ref
-                        .read(listProvider.notifier)
-                        .updateItemInList(listID, item);
+                    listProvider.updateItemInList(listID, item);
                   });
                   Navigator.of(context).pop();
                 })

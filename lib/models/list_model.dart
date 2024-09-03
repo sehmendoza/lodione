@@ -5,26 +5,25 @@ import 'package:uuid/uuid.dart';
 const uuid = Uuid();
 
 class ListModel {
-  final String id;
+  String id;
   final String name;
   final String createdBy;
-  final List<UserModel> shareWith;
+  List<UserModel> shareWith;
   final String dateCreated;
-
-  final List<ItemModel> items;
+  List<ItemModel> items;
 
   void addItem(ItemModel item) {
     items.add(item);
   }
 
   ListModel({
-    String? id,
+    this.id = '',
     required this.name,
     this.items = const [],
     this.shareWith = const [],
     this.createdBy = '',
     this.dateCreated = '',
-  }) : id = id ?? uuid.v4();
+  });
 
   ListModel copyWith({
     String? name,
@@ -45,7 +44,7 @@ class ListModel {
 
   factory ListModel.fromFirestore(Map<String, dynamic> json) {
     return ListModel(
-      id: json['id'] as String?,
+      id: json['id'] as String? ?? uuid.v4(),
       name: json['name'] as String? ?? '',
       createdBy: json['createdBy'] as String? ?? '',
       dateCreated: json['dateCreated'] as String? ?? '',
