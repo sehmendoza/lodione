@@ -28,3 +28,20 @@ void showMyErrorDialog(BuildContext context, String title, String content) {
     },
   );
 }
+
+Widget myAlertDialog(context, text) {
+  return AlertDialog(
+    elevation: 5,
+    shadowColor: Colors.red,
+    title: const Text('Oops!', style: TextStyle(fontWeight: FontWeight.bold)),
+    content: Text(text),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        child: const Text('OK'),
+      ),
+    ],
+  );
+}

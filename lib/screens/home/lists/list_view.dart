@@ -6,9 +6,9 @@ import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
 
 class MyListView extends StatefulWidget {
-  const MyListView({super.key, required this.listId});
+  const MyListView({super.key, required this.list});
 
-  final String listId;
+  final ListModel list;
 
   @override
   State<MyListView> createState() => _MyListViewState();
@@ -18,7 +18,7 @@ class _MyListViewState extends State<MyListView> {
   @override
   Widget build(BuildContext context) {
     var listsProvider = Provider.of<ListProvider>(context, listen: false);
-    List<ItemModel> items = listsProvider.getListItems(widget.listId);
+    List<ItemModel> items = widget.list.items;
 
     return Expanded(
       child: ListView.builder(
@@ -34,7 +34,7 @@ class _MyListViewState extends State<MyListView> {
               ),
               onDismissed: (direction) {
                 setState(() {
-                  listsProvider.removeItemFromList(widget.listId, item.id);
+                  listsProvider.removeItemFromList(widget.list.id, item.id);
                 });
               },
               key: ValueKey(item.id),
@@ -61,14 +61,15 @@ class _MyListViewState extends State<MyListView> {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       onTap: () {
-                        showEditDialog(widget.listId, item, listsProvider);
+                        showEditDialog(widget.list.id, item, listsProvider);
                       },
                       value: 'option1',
                       child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        showAddDetailDialog(widget.listId, item, listsProvider);
+                        showAddDetailDialog(
+                            widget.list.id, item, listsProvider);
                       },
                       value: 'option2',
                       child: Text(
@@ -78,7 +79,7 @@ class _MyListViewState extends State<MyListView> {
                       onTap: () {
                         setState(() {
                           listsProvider.removeItemFromList(
-                              widget.listId, item.id);
+                              widget.list.id, item.id);
                         });
                       },
                       value: 'delete',

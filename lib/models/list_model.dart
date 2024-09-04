@@ -42,9 +42,9 @@ class ListModel {
     );
   }
 
-  factory ListModel.fromFirestore(Map<String, dynamic> json) {
+  factory ListModel.fromFirestore(Map<String, dynamic> json, String id) {
     return ListModel(
-      id: json['id'] as String? ?? uuid.v4(),
+      id: id,
       name: json['name'] as String? ?? '',
       createdBy: json['createdBy'] as String? ?? '',
       dateCreated: json['dateCreated'] as String? ?? '',

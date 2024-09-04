@@ -1,11 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:lodione/const.dart';
-import 'package:lodione/providers/list_provider.dart';
-import 'package:provider/provider.dart';
-
-import '../../models/list_model.dart';
+import '../../const.dart';
 import '../../models/user_model.dart';
 
 class CreateAccount extends StatefulWidget {
@@ -16,211 +12,208 @@ class CreateAccount extends StatefulWidget {
 }
 
 class _CreateAccountState extends State<CreateAccount> {
-  String username = '', email = '', password = '', cpassword = '', name = '';
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
 
-  void _createAccount(context) async {
-    final isValid = _formKey.currentState!.validate();
+  bool _isLoading = false;
+  bool _obscureText = true;
 
-    if (!isValid) {
-      return;
-    }
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
 
-    if (isValid) {
+  void _createAccount(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
       try {
-        // Use createUserWithEmailAndPassword for account creation
-        final userCred = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
+        UserCredential userCred =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
         final newUser = UserModel(
-            id: userCred.user!.uid,
-            username: username,
-            email: email,
-            name: name,
-            createdAt: Timestamp.now().toString(),
-            isPrivate: true);
-        // ref.watch(allUserProvider).addUser(newUser);
+          id: userCred.user!.uid,
+          username: _usernameController.text,
+          email: _emailController.text,
+          name: _nameController.text,
+          createdAt: Timestamp.now().toString(),
+          isPrivate: true,
+        );
 
         await FirebaseFirestore.instance
             .collection('users')
             .doc(newUser.id)
-            .set(
-              newUser.toFirestore(),
-            );
-
-        // final newList = ListModel(
-        //   createdBy: userCred.user!.uid,
-        //   dateCreated: Timestamp.now().toString(),
-        //   shareWith: [],
-        //   name: 'My List',
-        //   items: [],
-        // );
-
-        // Provider.of<ListProvider>(context, listen: false).addList(newList);
+            .set(newUser.toFirestore());
 
         Navigator.of(context).pop();
-      } on FirebaseAuthException catch (e) {
-        String errorMessage = 'An error occurred. Please try again.';
-        switch (e.code) {
-          case 'weak-password':
-            errorMessage = 'The password provided is too weak.';
-          case 'email-already-in-use':
-            errorMessage = 'The account already exists for that email.';
-          case 'invalid-email':
-            errorMessage = 'The email address is badly formatted.';
-        }
-        ScaffoldMessenger.of(context).clearSnackBars();
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Center(child: Text(errorMessage))),
+          const SnackBar(content: Text('Account created successfully')),
+        );
+      } on FirebaseAuthException catch (e) {
+        String errorMessage = _getErrorMessage(e.code);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-              content: Center(
-                  child: SelectableText(
-                      'An unexpected error occurred: ${e.toString()}'))),
+          SnackBar(content: Text('An unexpected error occurred: $e')),
         );
+      } finally {
+        setState(() => _isLoading = false);
       }
     }
   }
 
-  final _formKey = GlobalKey<FormState>();
+  String _getErrorMessage(String code) {
+    switch (code) {
+      case 'weak-password':
+        return 'The password provided is too weak.';
+      case 'email-already-in-use':
+        return 'An account already exists for that email.';
+      case 'invalid-email':
+        return 'The email address is badly formatted.';
+      default:
+        return 'An error occurred. Please try again.';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        foregroundColor: Colors.white,
+        title:
+            const Text('Create Account', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
-        title: const Text(
-          'Create Account',
-          style: TextStyle(color: Colors.white),
-        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          child: Center(
-            child: Form(
-              key: _formKey,
-              child: SizedBox(
-                width: 420,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      onChanged: (value) => name = value,
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.words,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: myTextfieldDeco('Name (optional)'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUnfocus,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter an email address';
-                        } else if (!value.contains('@') ||
-                            !value.contains('.')) {
-                          return 'Please enter a valid email address';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) => email = value,
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: myTextfieldDeco('Email address'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.onUnfocus,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a username';
-                        } else if (value.length < 3) {
-                          return 'Username must be at least 3 characters';
-                        } else if (value.contains(' ')) {
-                          return 'Username cannot contain spaces';
-                        } else if (value.contains(
-                            RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]'))) {
-                          return 'Username cannot contain special characters';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) => username = value,
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: myTextfieldDeco('Username'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a password';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                      obscureText: true,
-                      onChanged: (value) => password = value,
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: myTextfieldDeco('New password'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    TextFormField(
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please confirm your password';
-                        }
-                        if (value != password) {
-                          return 'Passwords do not match';
-                        }
-                        if (value.length < 6) {
-                          return 'Password must be at least 6 characters';
-                        }
-                        return null;
-                      },
-                      obscureText: true,
-                      onChanged: (value) => cpassword = value,
-                      autocorrect: false,
-                      textCapitalization: TextCapitalization.none,
-                      style: const TextStyle(
-                          color: Colors.white, letterSpacing: 2),
-                      decoration: myTextfieldDeco('Confirm password'),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    myButton1('Submit', () {
-                      _createAccount(context);
-                    }),
-                  ],
-                ),
+        child: Form(
+          key: _formKey,
+          child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            children: <Widget>[
+              TextFormField(
+                controller: _nameController,
+                decoration: myTextfieldDeco('Name (optional)'),
+                style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                textCapitalization: TextCapitalization.words,
+                autocorrect: false,
               ),
-            ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _emailController,
+                validator: (value) => value!.isEmpty || !value.contains('@')
+                    ? 'Please enter a valid email'
+                    : null,
+                decoration: myTextfieldDeco('Email address'),
+                keyboardType: TextInputType.emailAddress,
+                style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                autocorrect: false,
+                textCapitalization: TextCapitalization.none,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _usernameController,
+                validator: (value) {
+                  if (value!.isEmpty) return 'Please enter a username';
+                  if (value.length < 3)
+                    return 'Username must be at least 3 characters';
+                  if (value.contains(RegExp(r'\s')))
+                    return 'Username cannot contain spaces';
+                  if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')))
+                    return 'No special characters allowed';
+                  return null;
+                },
+                decoration: myTextfieldDeco('Username'),
+                style: const TextStyle(color: Colors.white, letterSpacing: 2),
+                autocorrect: false,
+                textCapitalization: TextCapitalization.none,
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: _obscureText,
+                validator: (value) {
+                  if (value!.length < 6)
+                    return 'Password must be at least 6 characters';
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  labelStyle:
+                      const TextStyle(color: Colors.white, letterSpacing: 2),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.white,
+                    ),
+                    onPressed: _togglePasswordVisibility,
+                  ),
+                  border: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.white),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                ),
+                style: const TextStyle(color: Colors.white, letterSpacing: 2),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _confirmPasswordController,
+                obscureText: true,
+                validator: (value) {
+                  if (value != _passwordController.text) {
+                    return 'Passwords do not match';
+                  }
+                  return null;
+                },
+                decoration: myTextfieldDeco('Confirm Password'),
+                style: const TextStyle(color: Colors.white, letterSpacing: 2),
+              ),
+              const SizedBox(height: 20),
+              _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : myButton1('Create Account', () => _createAccount(context)),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("Already have an account?",
+                      style: TextStyle(color: Colors.white)),
+                  TextButton(
+                    child: const Text('Sign In',
+                        style: TextStyle(color: Colors.blue)),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      )),
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _usernameController.dispose();
+    _nameController.dispose();
+    super.dispose();
   }
 }
