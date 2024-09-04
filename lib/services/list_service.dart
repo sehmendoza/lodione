@@ -5,8 +5,26 @@ import 'package:lodione/models/list_model.dart';
 import 'package:lodione/providers/user_provider.dart';
 
 class ListService {
+<<<<<<< HEAD
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+=======
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Stream<List<ListModel>> getList() {
+    String? userId = _auth.currentUser?.uid;
+    if (userId == null) throw Exception("User not logged in");
+
+    return _firestore.collection('lists').snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => ListModel.fromFirestore(doc))
+          .where(
+              (list) => list.id == userId || task.sharedWith.contains(userId))
+          .toList();
+    });
+  }
+>>>>>>> d576b91 (h)
 
   User? get currentUser => _firebaseAuth.currentUser;
 

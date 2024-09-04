@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:lodione/models/item_model.dart';
 import 'package:lodione/models/user_model.dart';
 import 'package:uuid/uuid.dart';
@@ -42,9 +43,10 @@ class ListModel {
     );
   }
 
-  factory ListModel.fromFirestore(Map<String, dynamic> json, String id) {
+  factory ListModel.fromFirestore(DocumentSnapshot doc) {
+    Map<String, dynamic> json = doc.data() as Map<String, dynamic>;
     return ListModel(
-      id: id,
+      id: doc.id,
       name: json['name'] as String? ?? '',
       createdBy: json['createdBy'] as String? ?? '',
       dateCreated: json['dateCreated'] as String? ?? '',
@@ -65,8 +67,8 @@ class ListModel {
       'name': name,
       'createdBy': createdBy,
       'dateCreated': dateCreated,
-      'shareWith': shareWith.map((user) => user.toFirestore()).toList(),
-      'items': items.map((item) => item.toFirestore()).toList(),
+      'shareWith': shareWith,
+      'items': items,
     };
   }
 }
