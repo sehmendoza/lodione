@@ -5,7 +5,6 @@ import 'package:lodione/screens/connections/contacts/contacts_tab.dart';
 import 'package:lodione/widgets/buttons.dart';
 
 import '../../../models/notification_model.dart';
-import '../../../providers/main_provider.dart';
 
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -20,11 +19,11 @@ class ConnectionList extends ConsumerWidget {
         .limit(1)
         .get();
 
-    final fromUsername = ref.read(userProvider)!.username;
+    //  final fromUsername = ref.read(userProvider)!.username;
 
     var notify = NotificationModel(
       type: NotificationType.friendRequest,
-      message: 'Friend request from $fromUsername',
+      message: 'Friend request from username',
     );
 
     _firestore.collection('users').doc(users.docs[0].data()['id']).set({

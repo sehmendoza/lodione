@@ -1,15 +1,22 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:lodione/models/item_model.dart';
 import 'package:lodione/models/list_model.dart';
+import 'package:lodione/providers/user_provider.dart';
 
 class ListService {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   User? get currentUser => _firebaseAuth.currentUser;
 
+  FirebaseAuth get auth => _firebaseAuth;
+
+  UserProvider get userProvider => UserProvider();
+
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   Future<List<ListModel>> fetchList() async {
     List<ListModel> lists = [];
+
     QuerySnapshot? querySnapshot = await _db
         .collection('users')
         .doc(currentUser!.uid)
@@ -42,7 +49,8 @@ class ListService {
         .collection('users')
         .doc(currentUser!.uid)
         .collection('lists')
-        .add(list.toFirestore());
+        .doc(list.id)
+        .set(list.toFirestore());
   }
 
   void removeList(ListModel list) {
@@ -61,5 +69,38 @@ class ListService {
         .collection('lists')
         .doc(list.id)
         .update(list.toFirestore());
+  }
+
+  void addItemToList(String listId, ItemModel item) {
+    _db
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('lists')
+        .doc(listId)
+        .update({
+      'items': FieldValue.arrayUnion([item.toFirestore()])
+    });
+  }
+
+  void removeItemFromList(String listId, String itemId) {
+    _db
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('lists')
+        .doc(listId)
+        .update({
+      'items': FieldValue.arrayRemove([itemId])
+    });
+  }
+
+  void updateItemInList(String listId, ItemModel item) {
+    _db
+        .collection('users')
+        .doc(currentUser!.uid)
+        .collection('lists')
+        .doc(listId)
+        .update({
+      'items': FieldValue.arrayUnion([item.toFirestore()])
+    });
   }
 }

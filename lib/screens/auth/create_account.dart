@@ -1,23 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
+import 'package:lodione/providers/list_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/list_model.dart';
 import '../../models/user_model.dart';
 
-class CreateAccount extends ConsumerStatefulWidget {
+class CreateAccount extends StatefulWidget {
   const CreateAccount({super.key});
 
   @override
-  ConsumerState<CreateAccount> createState() => _CreateAccountState();
+  State<CreateAccount> createState() => _CreateAccountState();
 }
 
-class _CreateAccountState extends ConsumerState<CreateAccount> {
+class _CreateAccountState extends State<CreateAccount> {
   String username = '', email = '', password = '', cpassword = '', name = '';
 
-  void _createAccount(context, ref) async {
+  void _createAccount(context) async {
     final isValid = _formKey.currentState!.validate();
 
     if (!isValid) {
@@ -41,25 +42,20 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
 
         await FirebaseFirestore.instance
             .collection('users')
-            .doc(userCred.user!.uid)
+            .doc(newUser.id)
             .set(
               newUser.toFirestore(),
             );
 
-        final newList = ListModel(
-          createdBy: userCred.user!.uid,
-          dateCreated: Timestamp.now().toString(),
-          shareWith: [],
-          name: 'My List',
-          items: [],
-        );
+        // final newList = ListModel(
+        //   createdBy: userCred.user!.uid,
+        //   dateCreated: Timestamp.now().toString(),
+        //   shareWith: [],
+        //   name: 'My List',
+        //   items: [],
+        // );
 
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userCred.user!.uid)
-            .collection('lists')
-            .doc(newList.id)
-            .set(newList.toFirestore());
+        // Provider.of<ListProvider>(context, listen: false).addList(newList);
 
         Navigator.of(context).pop();
       } on FirebaseAuthException catch (e) {
@@ -81,8 +77,8 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Center(
-                  child:
-                      Text('An unexpected error occurred: ${e.toString()}'))),
+                  child: SelectableText(
+                      'An unexpected error occurred: ${e.toString()}'))),
         );
       }
     }
@@ -152,6 +148,11 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                           return 'Please enter a username';
                         } else if (value.length < 3) {
                           return 'Username must be at least 3 characters';
+                        } else if (value.contains(' ')) {
+                          return 'Username cannot contain spaces';
+                        } else if (value.contains(
+                            RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]'))) {
+                          return 'Username cannot contain special characters';
                         }
                         return null;
                       },
@@ -211,7 +212,7 @@ class _CreateAccountState extends ConsumerState<CreateAccount> {
                       height: 20,
                     ),
                     myButton1('Submit', () {
-                      _createAccount(context, ref);
+                      _createAccount(context);
                     }),
                   ],
                 ),

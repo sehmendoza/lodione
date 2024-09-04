@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lodione/const.dart';
+import '../main_screen.dart';
 import 'create_account.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
@@ -41,6 +42,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         await _auth.signInWithEmailAndPassword(
           email: email,
           password: _passwordController.text,
+        );
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const MainScreen(),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(

@@ -14,36 +14,35 @@ class HomeTab extends StatefulWidget {
 }
 
 class _HomeTabState extends State<HomeTab> {
-  List<TabItems> menus = [
-    TabItems(
-      title: 'Lists',
-      icon: Icons.list,
-      goTo: const ListTab(),
-    ),
-    TabItems(
-      title: 'Recipes',
-      icon: Icons.menu_book,
-      goTo: const RecipeTab(),
-    ),
-    TabItems(
-      title: 'Meal Plan',
-      icon: Icons.restaurant,
-      goTo: const MealPlanTab(),
-    ),
-    TabItems(
-      title: 'Go-to Places',
-      icon: Icons.place,
-      goTo: const GotoPlaces(),
-    ),
-    TabItems(
-      title: 'Fitness',
-      icon: Icons.fitness_center,
-      goTo: const WorkoutTab(),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    List<TabItems> menus = [
+      TabItems(
+        title: 'Lists',
+        icon: Icons.list,
+        goTo: const ListTab(),
+      ),
+      TabItems(
+        title: 'Recipes',
+        icon: Icons.menu_book,
+        goTo: const RecipeTab(),
+      ),
+      TabItems(
+        title: 'Meal Plan',
+        icon: Icons.restaurant,
+        goTo: const MealPlanTab(),
+      ),
+      TabItems(
+        title: 'Go-to Places',
+        icon: Icons.place,
+        goTo: const GotoPlaces(),
+      ),
+      TabItems(
+        title: 'Fitness',
+        icon: Icons.fitness_center,
+        goTo: const WorkoutTab(),
+      ),
+    ];
     var size = MediaQuery.of(context).size.width;
     return DefaultTabController(
       length: menus.length,

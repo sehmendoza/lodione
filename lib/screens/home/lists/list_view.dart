@@ -3,12 +3,12 @@ import 'package:lodione/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
-import '../../../providers/new_list_provider.dart';
+import '../../../providers/list_provider.dart';
 
 class MyListView extends StatefulWidget {
-  const MyListView({super.key, required this.list});
+  const MyListView({super.key, required this.listId});
 
-  final ListModel list;
+  final String listId;
 
   @override
   State<MyListView> createState() => _MyListViewState();
@@ -17,8 +17,9 @@ class MyListView extends StatefulWidget {
 class _MyListViewState extends State<MyListView> {
   @override
   Widget build(BuildContext context) {
-    List<ItemModel> items = widget.list.items;
     var listsProvider = Provider.of<ListProvider>(context, listen: false);
+    List<ItemModel> items = listsProvider.getListItems(widget.listId);
+
     return Expanded(
       child: ListView.builder(
           itemCount: items.length,
@@ -33,7 +34,7 @@ class _MyListViewState extends State<MyListView> {
               ),
               onDismissed: (direction) {
                 setState(() {
-                  listsProvider.removeItemFromList(widget.list.id, item.id);
+                  listsProvider.removeItemFromList(widget.listId, item.id);
                 });
               },
               key: ValueKey(item.id),
@@ -60,15 +61,14 @@ class _MyListViewState extends State<MyListView> {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       onTap: () {
-                        showEditDialog(widget.list.id, item, listsProvider);
+                        showEditDialog(widget.listId, item, listsProvider);
                       },
                       value: 'option1',
                       child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        showAddDetailDialog(
-                            widget.list.id, item, listsProvider);
+                        showAddDetailDialog(widget.listId, item, listsProvider);
                       },
                       value: 'option2',
                       child: Text(
@@ -78,7 +78,7 @@ class _MyListViewState extends State<MyListView> {
                       onTap: () {
                         setState(() {
                           listsProvider.removeItemFromList(
-                              widget.list.id, item.id);
+                              widget.listId, item.id);
                         });
                       },
                       value: 'delete',

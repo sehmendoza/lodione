@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../../models/list_model.dart';
-import '../../../providers/list_provider.dart';
 
 class MoveListDialog extends StatefulWidget {
   const MoveListDialog(
@@ -25,7 +21,6 @@ class _MoveListDialogState extends State<MoveListDialog> {
 
   @override
   Widget build(BuildContext context) {
-    var ref = widget.ref;
 // var provider = Provider.of<ListProvider>(context, listen: false);
     // var mgaLists = ref.watch(listProvider);
     return AlertDialog(

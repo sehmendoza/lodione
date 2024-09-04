@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/list_model.dart';
-
-DropdownMenuItem<ListModel> dropIt(listModel) {
-  return DropdownMenuItem<ListModel>(
-    value: listModel,
+DropdownMenuItem<String> dropIt(id, name, length) {
+  return DropdownMenuItem<String>(
+    value: id,
     child: Row(
       children: [
         Text(
-          listModel.name,
+          name,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: Colors.white,
           ),
         ),
-        listModel.items.isEmpty
+        length == 0
             ? const SizedBox()
             : Container(
                 margin: const EdgeInsets.only(left: 6),
@@ -24,7 +22,7 @@ DropdownMenuItem<ListModel> dropIt(listModel) {
                   color: Colors.white,
                 ),
                 child: Text(
-                  listModel.items.length.toString(),
+                  length.toString(),
                   style: const TextStyle(
                     color: Colors.black,
                     fontSize: 16,

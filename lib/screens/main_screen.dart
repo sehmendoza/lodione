@@ -1,8 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lodione/screens/auth/sign_in_screen.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
 import 'package:lodione/screens/connections/connection_tab.dart';
+import 'package:provider/provider.dart';
 
+import '../providers/list_provider.dart';
+import '../providers/user_provider.dart';
 import 'home/home_tab.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,11 +17,6 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final List<Widget> children = [
-    const HomeTab(),
-    ConnectionTab(),
-    const ProfileTab(),
-  ];
   int currentIndex = 0;
 
   void onTappedBar(int index) {
@@ -26,8 +25,36 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void logout(context) async {
+    try {
+      // Sign out from Firebase Authentication
+      await FirebaseAuth.instance.signOut();
+      Provider.of<UserProvider>(context, listen: false).clearUserData();
+
+      // Navigate to login screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const SignInScreen()),
+      );
+      // Show a snackbar or any UI feedback to confirm logout
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Logged out successfully')),
+      );
+    } catch (e) {
+      print('Error signing out: $e');
+      // Handle error, maybe show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to log out. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final List<Widget> children = [
+      const HomeTab(),
+      ConnectionTab(),
+      const ProfileTab(),
+    ];
     return Scaffold(
       backgroundColor: Colors.black,
       // drawer: MyDrawer(
@@ -46,9 +73,7 @@ class _MainScreenState extends State<MainScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-            },
+            onPressed: () => logout(context),
           ),
         ],
         // centerTitle: true,
