@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
 
-class MoveListDialog extends ConsumerStatefulWidget {
+class MoveListDialog extends StatefulWidget {
   const MoveListDialog(
       {super.key, required this.selectedListID, required this.ref});
 
@@ -12,10 +12,10 @@ class MoveListDialog extends ConsumerStatefulWidget {
   final dynamic ref;
 
   @override
-  ConsumerState<MoveListDialog> createState() => _MoveListDialogState();
+  State<MoveListDialog> createState() => _MoveListDialogState();
 }
 
-class _MoveListDialogState extends ConsumerState<MoveListDialog> {
+class _MoveListDialogState extends State<MoveListDialog> {
   String newListDropdownValue = '';
   @override
   void initState() {
@@ -26,8 +26,8 @@ class _MoveListDialogState extends ConsumerState<MoveListDialog> {
   @override
   Widget build(BuildContext context) {
     var ref = widget.ref;
-
-    var mgaLists = ref.watch(listProvider);
+// var provider = Provider.of<ListProvider>(context, listen: false);
+    // var mgaLists = ref.watch(listProvider);
     return AlertDialog(
       backgroundColor: Colors.black,
       shape: ContinuousRectangleBorder(
@@ -39,58 +39,9 @@ class _MoveListDialogState extends ConsumerState<MoveListDialog> {
         textAlign: TextAlign.center,
         style: TextStyle(color: Colors.white),
       ),
-      content: Column(
+      content: const Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          DropdownButton<String>(
-            value: newListDropdownValue,
-            icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-            iconSize: 18,
-            underline:
-                Container(height: 1, color: null), // Fixed underline styling
-            borderRadius: BorderRadius.circular(2),
-            dropdownColor: const Color.fromARGB(255, 30, 30, 30),
-            onChanged: (newValue) {
-              setState(() {
-                newListDropdownValue = newValue!;
-              });
-            },
-            items:
-                mgaLists.map<DropdownMenuItem<String>>((ListModel listModel) {
-              return DropdownMenuItem<String>(
-                value: listModel.id,
-                child: Row(
-                  children: [
-                    Text(
-                      listModel.name,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(left: 6),
-                      padding: const EdgeInsets.all(7.5),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      child: Text(
-                        ref
-                            .watch(listProvider)
-                            .firstWhere((list) => list.id == listModel.id)
-                            .items
-                            .length
-                            .toString(),
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+        children: [],
       ),
       actions: [
         TextButton(
@@ -99,8 +50,8 @@ class _MoveListDialogState extends ConsumerState<MoveListDialog> {
                 Navigator.pop(context);
                 return;
               }
-              ref.read(listProvider.notifier).moveItemsToOtherList(
-                  widget.selectedListID, newListDropdownValue);
+              // ref.read(listProvider.notifier).moveItemsToOtherList(
+              //     widget.selectedListID, newListDropdownValue);
 
               Navigator.pop(context, newListDropdownValue);
             },
