@@ -56,7 +56,7 @@ class ListService {
   }
 
   void addList(ListModel list) {
-    _firestore.collection('lists').add(list.toFirestore());
+    _firestore.collection('lists').doc(list.id).set(list.toFirestore());
   }
 
   void removeList(ListModel list) {

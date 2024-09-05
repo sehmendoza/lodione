@@ -125,13 +125,18 @@ class _CreateAccountState extends State<CreateAccount> {
               TextFormField(
                 controller: _usernameController,
                 validator: (value) {
-                  if (value!.isEmpty) return 'Please enter a username';
-                  if (value.length < 3)
+                  if (value!.isEmpty) {
+                    return 'Please enter a username';
+                  }
+                  if (value.length < 3) {
                     return 'Username must be at least 3 characters';
-                  if (value.contains(RegExp(r'\s')))
+                  }
+                  if (value.contains(RegExp(r'\s'))) {
                     return 'Username cannot contain spaces';
-                  if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]')))
+                  }
+                  if (value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) {
                     return 'No special characters allowed';
+                  }
                   return null;
                 },
                 decoration: myTextfieldDeco('Username'),

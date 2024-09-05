@@ -414,20 +414,14 @@
 //   }
 // }
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lodione/screens/main/waiting_screen.dart';
-import 'package:lodione/services/firestore_service.dart';
-import 'package:lodione/widgets/buttons.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../const.dart';
 import '../../../models/item_model.dart';
 import '../../../models/list_model.dart';
 import '../../../providers/list_provider.dart';
-import '../../../widgets/dialogs.dart';
-import 'dropdown_list.dart';
 import 'list_view.dart';
 
 class ListTab extends StatefulWidget {
@@ -520,6 +514,8 @@ class _ListTabState extends State<ListTab> {
 
   Widget _buildListSelectorAndMenu(
       ListProvider listProvider, void Function(ListModel?) onChanged) {
+    selectedList = listProvider.selectedList;
+
     return Row(
       children: [
         Expanded(
@@ -652,9 +648,16 @@ class _ListTabState extends State<ListTab> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Colors.black,
+
+        shape: const ContinuousRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(25)),
+          side: BorderSide(width: 2, color: Colors.white),
+        ),
+
         // ... [Dialog setup remains similar, but ensure to use Theme for consistency]
         title: const Text('Add New List',
-            textAlign: TextAlign.center, style: TextStyle(color: Colors.white)),
+            textAlign: TextAlign.center, style: TextStyle(color: Colors.black)),
         content: TextField(
           controller: nameController,
           decoration: const InputDecoration(hintText: 'List Name'),
@@ -670,7 +673,7 @@ class _ListTabState extends State<ListTab> {
                   items: [],
                 );
                 listProvider.addList(newList);
-                listProvider.selectList(newList.id);
+                listProvider.selectList(newList);
                 Navigator.of(context).pop();
               }
             },

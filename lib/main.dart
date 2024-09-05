@@ -7,8 +7,8 @@ import 'package:provider/provider.dart';
 import 'providers/list_provider.dart';
 import 'providers/userist_provider.dart';
 import 'services/firebase_options.dart';
-import 'screens/main/main_screen.dart';
 import 'screens/main/waiting_screen.dart';
+import 'test/task_screen.dart';
 
 void main() async {
   try {
@@ -37,7 +37,7 @@ class LodioneApp extends StatelessWidget {
     return MaterialApp(
       theme: myTheme,
       debugShowCheckedModeBanner: false,
-      home: const StartUp(),
+      home: const ToDoListScreen(),
     );
   }
 }
@@ -57,7 +57,7 @@ class StartUp extends StatelessWidget {
         } else if (snapshot.hasError) {
           return const ErrorScreen();
         } else if (snapshot.hasData) {
-          return const MainScreen();
+          return const ToDoListScreen();
         } else {
           return const SignInScreen();
         }

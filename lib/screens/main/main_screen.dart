@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lodione/screens/profile/profile_tab.dart';
 import 'package:lodione/screens/connections/connection_tab.dart';

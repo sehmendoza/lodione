@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:lodione/services/list_service.dart';
-
 import '../models/item_model.dart';
 import '../models/list_model.dart';
 
@@ -15,9 +13,9 @@ class ListProvider extends ChangeNotifier {
   List<ListModel> _lists = [];
   List<ListModel> get lists => _lists;
 
-  String? _selectedListId;
+  ListModel? _selectedList;
 
-  String? get selectedListId => _selectedListId;
+  ListModel? get selectedList => _selectedList;
 
   Stream<List<ListModel>> get listStream => _listService.streamLists();
 
@@ -31,8 +29,8 @@ class ListProvider extends ChangeNotifier {
     return list.items;
   }
 
-  void selectList(String listId) {
-    _selectedListId = listId;
+  void selectList(ListModel listId) {
+    _selectedList = listId;
     notifyListeners();
   }
 
