@@ -33,12 +33,25 @@ class _CreateAccountState extends State<CreateAccount> {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
       try {
+        // Check for existing username
+        QuerySnapshot usernameCheck = await FirebaseFirestore.instance
+            .collection('users')
+            .where('username', isEqualTo: _usernameController.text)
+            .limit(1)
+            .get();
+
+        if (usernameCheck.docs.isNotEmpty) {
+          throw Exception('Username already taken');
+        }
+
+        // Create user with Firebase Authentication
         UserCredential userCred =
             await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text,
           password: _passwordController.text,
         );
 
+        // Create user document in Firestore
         final newUser = UserModel(
           id: userCred.user!.uid,
           username: _usernameController.text,
@@ -54,18 +67,16 @@ class _CreateAccountState extends State<CreateAccount> {
             .set(newUser.toFirestore());
 
         Navigator.of(context).pop();
-
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Account created successfully')),
         );
       } on FirebaseAuthException catch (e) {
-        String errorMessage = _getErrorMessage(e.code);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage)),
+          SnackBar(content: Text('Firebase Auth Error: ${e.message}')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('An unexpected error occurred: $e')),
+          SnackBar(content: Text('Error: ${e.toString()}')),
         );
       } finally {
         setState(() => _isLoading = false);

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'lists/list_tab.dart';
@@ -85,3 +87,4 @@ class TabItems {
 
   TabItems({required this.title, required this.icon, required this.goTo});
 }
+// ... (your imports and TabItems class)

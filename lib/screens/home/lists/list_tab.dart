@@ -416,6 +416,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:lodione/test/task_screen.dart';
+import 'package:lodione/test/task_service.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../../../const.dart';
@@ -455,18 +457,18 @@ class _ListTabState extends State<ListTab> {
     super.dispose();
   }
 
-  void _addItem(ListProvider listProvider, String? listId) {
-    if (_itemController.text.trim().isEmpty) {
-      _itemController.clear();
-      return;
-    }
-    listProvider.addItemToList(
-      listId ?? '',
-      ItemModel(name: _itemController.text, isDone: false, details: ''),
-    );
-    _itemNode.requestFocus();
-    _itemController.clear();
-  }
+  // void _addItem(ListProvider listProvider, String? listId) {
+  //   if (_itemController.text.trim().isEmpty) {
+  //     _itemController.clear();
+  //     return;
+  //   }
+  //   listProvider.addItemToList(
+  //     listId ?? '',
+  //     ItemModel(name: _itemController.text, isDone: false, details: ''),
+  //   );
+  //   _itemNode.requestFocus();
+  //   _itemController.clear();
+  // }
 
   void selectListFromList(ListModel list) {
     setState(() {
@@ -475,21 +477,25 @@ class _ListTabState extends State<ListTab> {
   }
 
   ListModel? selectedList;
+
+  TaskService taskService = TaskService();
   @override
   Widget build(BuildContext context) {
-    return Consumer<ListProvider>(
-      builder: (context, listProvider, child) {
-        listProvider.fetchLists();
-        final lists = listProvider.lists;
-        if (lists.isEmpty) {
+    return StreamBuilder(
+      stream: taskService.getTasks(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return Center(
             child: myButton1(
               'Add a new list',
-              () => _addNewList(listProvider),
+              () => _addNewList(),
             ),
           );
         }
-
+        //  final lists = listProvider.lists;
         return Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
@@ -498,11 +504,12 @@ class _ListTabState extends State<ListTab> {
           ),
           child: Column(
             children: <Widget>[
-              _buildListSelectorAndMenu(
-                  listProvider, (value) => selectListFromList(value!)),
-              const Divider(height: 0, color: Colors.white, thickness: 2),
-              _buildItemInput(listProvider, selectedList?.id),
-              _buildListViewOrPlaceholder(listProvider, selectedList),
+              const Expanded(child: ToDoListScreen()),
+              // _buildListSelectorAndMenu(
+              //     listProvider, (value) => selectListFromList(value!)),
+              //   const Divider(height: 0, color: Colors.white, thickness: 2),
+              //  _buildItemInput(listProvider, selectedList?.id),
+              // _buildListViewOrPlaceholder(listProvider, selectedList),
               const Divider(height: 0, color: Colors.white, thickness: 2),
               _buildActionIcons(),
             ],
@@ -512,93 +519,93 @@ class _ListTabState extends State<ListTab> {
     );
   }
 
-  Widget _buildListSelectorAndMenu(
-      ListProvider listProvider, void Function(ListModel?) onChanged) {
-    selectedList = listProvider.selectedList;
+  // Widget _buildListSelectorAndMenu(
+  //    // ListProvider listProvider, void Function(ListModel?) onChanged) {
+  //   selectedList = listProvider.selectedList;
 
-    return Row(
-      children: [
-        Expanded(
-          child: DropdownButton<ListModel>(
-            value: selectedList,
-            onChanged: onChanged,
-            items: [
-              DropdownMenuItem<ListModel>(
-                value: null,
-                child: TextButton.icon(
-                  label: const Text('Add new list',
-                      style: TextStyle(color: Colors.white60)),
-                  icon: const Icon(Icons.add_box, color: Colors.white60),
-                  onPressed: () => _addNewList(listProvider),
-                ),
-              ),
-              ...listProvider.lists.map((list) => DropdownMenuItem<ListModel>(
-                    value: list,
-                    child: Text(list.name),
-                  )),
-            ],
-            icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
-            style: const TextStyle(color: Colors.white),
-            dropdownColor: const Color.fromARGB(255, 48, 48, 48),
-          ),
-        ),
-        PopupMenuButton<String>(
-          onSelected: (value) => _handleMenuSelection(value, listProvider),
-          itemBuilder: (BuildContext context) => [
-            _buildPopupMenuItem('Add new list', Icons.add_box, 'add'),
-            // Add other menu items here similarly
-          ],
-        ),
-      ],
-    );
-  }
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: DropdownButton<ListModel>(
+  //           value: selectedList,
+  //           onChanged: onChanged,
+  //           items: [
+  //             DropdownMenuItem<ListModel>(
+  //               value: null,
+  //               child: TextButton.icon(
+  //                 label: const Text('Add new list',
+  //                     style: TextStyle(color: Colors.white60)),
+  //                 icon: const Icon(Icons.add_box, color: Colors.white60),
+  //                 onPressed: () => _addNewList(listProvider),
+  //               ),
+  //             ),
+  //             ...listProvider.lists.map((list) => DropdownMenuItem<ListModel>(
+  //                   value: list,
+  //                   child: Text(list.name),
+  //                 )),
+  //           ],
+  //           icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+  //           style: const TextStyle(color: Colors.white),
+  //           dropdownColor: const Color.fromARGB(255, 48, 48, 48),
+  //         ),
+  //       ),
+  //       PopupMenuButton<String>(
+  //         onSelected: (value) => _handleMenuSelection(value, listProvider),
+  //         itemBuilder: (BuildContext context) => [
+  //           _buildPopupMenuItem('Add new list', Icons.add_box, 'add'),
+  //           // Add other menu items here similarly
+  //         ],
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildItemInput(ListProvider listProvider, String? listId) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            focusNode: _itemNode,
-            controller: _itemController,
-            onSubmitted: (_) => _addItem(listProvider, listId),
-            cursorColor: Colors.white54,
-            style: const TextStyle(color: Colors.white),
-            textCapitalization: TextCapitalization.sentences,
-            decoration: const InputDecoration(
-              focusedBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white, width: 2),
-              ),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.white),
-              ),
-              contentPadding: EdgeInsets.only(left: 8),
-              hintText: 'Enter item',
-              hintStyle: TextStyle(color: Colors.white38),
-            ),
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.add, color: Colors.white),
-          onPressed: () => _addItem(listProvider, listId),
-        ),
-      ],
-    );
-  }
+  // Widget _buildItemInput(ListProvider listProvider, String? listId) {
+  //   return Row(
+  //     children: [
+  //       Expanded(
+  //         child: TextField(
+  //           focusNode: _itemNode,
+  //           controller: _itemController,
+  //           onSubmitted: (_) => _addItem(listProvider, listId),
+  //           cursorColor: Colors.white54,
+  //           style: const TextStyle(color: Colors.white),
+  //           textCapitalization: TextCapitalization.sentences,
+  //           decoration: const InputDecoration(
+  //             focusedBorder: UnderlineInputBorder(
+  //               borderSide: BorderSide(color: Colors.white, width: 2),
+  //             ),
+  //             enabledBorder: UnderlineInputBorder(
+  //               borderSide: BorderSide(color: Colors.white),
+  //             ),
+  //             contentPadding: EdgeInsets.only(left: 8),
+  //             hintText: 'Enter item',
+  //             hintStyle: TextStyle(color: Colors.white38),
+  //           ),
+  //         ),
+  //       ),
+  //       IconButton(
+  //         icon: const Icon(Icons.add, color: Colors.white),
+  //         onPressed: () => _addItem(listProvider, listId),
+  //       ),
+  //     ],
+  //   );
+  // }
 
-  Widget _buildListViewOrPlaceholder(
-      ListProvider listProvider, ListModel? list) {
-    return Expanded(
-      child: list == null
-          ? Center(
-              child: TextButton(
-                child: const Text('Select a list or add a new one',
-                    style: TextStyle(color: Colors.white60)),
-                onPressed: () => _addNewList(listProvider),
-              ),
-            )
-          : MyListView(list: list),
-    );
-  }
+  // Widget _buildListViewOrPlaceholder(
+  //     ListProvider listProvider, ListModel? list) {
+  //   return Expanded(
+  //     child: list == null
+  //         ? Center(
+  //             child: TextButton(
+  //               child: const Text('Select a list or add a new one',
+  //                   style: TextStyle(color: Colors.white60)),
+  //               onPressed: () => _addNewList(listProvider),
+  //             ),
+  //           )
+  //         : MyListView(list: list),
+  //   );
+  // }
 
   Widget _buildActionIcons() {
     return Row(
@@ -634,16 +641,16 @@ class _ListTabState extends State<ListTab> {
     );
   }
 
-  void _handleMenuSelection(String value, ListProvider listProvider) {
+  void _handleMenuSelection(String value) {
     switch (value) {
       case 'add':
-        _addNewList(listProvider);
+        _addNewList();
         break;
       // Handle other cases similarly
     }
   }
 
-  void _addNewList(ListProvider listProvider) {
+  void _addNewList() {
     TextEditingController nameController = TextEditingController();
     showDialog(
       context: context,
@@ -672,8 +679,8 @@ class _ListTabState extends State<ListTab> {
                   name: nameController.text,
                   items: [],
                 );
-                listProvider.addList(newList);
-                listProvider.selectList(newList);
+                // listProvider.addList(newList);
+                //  listProvider.selectList(newList);
                 Navigator.of(context).pop();
               }
             },

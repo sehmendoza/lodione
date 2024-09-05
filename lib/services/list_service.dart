@@ -1,200 +1,181 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lodione/models/item_model.dart';
-import 'package:lodione/models/list_model.dart';
-import 'package:lodione/providers/user_provider.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:lodione/models/item_model.dart';
+// import 'package:lodione/models/list_model.dart';
+// import 'package:lodione/providers/user_provider.dart';
 
-class ListService {
-<<<<<<< HEAD
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-=======
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+// class ListService {
+//   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Stream<List<ListModel>> getList() {
-    String? userId = _auth.currentUser?.uid;
-    if (userId == null) throw Exception("User not logged in");
+//   User? get currentUser => _firebaseAuth.currentUser;
 
-    return _firestore.collection('lists').snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => ListModel.fromFirestore(doc))
-          .where(
-              (list) => list.id == userId || task.sharedWith.contains(userId))
-          .toList();
-    });
-  }
->>>>>>> d576b91 (h)
+//   FirebaseAuth get auth => _firebaseAuth;
 
-  User? get currentUser => _firebaseAuth.currentUser;
+//   UserProvider get userProvider => UserProvider();
 
-  FirebaseAuth get auth => _firebaseAuth;
+// //new code
 
-  UserProvider get userProvider => UserProvider();
+//   // Stream<List<ListModel>> getListsForUser(String userId) {
+//   //   return _firestore
+//   //       .collection('lists')
+//   //       .where('createdBy', isEqualTo: userId)
+//   //       .snapshots()
+//   //       .map((snapshot) => snapshot.docs
+//   //           .map((doc) => ListModel.fromFirestore(doc.data(), doc.id))
+//   //           .toList());
+//   // }
 
-//new code
+//   Stream<List<ListModel>> streamLists() {
+//     return _firestore
+//         .collection('lists')
+//         .where('createdBy', isEqualTo: currentUser!.uid)
+//         .snapshots()
+//         .map((snapshot) {
+//       return snapshot.docs.map((doc) {
+//         return ListModel.fromFirestore(doc);
+//       }).toList();
+//     });
+//   }
 
-  // Stream<List<ListModel>> getListsForUser(String userId) {
-  //   return _firestore
-  //       .collection('lists')
-  //       .where('createdBy', isEqualTo: userId)
-  //       .snapshots()
-  //       .map((snapshot) => snapshot.docs
-  //           .map((doc) => ListModel.fromFirestore(doc.data(), doc.id))
-  //           .toList());
-  // }
+//   Future<List<ListModel>> fetchList() async {
+//     List<ListModel> lists = [];
 
-  Stream<List<ListModel>> streamLists() {
-    return _firestore
-        .collection('lists')
-        .where('createdBy', isEqualTo: currentUser!.uid)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return ListModel.fromFirestore(doc.data(), doc.id);
-      }).toList();
-    });
-  }
+//     QuerySnapshot? querySnapshot = await _firestore
+//         .collection('lists')
+//         .where('createdBy', isEqualTo: currentUser!.uid)
+//         .get();
 
-  Future<List<ListModel>> fetchList() async {
-    List<ListModel> lists = [];
+//     for (var doc in querySnapshot.docs) {
+//       var list = ListModel.fromFirestore(doc);
+//       lists.add(list);
+//     }
 
-    QuerySnapshot? querySnapshot = await _firestore
-        .collection('lists')
-        .where('createdBy', isEqualTo: currentUser!.uid)
-        .get();
+//     return lists;
+//   }
 
-    for (var doc in querySnapshot.docs) {
-      var list =
-          ListModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
-      lists.add(list);
-    }
+//   void addList(ListModel list) {
+//     _firestore.collection('lists').doc(list.id).set(list.toFirestore());
+//   }
 
-    return lists;
-  }
+//   void removeList(ListModel list) {
+//     _firestore.collection('lists').doc(list.id).delete();
+//   }
 
-  void addList(ListModel list) {
-    _firestore.collection('lists').doc(list.id).set(list.toFirestore());
-  }
+//   void updateList(ListModel list) {
+//     _firestore.collection('lists').doc(list.id).update(list.toFirestore());
+//   }
 
-  void removeList(ListModel list) {
-    _firestore.collection('lists').doc(list.id).delete();
-  }
+//   // ITEMS
 
-  void updateList(ListModel list) {
-    _firestore.collection('lists').doc(list.id).update(list.toFirestore());
-  }
+//   void addItemToList(String listId, ItemModel item) {
+//     _firestore.collection('lists').doc(listId).update({
+//       'items': FieldValue.arrayUnion([item.toFirestore()])
+//     });
+//   }
 
-  // ITEMS
+//   void removeItemFromList(String listId, String itemId) {
+//     _firestore.collection('lists').doc(listId).update({
+//       'items': FieldValue.arrayRemove([itemId])
+//     });
+//   }
 
-  void addItemToList(String listId, ItemModel item) {
-    _firestore.collection('lists').doc(listId).update({
-      'items': FieldValue.arrayUnion([item.toFirestore()])
-    });
-  }
+//   void updateItemInList(String listId, ItemModel item) {
+//     _firestore.collection('lists').doc(listId).update({
+//       'items': FieldValue.arrayUnion([item.toFirestore()])
+//     });
+//   }
 
-  void removeItemFromList(String listId, String itemId) {
-    _firestore.collection('lists').doc(listId).update({
-      'items': FieldValue.arrayRemove([itemId])
-    });
-  }
+//   //old
 
-  void updateItemInList(String listId, ItemModel item) {
-    _firestore.collection('lists').doc(listId).update({
-      'items': FieldValue.arrayUnion([item.toFirestore()])
-    });
-  }
+//   // Future<List<ListModel>> fetchList() async {
+//   //   List<ListModel> lists = [];
 
-  //old
+//   //   QuerySnapshot? querySnapshot = await _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .get();
 
-  // Future<List<ListModel>> fetchList() async {
-  //   List<ListModel> lists = [];
+//   //   for (var doc in querySnapshot.docs) {
+//   //     var list =
+//   //         ListModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
+//   //     lists.add(list);
+//   //   }
 
-  //   QuerySnapshot? querySnapshot = await _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .get();
+//   //   return lists;
+//   // }
 
-  //   for (var doc in querySnapshot.docs) {
-  //     var list =
-  //         ListModel.fromFirestore(doc.data() as Map<String, dynamic>, doc.id);
-  //     lists.add(list);
-  //   }
+//   // Stream<List<ListModel>> streamLists() {
+//   //   return _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .snapshots()
+//   //       .map((snapshot) {
+//   //     return snapshot.docs.map((doc) {
+//   //       return ListModel.fromFirestore(doc.data(), doc.id);
+//   //     }).toList();
+//   //   });
+//   // }
 
-  //   return lists;
-  // }
+//   // void addList(ListModel list) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(list.id)
+//   //       .set(list.toFirestore());
+//   // }
 
-  // Stream<List<ListModel>> streamLists() {
-  //   return _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .snapshots()
-  //       .map((snapshot) {
-  //     return snapshot.docs.map((doc) {
-  //       return ListModel.fromFirestore(doc.data(), doc.id);
-  //     }).toList();
-  //   });
-  // }
+//   // void removeList(ListModel list) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(list.id)
+//   //       .delete();
+//   // }
 
-  // void addList(ListModel list) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(list.id)
-  //       .set(list.toFirestore());
-  // }
+//   // void updateList(ListModel list) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(list.id)
+//   //       .update(list.toFirestore());
+//   // }
 
-  // void removeList(ListModel list) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(list.id)
-  //       .delete();
-  // }
+//   // void addItemToList(String listId, ItemModel item) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(listId)
+//   //       .update({
+//   //     'items': FieldValue.arrayUnion([item.toFirestore()])
+//   //   });
+//   // }
 
-  // void updateList(ListModel list) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(list.id)
-  //       .update(list.toFirestore());
-  // }
+//   // void removeItemFromList(String listId, String itemId) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(listId)
+//   //       .update({
+//   //     'items': FieldValue.arrayRemove([itemId])
+//   //   });
+//   // }
 
-  // void addItemToList(String listId, ItemModel item) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(listId)
-  //       .update({
-  //     'items': FieldValue.arrayUnion([item.toFirestore()])
-  //   });
-  // }
-
-  // void removeItemFromList(String listId, String itemId) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(listId)
-  //       .update({
-  //     'items': FieldValue.arrayRemove([itemId])
-  //   });
-  // }
-
-  // void updateItemInList(String listId, ItemModel item) {
-  //   _firestore
-  //       .collection('users')
-  //       .doc(currentUser!.uid)
-  //       .collection('lists')
-  //       .doc(listId)
-  //       .update({
-  //     'items': FieldValue.arrayUnion([item.toFirestore()])
-  //   });
-  // }
-}
+//   // void updateItemInList(String listId, ItemModel item) {
+//   //   _firestore
+//   //       .collection('users')
+//   //       .doc(currentUser!.uid)
+//   //       .collection('lists')
+//   //       .doc(listId)
+//   //       .update({
+//   //     'items': FieldValue.arrayUnion([item.toFirestore()])
+//   //   });
+//   // }
+// }

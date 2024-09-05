@@ -17,7 +17,7 @@ class MyListView extends StatefulWidget {
 class _MyListViewState extends State<MyListView> {
   @override
   Widget build(BuildContext context) {
-    var listsProvider = Provider.of<ListProvider>(context, listen: false);
+    // var listsProvider = Provider.of<ListProvider>(context, listen: false);
     List<ItemModel> items = widget.list.items;
 
     return Expanded(
@@ -34,7 +34,7 @@ class _MyListViewState extends State<MyListView> {
               ),
               onDismissed: (direction) {
                 setState(() {
-                  listsProvider.removeItemFromList(widget.list.id, item.id);
+                  //      listsProvider.removeItemFromList(widget.list.id, item.id);
                 });
               },
               key: ValueKey(item.id),
@@ -61,15 +61,15 @@ class _MyListViewState extends State<MyListView> {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       onTap: () {
-                        showEditDialog(widget.list.id, item, listsProvider);
+                        //    showEditDialog(widget.list.id, item, listsProvider);
                       },
                       value: 'option1',
                       child: const Text('Edit item'),
                     ),
                     PopupMenuItem(
                       onTap: () {
-                        showAddDetailDialog(
-                            widget.list.id, item, listsProvider);
+                        // showAddDetailDialog(
+                        //     widget.list.id, item, listsProvider);
                       },
                       value: 'option2',
                       child: Text(
@@ -78,8 +78,8 @@ class _MyListViewState extends State<MyListView> {
                     PopupMenuItem(
                       onTap: () {
                         setState(() {
-                          listsProvider.removeItemFromList(
-                              widget.list.id, item.id);
+                          // listsProvider.removeItemFromList(
+                          //     widget.list.id, item.id);
                         });
                       },
                       value: 'delete',
@@ -96,50 +96,49 @@ class _MyListViewState extends State<MyListView> {
     );
   }
 
-  void showEditDialog(
-      String listID, ItemModel item, ListProvider listProvider) {
-    TextEditingController controller = TextEditingController(text: item.name);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.black,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: const BorderSide(color: Colors.white),
-          ),
-          title: const Center(
-              child: Text('Edit item', style: TextStyle(color: Colors.white))),
-          content: TextField(
-            style: const TextStyle(color: Colors.white),
-            controller: controller,
-          ),
-          actionsAlignment: MainAxisAlignment.spaceBetween,
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            MyButton(
-                text: 'Save',
-                icon: Icons.save,
-                onPressed: () {
-                  item.name = controller.text;
-                  setState(() {
-                    listProvider.updateItemInList(listID, item);
-                  });
-                  Navigator.of(context).pop();
-                })
-          ],
-        );
-      },
-    );
-  }
+  // void showEditDialog(
+  //     String listID, ItemModel item, ListProvider listProvider) {
+  //   TextEditingController controller = TextEditingController(text: item.name);
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         backgroundColor: Colors.black,
+  //         shape: RoundedRectangleBorder(
+  //           borderRadius: BorderRadius.circular(10),
+  //           side: const BorderSide(color: Colors.white),
+  //         ),
+  //         title: const Center(
+  //             child: Text('Edit item', style: TextStyle(color: Colors.white))),
+  //         content: TextField(
+  //           style: const TextStyle(color: Colors.white),
+  //           controller: controller,
+  //         ),
+  //         actionsAlignment: MainAxisAlignment.spaceBetween,
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.of(context).pop();
+  //             },
+  //             child: const Text('Cancel'),
+  //           ),
+  //           MyButton(
+  //               text: 'Save',
+  //               icon: Icons.save,
+  //               onPressed: () {
+  //                 item.name = controller.text;
+  //                 setState(() {
+  //                   listProvider.updateItemInList(listID, item);
+  //                 });
+  //                 Navigator.of(context).pop();
+  //               })
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 
-  void showAddDetailDialog(
-      String listID, ItemModel item, ListProvider listProvider) {
+  void showAddDetailDialog(String listID, ItemModel item) {
     TextEditingController controller =
         TextEditingController(text: item.details);
     showDialog(
@@ -177,7 +176,7 @@ class _MyListViewState extends State<MyListView> {
                   item.details = controller.text;
 
                   setState(() {
-                    listProvider.updateItemInList(listID, item);
+                    // listProvider.updateItemInList(listID, item);
                   });
                   Navigator.of(context).pop();
                 })
