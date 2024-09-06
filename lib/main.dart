@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,30 @@ void main() async {
 class LodioneApp extends StatelessWidget {
   const LodioneApp({super.key});
 
+  Future<void> deleteAllUsers() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+    try {
+      // Reference to the users collection
+      CollectionReference usersRef = firestore.collection('lists');
+
+      // Get all documents in the collection
+      QuerySnapshot querySnapshot = await usersRef.get();
+
+      // Delete each document
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      print("All users have been deleted from Firestore.");
+    } catch (e) {
+      print("Error deleting users: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    deleteAllUsers();
     return MaterialApp(
       theme: myTheme,
       debugShowCheckedModeBanner: false,

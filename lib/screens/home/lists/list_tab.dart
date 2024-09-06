@@ -434,28 +434,28 @@ class ListTab extends StatefulWidget {
 }
 
 class _ListTabState extends State<ListTab> {
-  late FocusNode _itemNode;
-  late TextEditingController _itemController;
+  // late FocusNode _itemNode;
+  // late TextEditingController _itemController;
 
-  @override
-  void initState() {
-    super.initState();
-    _itemNode = FocusNode();
-    _itemController = TextEditingController();
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _itemNode = FocusNode();
+  //   _itemController = TextEditingController();
 
-    _itemNode.addListener(() {
-      if (!_itemNode.hasFocus) {
-        _itemController.clear();
-      }
-    });
-  }
+  //   _itemNode.addListener(() {
+  //     if (!_itemNode.hasFocus) {
+  //       _itemController.clear();
+  //     }
+  //   });
+  // }
 
-  @override
-  void dispose() {
-    _itemNode.dispose();
-    _itemController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _itemNode.dispose();
+  //   _itemController.dispose();
+  //   super.dispose();
+  // }
 
   // void _addItem(ListProvider listProvider, String? listId) {
   //   if (_itemController.text.trim().isEmpty) {
@@ -478,29 +478,31 @@ class _ListTabState extends State<ListTab> {
 
   ListModel? selectedList;
 
-  TaskService taskService = TaskService();
+  ListService taskService = ListService();
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: taskService.getTasks(),
+      stream: taskService.getLists(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
-            child: myButton1(
-              'Add a new list',
-              () => _addNewList(),
-            ),
-          );
-        }
+        // if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        //   return Center(
+        //     child: myButton1(
+        //       'Add a new list',
+        //       () => _addNewList(),
+        //     ),
+        //   );
+        // }
         //  final lists = listProvider.lists;
         return Container(
-          margin: const EdgeInsets.all(10),
+          margin: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Colors.white, width: 2),
+            borderRadius: BorderRadius.circular(
+              15,
+            ),
+            border: Border.all(color: Colors.white, width: 3),
           ),
           child: Column(
             children: <Widget>[
@@ -611,7 +613,7 @@ class _ListTabState extends State<ListTab> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        _actionIcon(Icons.select_all, () {}),
+        _actionIcon(Icons.checklist, () {}),
         _actionIcon(Icons.check_box_outline_blank, () {}),
         _actionIcon(Icons.delete_sweep, () {}),
         _actionIcon(Icons.drive_file_move, () {}),
